@@ -74,9 +74,7 @@ DateTime defaultTime = DateTime.parse("2000-01-01 00:00:00");
 
 Container _showRemainingTime(int param, DateTime remainingTime) {
   if (remainingTime != defaultTime) {
-    if (remainingTime.day != 28 &&
-        remainingTime.day != 31 &&
-        remainingTime.day != 30) {
+    if (remainingTime.day < 25) {
       return Container(
           child: Column(
         children: <Widget>[
@@ -415,8 +413,8 @@ class _RezervacijePageState extends State<RezervacijePage> {
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
                               title: const Text('Otkazivanje rezervacije'),
-                              content: Text(
-                                  'Da li ste sigurni da želite otkazati rezervaciju ${listaRezervacijaTest[index]}'),
+                              content: const Text(
+                                  'Da li ste sigurni da želite otkazati rezervaciju?'),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
