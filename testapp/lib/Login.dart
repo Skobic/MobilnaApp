@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/ZaboravljenaLozinka.dart';
-import 'HomePage.dart';
+import 'pocetna_strana.dart';
 import 'KorisnikClass.dart';
 import 'Registracija.dart';
 import 'ZaboravljenaLozinka.dart';
@@ -155,7 +155,7 @@ class _LoginDemoState extends State<LoginDemo> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const HomePage()));
+                                builder: (_) => const PocetnaStrana()));
                       }
                     },
                     child: const Text(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:testapp/HomePage.dart';
+import 'package:testapp/pocetna_strana.dart';
 import 'Login.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: (IsLoggedIn == null ? const LoginDemo() : const HomePage()),
+        home: (IsLoggedIn == null ? const LoginDemo() : const PocetnaStrana()),
         //home: const LoginDemo(),
         routes: {
           '/LoginPage': (context) => const LoginDemo(),
