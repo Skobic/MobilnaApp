@@ -6,8 +6,10 @@ class GrupnaSalaTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
       elevation: 4,
       child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
         tileColor: const Color.fromARGB(255, 245, 245, 245),
         onTap: () {},
         title: const Text('Grupna Sala',

@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use, file_names
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:testapp/Profil.dart';
 import 'package:testapp/Rezervacije.dart';
 import 'package:testapp/constants/config.dart';
@@ -79,7 +80,8 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _PocetnaStranaState extends State<PocetnaStrana> {
   int _selectedItemIndex = 0;
-
+  String naslov = 'Čitaonice';
+  List<String> sviNaslovi = <String>['Čitaonice', 'Rezervacije', 'Profil'];
   List<Widget> screens = [
     const CitaonicePageWrapper(),
     const RezervacijePageWrapper(),
@@ -96,20 +98,21 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
           scaffoldBackgroundColor: const Color.fromARGB(255, 149, 168, 183)),
       home: Scaffold(
           appBar: AppBar(
-            title: const Text('Čitaonice',
-                style: TextStyle(
+            title: Text(naslov,
+                style: GoogleFonts.ubuntu(
+                    textStyle: const TextStyle(
                   color: Color.fromARGB(255, 254, 254, 254),
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
-                )),
+                ))),
             backgroundColor: scaffoldBoja,
           ),
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: scaffoldBoja,
             selectedFontSize: 20,
             selectedIconTheme: const IconThemeData(
-              color: Color.fromARGB(255, 62, 103, 132),
-              size: 40,
+              color: Color.fromARGB(255, 67, 84, 64),
+              size: 35,
             ),
             unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
             elevation: 30,
@@ -147,6 +150,7 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedItemIndex = index;
+      naslov = sviNaslovi[index];
     });
   }
 }

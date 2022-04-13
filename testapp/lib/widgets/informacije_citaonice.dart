@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/config.dart';
+
 class InformacijeCitaonice extends StatelessWidget {
   const InformacijeCitaonice({Key? key}) : super(key: key);
 
@@ -74,10 +76,10 @@ class InformacijeCitaonice extends StatelessWidget {
           ],
         ),
         Align(
-          alignment: Alignment.topRight,
           child: IconButton(
-            padding: const EdgeInsets.all(5.0),
-            color: const Color.fromARGB(255, 137, 178, 211),
+            alignment: Alignment.topRight,
+            padding: const EdgeInsets.all(3.0),
+            color: podnaslovBoja,
             splashRadius: 27,
             iconSize: 45,
             icon: const Icon(Icons.circle_notifications_outlined),

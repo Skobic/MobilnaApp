@@ -26,7 +26,7 @@ class _CitaonicePageState extends State<CitaonicePage> {
                     return const CitaonicaCard();
                   },
                   separatorBuilder: (context, index) {
-                    return const SizedBox(height: 30);
+                    return const SizedBox(height: 25);
                   },
                   itemCount: 3),
               const SizedBox(height: 30),

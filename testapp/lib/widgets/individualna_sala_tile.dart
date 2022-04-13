@@ -9,7 +9,9 @@ class IndividualnaSalaTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
       child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
         tileColor: const Color.fromARGB(255, 245, 245, 245),
         onTap: () {
           navigatorKey.currentState!.pushNamed('pregled_individualne_sale');

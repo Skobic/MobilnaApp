@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testapp/constants/config.dart';
 import 'package:testapp/pocetna_strana.dart';
 
 import '../pages/pregled_citaonice_page.dart';
@@ -22,7 +23,7 @@ class CitaonicaCard extends StatelessWidget {
                 ),
               ],
               borderRadius: BorderRadius.circular(18),
-              color: const Color.fromARGB(255, 255, 253, 253)),
+              color: const Color.fromARGB(255, 255, 255, 255)),
           child: Material(
             color: Colors.transparent,
             shape: RoundedRectangleBorder(
@@ -52,7 +53,7 @@ class CitaonicaCard extends StatelessWidget {
                         padding: EdgeInsets.all(9.0),
                         child: Text('Citaonica',
                             style: TextStyle(
-                                color: Color.fromARGB(255, 137, 178, 211),
+                                color: podnaslovBoja,
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold))),
                   )
