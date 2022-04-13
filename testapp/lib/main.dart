@@ -10,9 +10,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var email = prefs.getString('email');
+  var accessToken = prefs.getString('accessToken');
+  var refreshToken = prefs.getString('refreshToken');
 
-  IsLoggedIn = email;
+  bool isLoggedIn = (accessToken != null && refreshToken != null);
   runApp(const MyApp());
 }
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: (IsLoggedIn == null ? const LoginDemo() : const PocetnaStrana()),
+        home: (IsLoggedIn == true ? const LoginDemo() : PocetnaStrana()),
         //home: const LoginDemo(),
         routes: {
           '/LoginPage': (context) => const LoginDemo(),

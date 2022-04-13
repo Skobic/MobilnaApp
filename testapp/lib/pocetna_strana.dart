@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:testapp/Profil.dart';
 import 'package:testapp/Rezervacije.dart';
+import 'package:testapp/constants/config.dart';
+import 'package:testapp/pages/pregled_citaonice_page.dart';
+import 'package:testapp/pages/pregled_individualne_sale.dart';
 import 'package:testapp/wrappers/citaonica_page_wrapper.dart';
 import 'package:testapp/wrappers/profil_page_wrapper.dart';
 import 'package:testapp/wrappers/rezervacija_page_wrapper.dart';
@@ -72,6 +75,8 @@ class PocetnaStrana extends StatefulWidget {
   _PocetnaStranaState createState() => _PocetnaStranaState();
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class _PocetnaStranaState extends State<PocetnaStrana> {
   int _selectedItemIndex = 0;
 
@@ -84,6 +89,7 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -92,17 +98,17 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
           appBar: AppBar(
             title: const Text('Čitaonice',
                 style: TextStyle(
-                  color: Color.fromARGB(255, 65, 65, 65),
+                  color: Color.fromARGB(255, 254, 254, 254),
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
                 )),
-            backgroundColor: const Color.fromARGB(255, 180, 201, 216),
+            backgroundColor: scaffoldBoja,
           ),
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: const Color.fromARGB(255, 180, 201, 216),
+            backgroundColor: scaffoldBoja,
             selectedFontSize: 20,
             selectedIconTheme: const IconThemeData(
-              color: Color.fromARGB(255, 65, 65, 65),
+              color: Color.fromARGB(255, 62, 103, 132),
               size: 40,
             ),
             unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
@@ -130,6 +136,11 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
             onTap: _onItemTapped,
           ),
           body: IndexedStack(index: _selectedItemIndex, children: screens)),
+      routes: {
+        "pregled_citaonice": (BuildContext context) => PregledCitaonicePage(),
+        "pregled_individualne_sale": (BuildContext context) =>
+            const IndSalaView('ime')
+      },
     );
   }
 
