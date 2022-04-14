@@ -24,6 +24,7 @@ class _IndSalaViewState extends State<IndSalaView> {
   TimeOfDay? toTimeTemp;
   TimeOfDay? initialTimeFrom;
   TimeOfDay? initialTimeTo;
+  GlobalKey keySlika = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +126,7 @@ class _IndSalaViewState extends State<IndSalaView> {
                       onTap: isCorrectTime()
                           ? () => confirmDate()
                           : () {
+                              print(getSlikaSize().toString());
                               SnackBar incorrectTimeMessage = const SnackBar(
                                   content:
                                       Text("Neispravno definisano vrijeme!"),
@@ -164,6 +166,7 @@ class _IndSalaViewState extends State<IndSalaView> {
               constrained: true,
               child: Center(
                 child: Container(
+                  key: keySlika,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -249,6 +252,16 @@ class _IndSalaViewState extends State<IndSalaView> {
 
   void confirmDate() {
     setState(() => {fromTimeTemp = fromTime, toTimeTemp = toTime});
+  }
+
+  double getSlikaSize() {
+    final RenderBox? render =
+        keySlika.currentContext!.findRenderObject() as RenderBox?;
+    if (render != null) {
+      return render.size.width;
+    } else {
+      return 0.0;
+    }
   }
 
   bool isCorrectTime() {

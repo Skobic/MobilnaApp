@@ -34,7 +34,7 @@ class _MjestoViewState extends State<MjestoView> {
       child: InkWell(
         borderRadius: BorderRadius.circular(30),
         splashColor: Colors.grey[200],
-        onTap: () {},
+        onTap: () => showCustomDialog(context),
         child: Stack(
           children: [
             Transform.rotate(
@@ -61,132 +61,132 @@ class _MjestoViewState extends State<MjestoView> {
     );
   }
 
-  // void showCustomDialog(BuildContext context) => showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return Dialog(
-  //         shape: const RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(7.0))),
-  //         backgroundColor: Colors.grey[300],
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           mainAxisAlignment: MainAxisAlignment.start,
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Padding(
-  //               padding: const EdgeInsets.all(9.0),
-  //               child: Text(
-  //                 'Mjesto ${widget.mjestoData.id}',
-  //                 style: const TextStyle(
-  //                     fontSize: 20,
-  //                     color: Colors.black,
-  //                     fontWeight: FontWeight.bold),
-  //               ),
-  //             ),
-  //             SizedBox(
-  //                 child: ListView.builder(
-  //                   scrollDirection: Axis.horizontal,
-  //                   shrinkWrap: false,
-  //                   itemCount: widget.mjestoData.listaRezervacija.length,
-  //                   itemBuilder: (context, index) => RezervacijaTile(
-  //                       index,
-  //                       widget.mjestoData.listaRezervacija.length,
-  //                       widget.mjestoData.listaRezervacija[index].odVrijeme.hour
-  //                               .toString() +
-  //                           ':' +
-  //                           widget.mjestoData.listaRezervacija[index].odVrijeme
-  //                               .minute
-  //                               .toString(),
-  //                       widget.mjestoData.listaRezervacija[index].doVrijeme.hour
-  //                               .toString() +
-  //                           ':' +
-  //                           widget.mjestoData.listaRezervacija[index].doVrijeme
-  //                               .minute
-  //                               .toString()),
-  //                 ),
-  //                 height: 80),
-  //             const Divider(
-  //               height: 30,
-  //               thickness: 2,
-  //               indent: 10,
-  //               endIndent: 10,
-  //             ),
-  //             Column(
-  //               children: [
-  //                 Row(
-  //                   children: [
-  //                     const Padding(
-  //                         padding: EdgeInsets.fromLTRB(9, 9, 0, 9),
-  //                         child: Text('Datum:',
-  //                             style: TextStyle(
-  //                                 fontSize: 15, fontWeight: FontWeight.bold))),
-  //                     Padding(
-  //                       padding: const EdgeInsets.all(9.0),
-  //                       child: Text(
-  //                         '${widget.date.day}/${widget.date.month}/${widget.date.year}',
-  //                         style: const TextStyle(
-  //                             fontSize: 15, color: Colors.black),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 //const SizedBox(width: 60),
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Row(
-  //                       children: [
-  //                         const Padding(
-  //                             padding: EdgeInsets.fromLTRB(9, 9, 0, 9),
-  //                             child: Text('Vrijeme:',
-  //                                 style: TextStyle(
-  //                                     fontSize: 15,
-  //                                     fontWeight: FontWeight.bold))),
-  //                         Padding(
-  //                           padding: const EdgeInsets.all(9.0),
-  //                           child: Text(
-  //                             getVrijeme('f') + ' - ' + getVrijeme('t'),
-  //                             style: const TextStyle(
-  //                                 fontSize: 15, color: Colors.black),
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                     Padding(
-  //                         padding: const EdgeInsets.all(9.0),
-  //                         child: Material(
-  //                           color: Colors.transparent,
-  //                           borderRadius: BorderRadius.circular(12.0),
-  //                           child: InkWell(
-  //                             splashColor: Colors.green[300],
-  //                             borderRadius: BorderRadius.circular(12.0),
-  //                             onTap: () {},
-  //                             child: Ink(
-  //                               width: 70,
-  //                               height: 35,
-  //                               decoration: BoxDecoration(
-  //                                   borderRadius: BorderRadius.circular(12.0),
-  //                                   color: Colors.green[600]),
-  //                               child: Center(
-  //                                 child: Text(
-  //                                   'OK',
-  //                                   style: TextStyle(
-  //                                       color: Colors.grey[300],
-  //                                       fontSize: 18,
-  //                                       fontWeight: FontWeight.bold),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ))
-  //                   ],
-  //                 ),
-  //               ],
-  //             )
-  //           ],
-  //         ),
-  //       );
-  //     });
+  void showCustomDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7.0))),
+          backgroundColor: Colors.grey[300],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(9.0),
+                child: Text(
+                  'Mjesto ${widget.mjestoData.id}',
+                  style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              // SizedBox(
+              //     child: ListView.builder(
+              //       scrollDirection: Axis.horizontal,
+              //       shrinkWrap: false,
+              //       itemCount: widget.mjestoData.listaRezervacija.length,
+              //       itemBuilder: (context, index) => RezervacijaTile(
+              //           index,
+              //           widget.mjestoData.listaRezervacija.length,
+              //           widget.mjestoData.listaRezervacija[index].odVrijeme.hour
+              //                   .toString() +
+              //               ':' +
+              //               widget.mjestoData.listaRezervacija[index].odVrijeme
+              //                   .minute
+              //                   .toString(),
+              //           widget.mjestoData.listaRezervacija[index].doVrijeme.hour
+              //                   .toString() +
+              //               ':' +
+              //               widget.mjestoData.listaRezervacija[index].doVrijeme
+              //                   .minute
+              //                   .toString()),
+              //     ),
+              //     height: 80),
+              const Divider(
+                height: 30,
+                thickness: 2,
+                indent: 10,
+                endIndent: 10,
+              ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      const Padding(
+                          padding: EdgeInsets.fromLTRB(9, 9, 0, 9),
+                          child: Text('Datum:',
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold))),
+                      Padding(
+                        padding: const EdgeInsets.all(9.0),
+                        child: Text(
+                          '${widget.date.day}/${widget.date.month}/${widget.date.year}',
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
+                  //const SizedBox(width: 60),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Padding(
+                              padding: EdgeInsets.fromLTRB(9, 9, 0, 9),
+                              child: Text('Vrijeme:',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold))),
+                          Padding(
+                            padding: const EdgeInsets.all(9.0),
+                            child: Text(
+                              getVrijeme('f') + ' - ' + getVrijeme('t'),
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(9.0),
+                          child: Material(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: InkWell(
+                              splashColor: Colors.green[300],
+                              borderRadius: BorderRadius.circular(12.0),
+                              onTap: () {},
+                              child: Ink(
+                                width: 70,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    color: Colors.green[600]),
+                                child: Center(
+                                  child: Text(
+                                    'OK',
+                                    style: TextStyle(
+                                        color: Colors.grey[300],
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      });
 
   // List<Widget> reservationSchedule(Rezervacija r, int ind, int length) {
   //   return <Widget>[

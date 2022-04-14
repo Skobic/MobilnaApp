@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:testapp/Profil.dart';
 import 'package:testapp/Rezervacije.dart';
 import 'package:testapp/constants/config.dart';
+import 'package:testapp/models/responses/citaonica_response.dart';
 import 'package:testapp/pages/pregled_citaonice_page.dart';
 import 'package:testapp/pages/pregled_individualne_sale.dart';
 import 'package:testapp/wrappers/citaonica_page_wrapper.dart';
@@ -91,60 +92,77 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey,
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-          scaffoldBackgroundColor: const Color.fromARGB(255, 149, 168, 183)),
-      home: Scaffold(
-          appBar: AppBar(
-            title: Text(naslov,
-                style: GoogleFonts.ubuntu(
-                    textStyle: const TextStyle(
-                  color: Color.fromARGB(255, 254, 254, 254),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                ))),
-            backgroundColor: scaffoldBoja,
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: scaffoldBoja,
-            selectedFontSize: 20,
-            selectedIconTheme: const IconThemeData(
-              color: Color.fromARGB(255, 67, 84, 64),
-              size: 35,
+        navigatorKey: navigatorKey,
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+            scaffoldBackgroundColor: const Color.fromARGB(255, 149, 168, 183)),
+        home: Scaffold(
+            appBar: AppBar(
+              title: Text(naslov,
+                  style: GoogleFonts.ubuntu(
+                      textStyle: const TextStyle(
+                    color: Color.fromARGB(255, 254, 254, 254),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ))),
+              backgroundColor: scaffoldBoja,
             ),
-            unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-            elevation: 30,
-            selectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
+            bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: scaffoldBoja,
+              selectedFontSize: 20,
+              selectedIconTheme: const IconThemeData(
+                color: Color.fromARGB(255, 67, 84, 64),
+                size: 35,
+              ),
+              unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+              elevation: 30,
+              selectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.book),
+                  label: 'Citaonice',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.lock_clock),
+                  label: 'Rezervacije',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Profill',
+                ),
+              ],
+              currentIndex: _selectedItemIndex,
+              onTap: _onItemTapped,
             ),
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.book),
-                label: 'Citaonice',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.lock_clock),
-                label: 'Rezervacije',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profill',
-              ),
-            ],
-            currentIndex: _selectedItemIndex,
-            onTap: _onItemTapped,
-          ),
-          body: IndexedStack(index: _selectedItemIndex, children: screens)),
-      routes: {
-        "pregled_citaonice": (BuildContext context) => PregledCitaonicePage(),
-        "pregled_individualne_sale": (BuildContext context) =>
-            const IndSalaView('ime')
-      },
-    );
+            body: IndexedStack(index: _selectedItemIndex, children: screens)),
+        onGenerateRoute: (settings) {
+          WidgetBuilder builder;
+
+          switch (settings.name) {
+            case 'pregled_citaonice':
+              builder = (BuildContext context) => PregledCitaonicePage(
+                  citaonicaData: settings.arguments as CitaonicaResponse);
+              break;
+            case 'pregled_individualne_sale':
+              builder = (BuildContext context) => const IndSalaView('1103');
+              break;
+            default:
+              throw Exception('Invalid route:}');
+          }
+          return MaterialPageRoute<void>(
+              builder: builder, settings: settings, maintainState: false);
+        }
+        // routes: {
+        //   "pregled_citaonice": (BuildContext context) => PregledCitaonicePage(),
+        //   "pregled_individualne_sale": (BuildContext context) =>
+        //       const IndSalaView('ime')
+        // },
+        );
   }
 
   void _onItemTapped(int index) {

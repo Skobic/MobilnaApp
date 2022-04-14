@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../pages/grupna_sala_dialog.dart';
+
 class GrupnaSalaTile extends StatelessWidget {
   const GrupnaSalaTile({Key? key}) : super(key: key);
 
@@ -11,7 +13,7 @@ class GrupnaSalaTile extends StatelessWidget {
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
         tileColor: const Color.fromARGB(255, 245, 245, 245),
-        onTap: () {},
+        onTap: () => showCustomDialog(context),
         title: const Text('Grupna Sala',
             style: TextStyle(
                 color: Color.fromARGB(255, 86, 86, 86),
@@ -33,4 +35,10 @@ class GrupnaSalaTile extends StatelessWidget {
       ),
     );
   }
+
+  void showCustomDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) {
+        return GrupnaSalaDialog();
+      });
 }

@@ -3,9 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DioClient {
   final Dio dio = Dio(BaseOptions(
-    baseUrl: "http://localhost:8080/api/v1",
+    baseUrl: "http://10.0.2.2:8080/api/v1",
   ));
-  Dio tokenDio = Dio(BaseOptions(baseUrl: "http://localhost:8080/api/v1"));
+  Dio tokenDio = Dio(BaseOptions(baseUrl: "http://10.0.2.2:8080/api/v1"));
 
   DioClient() {
     dio.interceptors.add(QueuedInterceptorsWrapper(

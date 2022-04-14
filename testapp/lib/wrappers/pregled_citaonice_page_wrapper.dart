@@ -13,14 +13,14 @@ class PregledCitaonicePageWrapper extends StatelessWidget {
         WidgetBuilder builder;
 
         switch (settings.name) {
-          case 'pregled_citaonice':
-            builder = (BuildContext context) => PregledCitaonicePage();
-            break;
+          // case 'pregled_citaonice':
+          //   builder = (BuildContext context) => PregledCitaonicePage();
+          //   break;
           default:
             throw Exception('Invalid route:}');
         }
-        return MaterialPageRoute<void>(
-            builder: builder, settings: settings, maintainState: false);
+        // return MaterialPageRoute<void>(
+        //     builder: builder, settings: settings, maintainState: false);
       },
     );
   }

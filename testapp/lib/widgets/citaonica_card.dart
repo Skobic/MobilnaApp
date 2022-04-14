@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:testapp/constants/config.dart';
 import 'package:testapp/pocetna_strana.dart';
 
-import '../pages/pregled_citaonice_page.dart';
+import '../models/responses/citaonica_response.dart';
 
 class CitaonicaCard extends StatelessWidget {
-  const CitaonicaCard({Key? key}) : super(key: key);
+  final CitaonicaResponse citaonicaData;
+  const CitaonicaCard({Key? key, required this.citaonicaData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,32 +33,36 @@ class CitaonicaCard extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: () {
-                navigatorKey.currentState!.pushNamed('pregled_citaonice');
+                navigatorKey.currentState!
+                    .pushNamed('pregled_citaonice', arguments: citaonicaData);
               },
               child: Column(
                 children: [
-                  Container(
-                    height: (MediaQuery.of(context).size.height * 0.26) * 0.6,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18),
-                      ),
-                      image: DecorationImage(
-                          image: AssetImage('assets/images/etf.png'),
-                          fit: BoxFit.fitWidth),
-                    ),
-                  ),
-                  const Align(
+                  Align(
                     alignment: Alignment.topLeft,
                     child: Padding(
-                        padding: EdgeInsets.all(9.0),
-                        child: Text('Citaonica',
-                            style: TextStyle(
+                        padding: const EdgeInsets.all(9.0),
+                        child: Text(citaonicaData.name,
+                            style: const TextStyle(
                                 color: podnaslovBoja,
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold))),
-                  )
+                  ),
+                  Expanded(
+                    child: Container(
+                      //height: (MediaQuery.of(context).size.height * 0.26) * 0.6,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(18),
+                          bottomRight: Radius.circular(18),
+                        ),
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                'http://10.0.2.2:8080/api/v1/citaonice/${citaonicaData.id}/slika'),
+                            fit: BoxFit.fitWidth),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

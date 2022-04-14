@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:testapp/models/responses/citaonica_response.dart';
 
 import '../constants/config.dart';
 
 class InformacijeCitaonice extends StatelessWidget {
-  const InformacijeCitaonice({Key? key}) : super(key: key);
+  final CitaonicaResponse citaonicaData;
+  const InformacijeCitaonice({Key? key, required this.citaonicaData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +23,17 @@ class InformacijeCitaonice extends StatelessWidget {
             // ),
             // SizedBox(height: 10),
             RichText(
-              text: const TextSpan(
-                style: TextStyle(fontSize: 18),
+              text: TextSpan(
+                style: const TextStyle(fontSize: 18),
                 children: <TextSpan>[
-                  TextSpan(
+                  const TextSpan(
                       text: 'Adresa: ',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 63, 63, 63))),
                   TextSpan(
-                      text: 'Srpskijeh rudara',
-                      style: TextStyle(
+                      text: citaonicaData.adresa,
+                      style: const TextStyle(
                           fontWeight: FontWeight.normal,
                           color: Color.fromARGB(255, 63, 63, 63))),
                 ],
@@ -38,17 +41,17 @@ class InformacijeCitaonice extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             RichText(
-              text: const TextSpan(
-                style: TextStyle(fontSize: 18),
+              text: TextSpan(
+                style: const TextStyle(fontSize: 18),
                 children: <TextSpan>[
-                  TextSpan(
+                  const TextSpan(
                       text: 'Telefon: ',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 63, 63, 63))),
                   TextSpan(
-                      text: '065/234-237',
-                      style: TextStyle(
+                      text: citaonicaData.phoneNumber,
+                      style: const TextStyle(
                           fontWeight: FontWeight.normal,
                           color: Color.fromARGB(255, 63, 63, 63))),
                 ],
@@ -56,17 +59,18 @@ class InformacijeCitaonice extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             RichText(
-              text: const TextSpan(
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              text: TextSpan(
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 children: <TextSpan>[
-                  TextSpan(
+                  const TextSpan(
                       text: 'E-mail: ',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 63, 63, 63))),
                   TextSpan(
-                      text: 'etf@unibl.com',
-                      style: TextStyle(
+                      text: citaonicaData.mail,
+                      style: const TextStyle(
                           fontWeight: FontWeight.normal,
                           color: Color.fromARGB(255, 63, 63, 63))),
                 ],
