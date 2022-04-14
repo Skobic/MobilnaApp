@@ -77,6 +77,25 @@ class InformacijeCitaonice extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
+            RichText(
+              text: TextSpan(
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                children: <TextSpan>[
+                  const TextSpan(
+                      text: 'Radno vrijeme: ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 63, 63, 63))),
+                  TextSpan(
+                      text: citaonicaData.mail,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: Color.fromARGB(255, 63, 63, 63))),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
           ],
         ),
         Align(
