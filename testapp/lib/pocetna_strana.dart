@@ -1,8 +1,6 @@
 // ignore_for_file: deprecated_member_use, file_names
 
 import 'package:flutter/material.dart';
-import 'package:testapp/Profil.dart';
-import 'package:testapp/Rezervacije.dart';
 import 'package:testapp/wrappers/citaonica_page_wrapper.dart';
 import 'package:testapp/wrappers/profil_page_wrapper.dart';
 import 'package:testapp/wrappers/rezervacija_page_wrapper.dart';

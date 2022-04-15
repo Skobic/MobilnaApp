@@ -49,8 +49,8 @@ List<Rezervacija> listaRezervacijaTest = <Rezervacija>[
       true),
   Rezervacija(
       5,
-      DateTime.parse("2022-04-12 17:50:04"),
-      DateTime.parse("2022-04-12 18:40:12"),
+      DateTime.parse("2022-04-12 22:50:04"),
+      DateTime.parse("2022-04-12 23:40:12"),
       'Sala 1',
       'Paprikovac',
       -1,
