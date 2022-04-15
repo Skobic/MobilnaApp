@@ -42,8 +42,8 @@ class _MjestoViewState extends State<MjestoView> {
           children: [
             Transform.rotate(
                 angle: widget.mjestoData.ugao * math.pi / 180,
-                child:
-                    Icon(Icons.event_seat, size: 100, color: Colors.red[900])),
+                child: Icon(Icons.event_seat,
+                    size: sqrt(widget.sizeOfMjesto), color: Colors.red[900])),
             // Positioned(
             //   top: 0,
             //   right: 0,

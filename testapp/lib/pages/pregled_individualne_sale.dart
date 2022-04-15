@@ -178,66 +178,71 @@ class _IndSalaViewState extends State<IndSalaView> {
           Expanded(
             child: InteractiveViewer(
               minScale: 0.1,
-              maxScale: 2.0,
+              maxScale: 2.5,
               //boundaryMargin: const EdgeInsets.all(double.infinity),
               constrained: true,
               child: Center(
-                  child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width / 0.5625,
-                key: keySlike,
-                child: FutureBuilder<List<dynamic>>(
-                    future: Future.wait([
-                      http.get(Uri.parse(
-                          'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika')),
-                      listaMjesta
-                    ]),
-                    initialData: null,
-                    builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
-                            height: 120,
-                            width: 120,
-                            child: Center(child: CircularProgressIndicator()));
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.done) {
-                        if (snapshot.hasError) {
-                          return Text('Error  : ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          return Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Image.memory(
-                                snapshot.data![0].bodyBytes,
-                                fit: BoxFit.fill,
-                              ),
-                              for (var item in snapshot.data![1])
-                                Positioned(
-                                    top: 75,
-                                    left: 99,
-                                    child: MjestoView(
-                                      item,
-                                      currentDate,
-                                      fromTimeTemp,
-                                      toTimeTemp,
-                                      sizeOfMjesto:
-                                          ((getKoeficijentVelicineMjesta(
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .width) *
-                                                  item.velicina) /
-                                              100),
-                                    ))
-                            ],
-                          );
+                  child: FutureBuilder<List<dynamic>>(
+                      future: Future.wait([
+                        http.get(Uri.parse(
+                            'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika')),
+                        listaMjesta
+                      ]),
+                      initialData: null,
+                      builder:
+                          (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox(
+                              height: 120,
+                              width: 120,
+                              child:
+                                  Center(child: CircularProgressIndicator()));
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error  : ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Image.memory(
+                                  snapshot.data![0].bodyBytes,
+                                  fit: BoxFit.fill,
+                                ),
+                                for (var item in snapshot.data![1])
+                                  Positioned(
+                                      top: (MediaQuery.of(context).size.width *
+                                              0.5625) *
+                                          item.pozicija.y,
+                                      left: MediaQuery.of(context).size.width *
+                                          item.pozicija.x,
+                                      child: MjestoView(
+                                        item,
+                                        currentDate,
+                                        fromTimeTemp,
+                                        toTimeTemp,
+                                        sizeOfMjesto:
+                                            ((getKoeficijentVelicineMjesta(
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width) *
+                                                    item.velicina) /
+                                                100),
+                                      )),
+                                const Positioned(
+                                    top: 52.25011410857143002282063,
+                                    left: 395,
+                                    child: Icon(Icons.chair, size: 18))
+                              ],
+                            );
+                          } else {
+                            return const Center(child: Text('Greska'));
+                          }
                         } else {
                           return const Center(child: Text('Greska'));
                         }
-                      } else {
-                        return const Center(child: Text('Greska'));
-                      }
-                    }),
-              )),
+                      })),
             ),
           ),
         ],
@@ -287,6 +292,7 @@ class _IndSalaViewState extends State<IndSalaView> {
   }
 
   double getKoeficijentVelicineMjesta(double x) {
+    print(x * 0.5625);
     return x * (x * 0.5625);
   }
 
