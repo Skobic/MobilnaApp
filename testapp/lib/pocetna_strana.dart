@@ -6,6 +6,7 @@ import 'package:testapp/Profil.dart';
 import 'package:testapp/Rezervacije.dart';
 import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/responses/citaonica_response.dart';
+import 'package:testapp/models/responses/individualna_sala_response.dart';
 import 'package:testapp/pages/pregled_citaonice_page.dart';
 import 'package:testapp/pages/pregled_individualne_sale.dart';
 import 'package:testapp/wrappers/citaonica_page_wrapper.dart';
@@ -149,7 +150,9 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
                   citaonicaData: settings.arguments as CitaonicaResponse);
               break;
             case 'pregled_individualne_sale':
-              builder = (BuildContext context) => const IndSalaView('1103');
+              builder = (BuildContext context) => IndSalaView(
+                  individualnaSalaData:
+                      settings.arguments as IndividualnaSalaResponse);
               break;
             default:
               throw Exception('Invalid route:}');

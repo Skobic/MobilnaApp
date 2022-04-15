@@ -88,7 +88,7 @@ class InformacijeCitaonice extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 63, 63, 63))),
                   TextSpan(
-                      text: citaonicaData.mail,
+                      text: getRadnoVrijeme(),
                       style: const TextStyle(
                           fontWeight: FontWeight.normal,
                           color: Color.fromARGB(255, 63, 63, 63))),
@@ -111,5 +111,27 @@ class InformacijeCitaonice extends StatelessWidget {
         )
       ],
     );
+  }
+
+  String getRadnoVrijeme() {
+    int prvi = -1;
+    int posljednji = -1;
+    for (int i = 0; i < citaonicaData.radnoVrijeme.length; i++) {
+      if (prvi <= -1) {
+        prvi = citaonicaData.radnoVrijeme[i].dan;
+      }
+      if (prvi != -1 &&
+          (citaonicaData.radnoVrijeme[prvi].kraj ==
+                  citaonicaData.radnoVrijeme[i].kraj &&
+              citaonicaData.radnoVrijeme[prvi].pocetak ==
+                  citaonicaData.radnoVrijeme[i].kraj)) {
+        posljednji = i;
+      }
+    }
+    if (prvi != -1 && posljednji != -1) {
+      return '$prvi - $posljednji : ${citaonicaData.radnoVrijeme[prvi].pocetak!.hour.toString()}:${citaonicaData.radnoVrijeme[prvi].pocetak!.minute.toString()} -  ${citaonicaData.radnoVrijeme[prvi].kraj!.hour.toString()}:${citaonicaData.radnoVrijeme[prvi].kraj!.minute.toString()}';
+    } else {
+      return '';
+    }
   }
 }

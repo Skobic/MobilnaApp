@@ -1,13 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/constants/config.dart';
 import 'package:testapp/constants/constant.dart';
+import 'package:testapp/models/responses/individualna_sala_response.dart';
 import 'package:testapp/models/responses/mjesto_response.dart';
 
+import '../api/dio_client.dart';
+import '../api/mjesto_service.dart';
 import '../widgets/mjesto_view.dart';
 
 class IndSalaView extends StatefulWidget {
-  const IndSalaView(this.ime);
-  final String ime;
+  const IndSalaView({required this.individualnaSalaData});
+  final IndividualnaSalaResponse individualnaSalaData;
   //final List<MjestoResponse> lista;
 
   @override
@@ -24,7 +28,17 @@ class _IndSalaViewState extends State<IndSalaView> {
   TimeOfDay? toTimeTemp;
   TimeOfDay? initialTimeFrom;
   TimeOfDay? initialTimeTo;
-  GlobalKey keySlika = GlobalKey();
+  GlobalKey keySlike = GlobalKey();
+  MjestoService mjestoService = MjestoService();
+  late Future<List<MjestoResponse>> listaMjesta;
+  DioClient dioCL = DioClient();
+
+  @override
+  void initState() {
+    super.initState();
+    listaMjesta = mjestoService.getMjesta(
+        dioCL, widget.individualnaSalaData.id.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +47,7 @@ class _IndSalaViewState extends State<IndSalaView> {
       appBar: AppBar(
         iconTheme: const IconThemeData(
             color: Color.fromARGB(255, 255, 255, 255), size: 30),
-        title: Text(widget.ime,
+        title: Text(widget.individualnaSalaData.naziv,
             style: const TextStyle(
               color: Color.fromARGB(255, 255, 255, 255),
               fontSize: 28,
@@ -126,7 +140,6 @@ class _IndSalaViewState extends State<IndSalaView> {
                       onTap: isCorrectTime()
                           ? () => confirmDate()
                           : () {
-                              print(getSlikaSize().toString());
                               SnackBar incorrectTimeMessage = const SnackBar(
                                   content:
                                       Text("Neispravno definisano vrijeme!"),
@@ -165,22 +178,78 @@ class _IndSalaViewState extends State<IndSalaView> {
               //boundaryMargin: const EdgeInsets.all(double.infinity),
               constrained: true,
               child: Center(
-                child: Container(
-                  key: keySlika,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset('assets/images/sala.png', fit: BoxFit.fill),
-                      for (var item in listaMjesta)
-                        Positioned(
-                            top: item.pozicija.y,
-                            left: item.pozicija.x,
-                            child: MjestoView(
-                                item, currentDate, fromTimeTemp, toTimeTemp))
-                    ],
-                  ),
-                ),
-              ),
+                  child: FutureBuilder<String?>(
+                      future: dohvatiSliku(),
+                      initialData: null,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox(
+                              height: 120,
+                              width: 120,
+                              child:
+                                  Center(child: CircularProgressIndicator()));
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error  : ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            return Container(
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Image.network(
+                                    'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika',
+                                    fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  Image.network(
+                                    'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika',
+                                    fit: BoxFit.fill,
+                                    key: keySlike,
+                                  ),
+                                  // for (var item in snapshot.data!)
+                                  //   Positioned(
+                                  //       top: item.pozicija.y *
+                                  //           (item.velicina / 100),
+                                  //       left: item.pozicija.x *
+                                  //           (item.velicina / 100),
+                                  //       child: MjestoView(
+                                  //         item,
+                                  //         currentDate,
+                                  //         fromTimeTemp,
+                                  //         toTimeTemp,
+                                  //         sizeOfMjesto:
+                                  //             ((getKoeficijentVelicineMjesta() *
+                                  //                     item.velicina) /
+                                  //                 100),
+                                  //       ))
+                                ],
+                              ),
+                            );
+                          } else {
+                            return const Center(child: Text('Greska'));
+                          }
+                        } else {
+                          return const Center(child: Text('Greska'));
+                        }
+                      })),
             ),
           ),
         ],
@@ -229,6 +298,18 @@ class _IndSalaViewState extends State<IndSalaView> {
     }
   }
 
+  double getKoeficijentVelicineMjesta() {
+    RenderBox? renderBoxSlika =
+        keySlike.currentContext!.findRenderObject() as RenderBox?;
+    if (renderBoxSlika != null) {
+      print(renderBoxSlika.size.height * renderBoxSlika.size.width);
+      return renderBoxSlika.size.height * renderBoxSlika.size.width;
+    } else {
+      print('dddd');
+      return 1.0;
+    }
+  }
+
   String getTimeText(String t) {
     if (t == 'f') {
       if (fromTime == null) {
@@ -256,7 +337,7 @@ class _IndSalaViewState extends State<IndSalaView> {
 
   double getSlikaSize() {
     final RenderBox? render =
-        keySlika.currentContext!.findRenderObject() as RenderBox?;
+        keySlike.currentContext!.findRenderObject() as RenderBox?;
     if (render != null) {
       return render.size.width;
     } else {
@@ -275,6 +356,16 @@ class _IndSalaViewState extends State<IndSalaView> {
       }
     } else {
       return false;
+    }
+  }
+
+  Future<String?> dohvatiSliku() async {
+    Response odgovor = await dioCL.dio.get(
+        'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika');
+    if (odgovor.statusCode == 200) {
+      return odgovor.data;
+    } else {
+      return null;
     }
   }
 }

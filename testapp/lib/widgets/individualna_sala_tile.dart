@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:testapp/models/responses/individualna_sala_response.dart';
 
 import '../pocetna_strana.dart';
 
 class IndividualnaSalaTile extends StatelessWidget {
-  const IndividualnaSalaTile({Key? key}) : super(key: key);
+  final IndividualnaSalaResponse individualnaSalaData;
+  const IndividualnaSalaTile({Key? key, required this.individualnaSalaData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,8 @@ class IndividualnaSalaTile extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
         tileColor: const Color.fromARGB(255, 245, 245, 245),
         onTap: () {
-          navigatorKey.currentState!.pushNamed('pregled_individualne_sale');
+          navigatorKey.currentState!.pushNamed('pregled_individualne_sale',
+              arguments: individualnaSalaData);
         },
         title: const Text('Sala',
             style: TextStyle(

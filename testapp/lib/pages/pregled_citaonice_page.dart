@@ -113,7 +113,8 @@ class _PregledCitaonicePageState extends State<PregledCitaonicePage> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return const IndividualnaSalaTile();
+                          return IndividualnaSalaTile(
+                              individualnaSalaData: snapshot.data![index]);
                         },
                         separatorBuilder: (context, index) => const SizedBox(
                           height: 6,
