@@ -42,22 +42,22 @@ class _MjestoViewState extends State<MjestoView> {
           children: [
             Transform.rotate(
                 angle: widget.mjestoData.ugao * math.pi / 180,
-                child: Icon(Icons.event_seat,
-                    size: sqrt(widget.sizeOfMjesto), color: Colors.red[900])),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(1),
-                constraints: const BoxConstraints(minWidth: 10, minHeight: 10),
-                decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(6)),
-                child: Text(widget.mjestoData.id.toString(),
-                    style: const TextStyle(fontSize: 8),
-                    textAlign: TextAlign.center),
-              ),
-            )
+                child:
+                    Icon(Icons.event_seat, size: 100, color: Colors.red[900])),
+            // Positioned(
+            //   top: 0,
+            //   right: 0,
+            //   child: Container(
+            //     padding: const EdgeInsets.all(1),
+            //     constraints: const BoxConstraints(minWidth: 10, minHeight: 10),
+            //     decoration: BoxDecoration(
+            //         color: Colors.grey[100],
+            //         borderRadius: BorderRadius.circular(6)),
+            //     child: Text(widget.mjestoData.id.toString(),
+            //         style: const TextStyle(fontSize: 8),
+            //         textAlign: TextAlign.center),
+            //   ),
+            // )
           ],
         ),
       ),

@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/constants/config.dart';
@@ -36,6 +39,7 @@ class _IndSalaViewState extends State<IndSalaView> {
   @override
   void initState() {
     super.initState();
+
     listaMjesta = mjestoService.getMjesta(
         dioCL, widget.individualnaSalaData.id.toString());
   }
@@ -178,78 +182,62 @@ class _IndSalaViewState extends State<IndSalaView> {
               //boundaryMargin: const EdgeInsets.all(double.infinity),
               constrained: true,
               child: Center(
-                  child: FutureBuilder<String?>(
-                      future: dohvatiSliku(),
-                      initialData: null,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const SizedBox(
-                              height: 120,
-                              width: 120,
-                              child:
-                                  Center(child: CircularProgressIndicator()));
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.done) {
-                          if (snapshot.hasError) {
-                            return Text('Error  : ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            return Container(
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Image.network(
-                                    'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika',
-                                    fit: BoxFit.fill,
-                                    loadingBuilder: (BuildContext context,
-                                        Widget child,
-                                        ImageChunkEvent? loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!
-                                              : null,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  Image.network(
-                                    'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika',
-                                    fit: BoxFit.fill,
-                                    key: keySlike,
-                                  ),
-                                  // for (var item in snapshot.data!)
-                                  //   Positioned(
-                                  //       top: item.pozicija.y *
-                                  //           (item.velicina / 100),
-                                  //       left: item.pozicija.x *
-                                  //           (item.velicina / 100),
-                                  //       child: MjestoView(
-                                  //         item,
-                                  //         currentDate,
-                                  //         fromTimeTemp,
-                                  //         toTimeTemp,
-                                  //         sizeOfMjesto:
-                                  //             ((getKoeficijentVelicineMjesta() *
-                                  //                     item.velicina) /
-                                  //                 100),
-                                  //       ))
-                                ],
+                  child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width / 0.5625,
+                key: keySlike,
+                child: FutureBuilder<List<dynamic>>(
+                    future: Future.wait([
+                      http.get(Uri.parse(
+                          'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika')),
+                      listaMjesta
+                    ]),
+                    initialData: null,
+                    builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox(
+                            height: 120,
+                            width: 120,
+                            child: Center(child: CircularProgressIndicator()));
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.done) {
+                        if (snapshot.hasError) {
+                          return Text('Error  : ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          return Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.memory(
+                                snapshot.data![0].bodyBytes,
+                                fit: BoxFit.fill,
                               ),
-                            );
-                          } else {
-                            return const Center(child: Text('Greska'));
-                          }
+                              for (var item in snapshot.data![1])
+                                Positioned(
+                                    top: 75,
+                                    left: 99,
+                                    child: MjestoView(
+                                      item,
+                                      currentDate,
+                                      fromTimeTemp,
+                                      toTimeTemp,
+                                      sizeOfMjesto:
+                                          ((getKoeficijentVelicineMjesta(
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width) *
+                                                  item.velicina) /
+                                              100),
+                                    ))
+                            ],
+                          );
                         } else {
                           return const Center(child: Text('Greska'));
                         }
-                      })),
+                      } else {
+                        return const Center(child: Text('Greska'));
+                      }
+                    }),
+              )),
             ),
           ),
         ],
@@ -298,16 +286,8 @@ class _IndSalaViewState extends State<IndSalaView> {
     }
   }
 
-  double getKoeficijentVelicineMjesta() {
-    RenderBox? renderBoxSlika =
-        keySlike.currentContext!.findRenderObject() as RenderBox?;
-    if (renderBoxSlika != null) {
-      print(renderBoxSlika.size.height * renderBoxSlika.size.width);
-      return renderBoxSlika.size.height * renderBoxSlika.size.width;
-    } else {
-      print('dddd');
-      return 1.0;
-    }
+  double getKoeficijentVelicineMjesta(double x) {
+    return x * (x * 0.5625);
   }
 
   String getTimeText(String t) {
