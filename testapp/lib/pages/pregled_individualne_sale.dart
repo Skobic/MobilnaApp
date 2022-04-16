@@ -230,10 +230,6 @@ class _IndSalaViewState extends State<IndSalaView> {
                                                     item.velicina) /
                                                 100),
                                       )),
-                                const Positioned(
-                                    top: 52.25011410857143002282063,
-                                    left: 395,
-                                    child: Icon(Icons.chair, size: 18))
                               ],
                             );
                           } else {
@@ -292,7 +288,6 @@ class _IndSalaViewState extends State<IndSalaView> {
   }
 
   double getKoeficijentVelicineMjesta(double x) {
-    print(x * 0.5625);
     return x * (x * 0.5625);
   }
 
