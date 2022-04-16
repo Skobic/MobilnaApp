@@ -195,6 +195,18 @@ class _MjestoViewState extends State<MjestoView> {
                                               widget.toTime!.minute));
                                   if (odgovor.statusCode == 200 ||
                                       odgovor.statusCode == 201) {
+                                    const snackBar = SnackBar(
+                                      content: Text(
+                                          'Uspješno kreirana rezervacija!',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 61, 185, 45),
+                                    );
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+
                                     Navigator.of(context).pop();
                                   } else {
                                     const snackBar = SnackBar(

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
@@ -45,7 +43,7 @@ class _IndSalaViewState extends State<IndSalaView> {
         dioCL,
         widget.individualnaSalaData.id.toString(),
         DateTime.now(),
-        DateTime.now().add(const Duration(minutes: 3)));
+        DateTime.now().add(const Duration(minutes: 1)));
   }
 
   @override
