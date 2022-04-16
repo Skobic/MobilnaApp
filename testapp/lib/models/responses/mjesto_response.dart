@@ -19,6 +19,7 @@ class MjestoResponse {
   int statusId;
   @JsonKey(name: 'pozicija')
   PozicijaXY pozicija;
+  bool? zauzeto;
 
   MjestoResponse(
       {required this.pozicija,
@@ -28,7 +29,8 @@ class MjestoResponse {
       required this.brojMjesta,
       required this.statusId,
       required this.uticnica,
-      required this.id});
+      required this.id,
+      this.zauzeto});
 
   factory MjestoResponse.fromJson(Map<String, dynamic> json) =>
       _$MjestoResponseFromJson(json);

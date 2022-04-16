@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../models/responses/grupna_sala_response.dart';
+
 enum SnackBarMessage {
   incorrectDefinitionError,
   workTimeOutOfBoundsError,
 }
 
 class GrupnaSalaDialog extends StatefulWidget {
-  GrupnaSalaDialog({Key? key}) : super(key: key);
+  final GrupnaSalaResponse grupnaSalaData;
+  const GrupnaSalaDialog({Key? key, required this.grupnaSalaData})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _GrupnaSalaDialogState();
@@ -32,11 +36,11 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(9.0),
+                Padding(
+                  padding: const EdgeInsets.all(9.0),
                   child: Text(
-                    'test',
-                    style: TextStyle(
+                    widget.grupnaSalaData.naziv,
+                    style: const TextStyle(
                         fontSize: 20,
                         color: Colors.black,
                         fontWeight: FontWeight.bold),
@@ -47,12 +51,14 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                     Padding(
                       padding: const EdgeInsets.all(9.0),
                       child: Row(
-                        children: const [
-                          Icon(Icons.person, size: 18, color: Colors.grey),
+                        children: [
                           Text(
-                            'test',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                            widget.grupnaSalaData.brojMjesta.toString(),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.grey),
                           ),
+                          const Icon(Icons.person,
+                              size: 18, color: Colors.grey),
                         ],
                       ),
                     ),

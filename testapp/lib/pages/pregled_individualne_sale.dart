@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,10 @@ class _IndSalaViewState extends State<IndSalaView> {
     super.initState();
 
     listaMjesta = mjestoService.getMjesta(
-        dioCL, widget.individualnaSalaData.id.toString());
+        dioCL,
+        widget.individualnaSalaData.id.toString(),
+        DateTime.now(),
+        DateTime.now().add(const Duration(minutes: 3)));
   }
 
   @override
@@ -51,11 +55,16 @@ class _IndSalaViewState extends State<IndSalaView> {
       appBar: AppBar(
         iconTheme: const IconThemeData(
             color: Color.fromARGB(255, 255, 255, 255), size: 30),
-        title: Text(widget.individualnaSalaData.naziv,
-            style: const TextStyle(
+        title: Text(
+          widget.individualnaSalaData.naziv,
+          style: GoogleFonts.ubuntu(
+            textStyle: const TextStyle(
               color: Color.fromARGB(255, 255, 255, 255),
               fontSize: 28,
-            )),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
         backgroundColor: scaffoldBoja,
       ),
       body: Column(

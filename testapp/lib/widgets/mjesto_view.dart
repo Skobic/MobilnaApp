@@ -1,8 +1,12 @@
 import 'dart:math' as math;
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:testapp/api/rezervacija_service.dart';
 import 'package:testapp/models/responses/mjesto_response.dart';
+
+import '../api/dio_client.dart';
 
 class MjestoView extends StatefulWidget {
   const MjestoView(this.mjestoData, this.date, this.fromTime, this.toTime,
@@ -30,6 +34,9 @@ class MjestoView extends StatefulWidget {
 }
 
 class _MjestoViewState extends State<MjestoView> {
+  RezervacijaService rezervacijaService = RezervacijaService();
+  DioClient dioCL = DioClient();
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -43,21 +50,26 @@ class _MjestoViewState extends State<MjestoView> {
             Transform.rotate(
                 angle: widget.mjestoData.ugao * math.pi / 180,
                 child: Icon(Icons.event_seat,
-                    size: sqrt(widget.sizeOfMjesto), color: Colors.red[900])),
-            // Positioned(
-            //   top: 0,
-            //   right: 0,
-            //   child: Container(
-            //     padding: const EdgeInsets.all(1),
-            //     constraints: const BoxConstraints(minWidth: 10, minHeight: 10),
-            //     decoration: BoxDecoration(
-            //         color: Colors.grey[100],
-            //         borderRadius: BorderRadius.circular(6)),
-            //     child: Text(widget.mjestoData.id.toString(),
-            //         style: const TextStyle(fontSize: 8),
-            //         textAlign: TextAlign.center),
-            //   ),
-            // )
+                    size: sqrt(widget.sizeOfMjesto),
+                    color: (widget.mjestoData.zauzeto!)
+                        ? const Color.fromARGB(255, 176, 51, 51)
+                        : const Color.fromARGB(255, 64, 152, 35))),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(1),
+                //constraints: const BoxConstraints(minWidth: 10, minHeight: 10),
+                decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(6)),
+                child: Text(widget.mjestoData.brojMjesta.toString(),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: sqrt(widget.sizeOfMjesto) * 0.23),
+                    textAlign: TextAlign.center),
+              ),
+            )
           ],
         ),
       ),
@@ -79,7 +91,7 @@ class _MjestoViewState extends State<MjestoView> {
               Padding(
                 padding: const EdgeInsets.all(9.0),
                 child: Text(
-                  'Mjesto ${widget.mjestoData.id}',
+                  'Mjesto ${widget.mjestoData.brojMjesta}',
                   style: const TextStyle(
                       fontSize: 20,
                       color: Colors.black,
@@ -163,7 +175,53 @@ class _MjestoViewState extends State<MjestoView> {
                             child: InkWell(
                               splashColor: Colors.green[300],
                               borderRadius: BorderRadius.circular(12.0),
-                              onTap: () {},
+                              onTap: () async {
+                                if (isFree()) {
+                                  Response odgovor = await rezervacijaService
+                                      .kreirajRezervacijuMjesta(
+                                          dioCL,
+                                          widget.mjestoData.id.toString(),
+                                          DateTime(
+                                              widget.date.year,
+                                              widget.date.month,
+                                              widget.date.day,
+                                              widget.fromTime!.hour,
+                                              widget.fromTime!.minute),
+                                          DateTime(
+                                              widget.date.year,
+                                              widget.date.month,
+                                              widget.date.day,
+                                              widget.toTime!.hour,
+                                              widget.toTime!.minute));
+                                  if (odgovor.statusCode == 200 ||
+                                      odgovor.statusCode == 201) {
+                                    Navigator.of(context).pop();
+                                  } else {
+                                    const snackBar = SnackBar(
+                                      content: Text(
+                                          'Greška pri kreiranju rezervacije!',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 199, 78, 69),
+                                    );
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  }
+                                } else {
+                                  const snackBar = SnackBar(
+                                    content: Text(
+                                        'Vrijeme rezervacije nije definisano!',
+                                        style: TextStyle(color: Colors.white)),
+                                    backgroundColor:
+                                        Color.fromARGB(255, 199, 78, 69),
+                                  );
+
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                }
+                              },
                               child: Ink(
                                 width: 70,
                                 height: 35,
@@ -232,46 +290,47 @@ class _MjestoViewState extends State<MjestoView> {
     }
   }
 
-  // bool isFree() {
-  //   bool result = true;
-  //   if (widget.fromTime == null || widget.toTime == null) {
-  //     for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
-  //       if ((widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-  //                   widget.mjestoData.listaRezervacija[i].odVrijeme.minute <
-  //               widget.date.hour * 60 + widget.date.minute) &&
-  //           (widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-  //                   widget.mjestoData.listaRezervacija[i].doVrijeme.minute >
-  //               widget.date.hour * 60 + widget.date.minute)) {
-  //         result = false;
-  //       }
-  //     }
-  //     return result;
-  //   } else {
-  //     var x = widget.fromTime!.hour * 60 + widget.fromTime!.minute;
-  //     var y = widget.toTime!.hour * 60 + widget.toTime!.minute;
-  //     for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
-  //       if (((x <
-  //                   widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-  //                       widget
-  //                           .mjestoData.listaRezervacija[i].odVrijeme.minute) &&
-  //               (y <
-  //                   widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-  //                       widget
-  //                           .mjestoData.listaRezervacija[i].odVrijeme.minute) ||
-  //           (x >
-  //                   widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-  //                       widget
-  //                           .mjestoData.listaRezervacija[i].doVrijeme.minute) &&
-  //               (y >
-  //                   widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-  //                       widget.mjestoData.listaRezervacija[i].doVrijeme
-  //                           .minute))) {
-  //         result = true;
-  //       } else {
-  //         result = false;
-  //       }
-  //     }
-  //     return result;
-  //   }
-  // }
+  bool isFree() {
+    bool result = true;
+    if (widget.fromTime == null || widget.toTime == null) {
+      // for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
+      //   if ((widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
+      //               widget.mjestoData.listaRezervacija[i].odVrijeme.minute <
+      //           widget.date.hour * 60 + widget.date.minute) &&
+      //       (widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
+      //               widget.mjestoData.listaRezervacija[i].doVrijeme.minute >
+      //           widget.date.hour * 60 + widget.date.minute)) {
+      //     result = false;
+      //   }
+      // }
+      return false;
+    } else {
+      // var x = widget.fromTime!.hour * 60 + widget.fromTime!.minute;
+      // var y = widget.toTime!.hour * 60 + widget.toTime!.minute;
+      // for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
+      //   if (((x <
+      //               widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
+      //                   widget
+      //                       .mjestoData.listaRezervacija[i].odVrijeme.minute) &&
+      //           (y <
+      //               widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
+      //                   widget
+      //                       .mjestoData.listaRezervacija[i].odVrijeme.minute) ||
+      //       (x >
+      //               widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
+      //                   widget
+      //                       .mjestoData.listaRezervacija[i].doVrijeme.minute) &&
+      //           (y >
+      //               widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
+      //                   widget.mjestoData.listaRezervacija[i].doVrijeme
+      //                       .minute))) {
+      //     result = true;
+      //   } else {
+      //     result = false;
+      //   }
+      // }
+      // return result;
+      return true;
+    }
+  }
 }
