@@ -25,16 +25,16 @@ class RezervacijaService {
     }
   }
 
-  Future<List<RezervacijaMjestaResponse>?> getRezervacijeMjesta(
+  Future<List<RezervacijaMjestaResponse>> getRezervacijeMjesta(
       DioClient dioClient,
       String mjestoId,
       DateTime vrijemeOd,
       DateTime vrijemeDo) async {
     // Perform GET request to the endpoint "/users/<id>"
-    List<RezervacijaMjestaResponse>? lista;
+    List<RezervacijaMjestaResponse> lista;
     try {
       Response odgovor = await dioClient.dio
-          .post('/mjesta/${mjestoId.toString()}/rezervacije', data: {
+          .post('/mjesta/${mjestoId.toString()}/rezervacije-vrijeme', data: {
         'vrijemeVazenjaOd': vrijemeOd.toString(),
         'vrijemeVazenjaDo': vrijemeDo.toString()
       });

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:testapp/api/rezervacija_service.dart';
 
+import '../api/dio_client.dart';
 import '../models/responses/grupna_sala_response.dart';
 
 enum SnackBarMessage {
@@ -21,6 +23,8 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
   TimeOfDay? toTime;
   DateTime? reservationDate;
   SnackBarMessage? snackMessage;
+  RezervacijaService rezervacijaService = RezervacijaService();
+  DioClient dioCL = DioClient();
 
   @override
   Widget build(BuildContext context) {

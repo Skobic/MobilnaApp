@@ -10,6 +10,7 @@ import 'package:testapp/models/responses/mjesto_response.dart';
 import '../api/dio_client.dart';
 import '../api/mjesto_service.dart';
 import '../widgets/mjesto_view.dart';
+import 'mjesto_dialog.dart';
 
 class IndSalaView extends StatefulWidget {
   const IndSalaView({required this.individualnaSalaData});
@@ -236,6 +237,7 @@ class _IndSalaViewState extends State<IndSalaView> {
                                                             .width) *
                                                     item.velicina) /
                                                 100),
+                                        otvoriDialog: showCustomDialog,
                                       )),
                               ],
                             );
@@ -356,4 +358,11 @@ class _IndSalaViewState extends State<IndSalaView> {
       return null;
     }
   }
+
+  void showCustomDialog(BuildContext context, MjestoResponse mjesto,
+          TimeOfDay? fromTime, TimeOfDay? toTime, DateTime date) =>
+      showDialog(
+          context: context,
+          builder: (context) => MjestoDialog(
+              data: mjesto, date: date, fromTime: fromTime, toTime: toTime));
 }
