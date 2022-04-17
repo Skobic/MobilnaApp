@@ -110,7 +110,7 @@ class _ProfilPageState extends State<ProfilPage> {
               ),
             ),
           ),
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 3),
             child: Card(
               child: Container(
@@ -139,7 +139,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 ),
               ),
             ),
-          ),
+          ),*/
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 3),
             child: Card(
