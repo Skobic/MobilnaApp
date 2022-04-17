@@ -1,9 +1,12 @@
 // ignore_for_file: deprecated_member_use, file_names
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/ZaboravljenaLozinka.dart';
+import 'package:testapp/models/requests/registracija_request.dart';
+import 'api/dio_client.dart';
 import 'pocetna_strana.dart';
 import 'KorisnikClass.dart';
 import 'Registracija.dart';
@@ -29,6 +32,7 @@ String lozinkaLogin = '', emailLogin = '';
 
 class _LoginDemoState extends State<LoginDemo> {
   late Future<Korisnik> test;
+  DioClient dioCL = DioClient();
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +131,7 @@ class _LoginDemoState extends State<LoginDemo> {
                       borderRadius: BorderRadius.circular(20)),
                   child: FlatButton(
                     onPressed: () async {
-                      if (emailLogin.isEmpty ||
-                          !isEmail(emailLogin) ||
-                          lozinkaLogin.length < 8) {
+                      if (emailLogin.isEmpty || lozinkaLogin.length < 3) {
                         showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
@@ -145,17 +147,26 @@ class _LoginDemoState extends State<LoginDemo> {
                                   ],
                                 ));
                       } else {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setString('email', emailLogin);
-                        SharedPreferences preferences =
-                            await SharedPreferences.getInstance();
-                        preferences.setString('lozinka', lozinkaLogin);
-
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const PocetnaStrana()));
+                        Response odgovor = await dioCL.dio
+                            .post('http://10.0.2.2:8080/api/v1/prijava', data: {
+                          "korisnickoIme": emailLogin,
+                          "lozinka": lozinkaLogin
+                        });
+                        if (odgovor.statusCode == 201 &&
+                            odgovor.data['uloga'] == 'KORISNIK') {
+                          lozinkaLogin = odgovor.data['lozinka'];
+                          emailLogin = odgovor.data['mail'];
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setString(
+                              'accessToken', odgovor.data['accessToken']);
+                          prefs.setString(
+                              'refreshToken', odgovor.data['refreshToken']);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => PocetnaStrana()));
+                        }
                       }
                     },
                     child: const Text(
