@@ -1,7 +1,14 @@
 // ignore_for_file: file_names
 
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:testapp/api/dio_client.dart';
+import 'package:testapp/api/registracija_service.dart';
 import 'Login.dart';
+import 'models/requests/registracija_request.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class Registracija extends StatefulWidget {
   const Registracija({Key? key}) : super(key: key);
@@ -11,12 +18,63 @@ class Registracija extends StatefulWidget {
 }
 
 class _RegistracijaState extends State<Registracija> {
+  DioClient dioCL = DioClient();
+  RegistracijaService regService = RegistracijaService();
+
+  StreamSubscription? connection;
+  bool isoffline = false;
+
+  @override
+  void initState() {
+    connection = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      // whenevery connection status is changed.
+      if (result == ConnectivityResult.none) {
+        //there is no any connection
+        setState(() {
+          isoffline = true;
+        });
+      } else if (result == ConnectivityResult.mobile) {
+        //connection is mobile data network
+        setState(() {
+          isoffline = false;
+        });
+      } else if (result == ConnectivityResult.wifi) {
+        //connection is from wifi
+        setState(() {
+          isoffline = false;
+        });
+      } else if (result == ConnectivityResult.ethernet) {
+        //connection is from wired connection
+        setState(() {
+          isoffline = false;
+        });
+      } else if (result == ConnectivityResult.bluetooth) {
+        //connection is from bluetooth threatening
+        setState(() {
+          isoffline = false;
+        });
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    connection!.cancel();
+    super.dispose();
+  }
+
   String korisnickoIme = '',
       email = '',
       lozinka = '',
       potvrdaLozinke = '',
       ime = '',
       prezime = '';
+
+  RegistracijaRequest korisnik = RegistracijaRequest(
+      ime: '', prezime: '', korisnickoIme: '', lozinka: '', mail: '');
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +205,7 @@ class _RegistracijaState extends State<Registracija> {
                   left: 15.0, right: 15.0, top: 15, bottom: 10),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(primary: Colors.blue[700]),
-                onPressed: () {
+                onPressed: () async {
                   if (ime.isEmpty ||
                       email.isEmpty ||
                       lozinka.isEmpty ||
@@ -212,25 +270,56 @@ class _RegistracijaState extends State<Registracija> {
                       ),
                     );
                   } else {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Uspješna registracija'),
-                        content: const Text(
-                            'Čestitamo, uspješno ste se registrovali !\nSada se možete prijaviti u aplikaciju !'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              var nav = Navigator.of(context);
-                              //Navigator.pop(context, 'OK');
-                              nav.pop();
-                              nav.pop();
-                            },
-                            child: const Text('OK'),
+                    korisnik.korisnickoIme = korisnickoIme;
+                    korisnik.ime = ime;
+                    korisnik.prezime = prezime;
+                    korisnik.mail = email;
+                    korisnik.lozinka = lozinka;
+                    //var result = await Connectivity().checkConnectivity();
+
+                    Response? res = await registrujKorisnika();
+                    if (res != null) {
+                      if (res.statusCode == 201) {
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Uspješna registracija'),
+                            content: const Text(
+                                'Čestitamo, uspješno ste se registrovali !\nSada se možete prijaviti u aplikaciju !'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  var nav = Navigator.of(context);
+                                  //Navigator.pop(context, 'OK');
+                                  nav.pop();
+                                  nav.pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
+                        );
+                      }
+                    } else {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Greška'),
+                          content: const Text(
+                              'Molimo promjenite korisničko ime !\nProvjerite da li ste povezani na internet !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                var nav = Navigator.of(context);
+                                //Navigator.pop(context, 'OK');
+                                nav.pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   }
                 },
                 child: const Text(
@@ -243,5 +332,11 @@ class _RegistracijaState extends State<Registracija> {
         ),
       ),
     );
+  }
+
+  Future<Response?> registrujKorisnika() async {
+    var odgovor = await regService.createKorisnik(
+        dioClient: dioCL, korisnikInfo: korisnik);
+    return odgovor;
   }
 }

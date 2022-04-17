@@ -26,6 +26,8 @@ class DioClient {
           final odgovor2 = await _retry(options);
           hendler.resolve(odgovor2);
           return;
+        } else if (error.response?.statusCode == 409) {
+          return;
         }
         hendler.next(error);
       },
@@ -44,7 +46,7 @@ class DioClient {
     final refreshToken = prefs.getString('refreshToken');
     final response =
         await dio.post('/refreshtoken', data: {'refreshToken': refreshToken});
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       prefs.setString('accessToken', response.data['accessToken']);
       prefs.setString('refreshToken', response.data['refreshToken']);
     }
