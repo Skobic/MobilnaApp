@@ -4,8 +4,8 @@ import 'package:timeline_tile/timeline_tile.dart';
 class RezervacijaTile extends StatelessWidget {
   final int ind;
   final int length;
-  final String pocetak;
-  final String kraj;
+  final TimeOfDay pocetak;
+  final TimeOfDay kraj;
   const RezervacijaTile(this.ind, this.length, this.pocetak, this.kraj);
 
   @override
@@ -28,7 +28,11 @@ class RezervacijaTile extends StatelessWidget {
             indicator: Icon(Icons.lock_clock),
             padding: EdgeInsets.all(7.0),
           ),
-          endChild: SizedBox(width: 35, child: Center(child: Text(pocetak))),
+          endChild: SizedBox(
+              width: 35,
+              child: Center(
+                  child: Text(
+                      '${pocetak.hour.toString().padLeft(2, '0')}:${pocetak.minute.toString().padLeft(2, '0')}'))),
         ),
         TimelineTile(
           axis: TimelineAxis.horizontal,
@@ -40,10 +44,14 @@ class RezervacijaTile extends StatelessWidget {
           beforeLineStyle: const LineStyle(color: Colors.red),
           indicatorStyle: const IndicatorStyle(
             width: 20,
-            indicator: Icon(Icons.lock_clock),
+            indicator: Icon(Icons.lock_open_rounded),
             padding: EdgeInsets.all(7.0),
           ),
-          endChild: SizedBox(width: 35, child: Center(child: Text(kraj))),
+          endChild: SizedBox(
+              width: 35,
+              child: Center(
+                  child: Text(
+                      '${kraj.hour.toString().padLeft(2, '0')}:${kraj.minute.toString().padLeft(2, '0')}'))),
         )
       ],
     );

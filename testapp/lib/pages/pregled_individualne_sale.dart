@@ -21,6 +21,8 @@ class IndSalaView extends StatefulWidget {
   State<StatefulWidget> createState() => _IndSalaViewState();
 }
 
+final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
 class _IndSalaViewState extends State<IndSalaView> {
   DateTime currentDate = DateTime.now();
   DateTime today = DateTime.now();
@@ -50,6 +52,7 @@ class _IndSalaViewState extends State<IndSalaView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: const Color.fromRGBO(205, 205, 205, 1),
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -322,7 +325,17 @@ class _IndSalaViewState extends State<IndSalaView> {
   }
 
   void confirmDate() {
-    setState(() => {fromTimeTemp = fromTime, toTimeTemp = toTime});
+    setState(() => {
+          fromTimeTemp = fromTime,
+          toTimeTemp = toTime,
+          listaMjesta = mjestoService.getMjesta(
+              dioCL,
+              widget.individualnaSalaData.id.toString(),
+              DateTime(currentDate.year, currentDate.month, currentDate.day,
+                  fromTime!.hour, fromTime!.minute),
+              DateTime(currentDate.year, currentDate.month, currentDate.day,
+                  toTime!.hour, toTime!.minute))
+        });
   }
 
   double getSlikaSize() {

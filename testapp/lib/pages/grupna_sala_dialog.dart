@@ -25,6 +25,22 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
   SnackBarMessage? snackMessage;
   RezervacijaService rezervacijaService = RezervacijaService();
   DioClient dioCL = DioClient();
+  late FocusNode brojOsobaFocus;
+  late FocusNode svrhaFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    brojOsobaFocus = FocusNode();
+    svrhaFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    brojOsobaFocus.dispose();
+    svrhaFocus.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +114,36 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
               indent: 10,
               endIndent: 10,
             ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    width: 100,
+                    child: TextField(
+                      style: const TextStyle(fontSize: 15),
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 7.0),
+                          labelText: 'Broj osoba'),
+                      focusNode: brojOsobaFocus,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    width: 150,
+                    child: TextField(
+                      style: const TextStyle(fontSize: 15),
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 7.0),
+                          labelText: 'Svrha'),
+                      focusNode: svrhaFocus,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Container(
                 width: double.infinity,
                 height: 110,
@@ -132,7 +178,11 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               child: Text(
                                 getTimeText('f'),
                               ),
-                              onPressed: () => pickTime(context, 'f'),
+                              onPressed: () {
+                                brojOsobaFocus.unfocus();
+                                svrhaFocus.unfocus();
+                                pickTime(context, 'f');
+                              },
                             ),
                           )
                         ],
@@ -169,7 +219,11 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                                       '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}')
                                   : Text(
                                       '${reservationDate!.day}/${reservationDate!.month}/${reservationDate!.year}'),
-                              onPressed: () => pickDate(context),
+                              onPressed: () {
+                                brojOsobaFocus.unfocus();
+                                svrhaFocus.unfocus();
+                                pickDate(context);
+                              },
                             ),
                           )
                         ],
@@ -204,7 +258,11 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               child: Text(
                                 getTimeText('t'),
                               ),
-                              onPressed: () => pickTime(context, 't'),
+                              onPressed: () {
+                                brojOsobaFocus.unfocus();
+                                svrhaFocus.unfocus();
+                                pickTime(context, 't');
+                              },
                             ),
                           )
                         ],
@@ -224,6 +282,8 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               onTap:
                                   //testDefinedTime()? () {} :
                                   () {
+                                svrhaFocus.unfocus();
+                                brojOsobaFocus.unfocus();
                                 SnackBar incorrectTimeMessage = SnackBar(
                                     content: (snackMessage ==
                                             SnackBarMessage

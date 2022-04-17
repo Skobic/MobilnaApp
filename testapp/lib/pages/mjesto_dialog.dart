@@ -6,6 +6,7 @@ import 'package:testapp/models/responses/rezervacija_mjesta_response.dart';
 
 import '../models/responses/mjesto_response.dart';
 import '../widgets/rezervacija_tile.dart';
+import 'pregled_individualne_sale.dart';
 
 class MjestoDialog extends StatefulWidget {
   final MjestoResponse data;
@@ -85,16 +86,16 @@ class _MjestoDialogState extends State<MjestoDialog> {
                         itemBuilder: (context, index) => RezervacijaTile(
                             index,
                             snapshot.data!.length,
-                            snapshot.data![index].vrijemeVazenjaOd.hour
-                                    .toString() +
-                                ':' +
-                                snapshot.data![index].vrijemeVazenjaOd.minute
-                                    .toString(),
-                            snapshot.data![index].vrijemeVazenjaDo.hour
-                                    .toString() +
-                                ':' +
-                                snapshot.data![index].vrijemeVazenjaDo.minute
-                                    .toString()),
+                            TimeOfDay(
+                                hour:
+                                    snapshot.data![index].vrijemeVazenjaOd.hour,
+                                minute: snapshot
+                                    .data![index].vrijemeVazenjaOd.minute),
+                            TimeOfDay(
+                                hour:
+                                    snapshot.data![index].vrijemeVazenjaDo.hour,
+                                minute: snapshot
+                                    .data![index].vrijemeVazenjaDo.minute)),
                       ),
                       height: 80);
                 } else {
@@ -160,38 +161,48 @@ class _MjestoDialogState extends State<MjestoDialog> {
                           borderRadius: BorderRadius.circular(12.0),
                           onTap: () async {
                             if (isFree()) {
-                              Response odgovor = await rezervacijaService
-                                  .kreirajRezervacijuMjesta(
-                                      dioCL,
-                                      widget.data.id.toString(),
-                                      DateTime(
-                                          widget.date.year,
-                                          widget.date.month,
-                                          widget.date.day,
-                                          widget.fromTime!.hour,
-                                          widget.fromTime!.minute),
-                                      DateTime(
-                                          widget.date.year,
-                                          widget.date.month,
-                                          widget.date.day,
-                                          widget.toTime!.hour,
-                                          widget.toTime!.minute));
-                              if (odgovor.statusCode == 200 ||
-                                  odgovor.statusCode == 201) {
-                                const snackBar = SnackBar(
-                                  content: Text(
-                                      'Uspješno kreirana rezervacija!',
-                                      style: TextStyle(color: Colors.white)),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 61, 185, 45),
-                                );
+                              Response? odgovor;
+                              try {
+                                odgovor = await rezervacijaService
+                                    .kreirajRezervacijuMjesta(
+                                        dioCL,
+                                        widget.data.id.toString(),
+                                        DateTime(
+                                            widget.date.year,
+                                            widget.date.month,
+                                            widget.date.day,
+                                            widget.fromTime!.hour,
+                                            widget.fromTime!.minute),
+                                        DateTime(
+                                            widget.date.year,
+                                            widget.date.month,
+                                            widget.date.day,
+                                            widget.toTime!.hour,
+                                            widget.toTime!.minute));
 
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
+                                if ((odgovor.statusCode == 200 ||
+                                    odgovor.statusCode == 201)) {
+                                  const snackBar = SnackBar(
+                                    duration: Duration(seconds: 3),
+                                    content: Text(
+                                        'Uspješno kreirana rezervacija!',
+                                        style: TextStyle(color: Colors.white)),
+                                    backgroundColor:
+                                        Color.fromARGB(255, 61, 185, 45),
+                                  );
 
-                                Navigator.of(context).pop();
-                              } else {
+                                  ScaffoldMessenger.of(
+                                          scaffoldKey.currentContext!)
+                                      .showSnackBar(snackBar);
+
+                                  Navigator.of(context).pop();
+                                }
+                              } catch (err) {
+                                if (odgovor == null) {
+                                  print('gressska');
+                                }
                                 const snackBar = SnackBar(
+                                  duration: Duration(seconds: 3),
                                   content: Text(
                                       'Greška pri kreiranju rezervacije!',
                                       style: TextStyle(color: Colors.white)),
@@ -199,11 +210,14 @@ class _MjestoDialogState extends State<MjestoDialog> {
                                       Color.fromARGB(255, 199, 78, 69),
                                 );
 
-                                ScaffoldMessenger.of(context)
+                                ScaffoldMessenger.of(
+                                        scaffoldKey.currentContext!)
                                     .showSnackBar(snackBar);
+                                Navigator.of(context).pop();
                               }
                             } else {
                               const snackBar = SnackBar(
+                                duration: Duration(seconds: 3),
                                 content: Text(
                                     'Vrijeme rezervacije nije definisano!',
                                     style: TextStyle(color: Colors.white)),
@@ -211,7 +225,7 @@ class _MjestoDialogState extends State<MjestoDialog> {
                                     Color.fromARGB(255, 199, 78, 69),
                               );
 
-                              ScaffoldMessenger.of(context)
+                              ScaffoldMessenger.of(scaffoldKey.currentContext!)
                                   .showSnackBar(snackBar);
                             }
                           },
