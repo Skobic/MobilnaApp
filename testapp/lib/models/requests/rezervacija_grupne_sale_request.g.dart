@@ -9,8 +9,10 @@ part of 'rezervacija_grupne_sale_request.dart';
 RezervacijeGrupneSaleRequest _$RezervacijeGrupneSaleRequestFromJson(
         Map<String, dynamic> json) =>
     RezervacijeGrupneSaleRequest(
-      vrijemeVazenjaOd: DateTime.parse(json['vrijemeVazenjaOd'] as String),
-      vrijemeVazenjaDo: DateTime.parse(json['vrijemeVazenjaDo'] as String),
+      vrijemeVazenjaOd: const CustomDateTimeConverter()
+          .fromJson(json['vrijemeVazenjaOd'] as String),
+      vrijemeVazenjaDo: const CustomDateTimeConverter()
+          .fromJson(json['vrijemeVazenjaDo'] as String),
       svrha: json['svrha'] as String?,
       brojOsoba: json['brojOsoba'] as int?,
     );
@@ -18,8 +20,10 @@ RezervacijeGrupneSaleRequest _$RezervacijeGrupneSaleRequestFromJson(
 Map<String, dynamic> _$RezervacijeGrupneSaleRequestToJson(
         RezervacijeGrupneSaleRequest instance) =>
     <String, dynamic>{
-      'vrijemeVazenjaOd': instance.vrijemeVazenjaOd.toIso8601String(),
-      'vrijemeVazenjaDo': instance.vrijemeVazenjaDo.toIso8601String(),
+      'vrijemeVazenjaOd':
+          const CustomDateTimeConverter().toJson(instance.vrijemeVazenjaOd),
+      'vrijemeVazenjaDo':
+          const CustomDateTimeConverter().toJson(instance.vrijemeVazenjaDo),
       'svrha': instance.svrha,
       'brojOsoba': instance.brojOsoba,
     };

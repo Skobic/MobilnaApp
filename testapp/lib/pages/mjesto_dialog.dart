@@ -76,28 +76,32 @@ class _MjestoDialogState extends State<MjestoDialog> {
                 );
               } else if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
+                  return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (snapshot.hasData) {
-                  return SizedBox(
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: false,
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => RezervacijaTile(
-                            index,
-                            snapshot.data!.length,
-                            TimeOfDay(
-                                hour:
-                                    snapshot.data![index].vrijemeVazenjaOd.hour,
-                                minute: snapshot
-                                    .data![index].vrijemeVazenjaOd.minute),
-                            TimeOfDay(
-                                hour:
-                                    snapshot.data![index].vrijemeVazenjaDo.hour,
-                                minute: snapshot
-                                    .data![index].vrijemeVazenjaDo.minute)),
-                      ),
-                      height: 80);
+                  if (snapshot.data!.isEmpty) {
+                    return const Text('Nema rezervacija!');
+                  } else {
+                    return SizedBox(
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: false,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) => RezervacijaTile(
+                              index,
+                              snapshot.data!.length,
+                              TimeOfDay(
+                                  hour: snapshot
+                                      .data![index].vrijemeVazenjaOd.hour,
+                                  minute: snapshot
+                                      .data![index].vrijemeVazenjaOd.minute),
+                              TimeOfDay(
+                                  hour: snapshot
+                                      .data![index].vrijemeVazenjaDo.hour,
+                                  minute: snapshot
+                                      .data![index].vrijemeVazenjaDo.minute)),
+                        ),
+                        height: 80);
+                  }
                 } else {
                   return const Text('Empty data');
                 }

@@ -27,6 +27,7 @@ class DioClient {
           hendler.resolve(odgovor2);
           return;
         }
+
         hendler.next(error);
       },
       onRequest: (options, hendler) async {

@@ -1,8 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/api/rezervacija_service.dart';
+import 'package:testapp/exceptions/conflict_exception.dart';
+import 'package:testapp/models/requests/rezervacija_grupne_sale_request.dart';
+import 'package:testapp/widgets/karakteristika_field.dart';
 
 import '../api/dio_client.dart';
 import '../models/responses/grupna_sala_response.dart';
+import '../models/responses/rezervacija_mjesta_response.dart';
+import '../widgets/rezervacija_tile.dart';
+import 'pregled_citaonice_page.dart';
 
 enum SnackBarMessage {
   incorrectDefinitionError,
@@ -21,18 +28,31 @@ class GrupnaSalaDialog extends StatefulWidget {
 class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
   TimeOfDay? fromTime;
   TimeOfDay? toTime;
-  DateTime? reservationDate;
+  DateTime reservationDate = DateTime.now();
   SnackBarMessage? snackMessage;
   RezervacijaService rezervacijaService = RezervacijaService();
   DioClient dioCL = DioClient();
   late FocusNode brojOsobaFocus;
   late FocusNode svrhaFocus;
+  TextEditingController brojOsobaController = TextEditingController(text: '');
+  TextEditingController svrhaController = TextEditingController(text: '');
+  late Future<List<RezervacijaMjestaResponse>> listaRezervacija;
 
   @override
   void initState() {
     super.initState();
     brojOsobaFocus = FocusNode();
     svrhaFocus = FocusNode();
+    listaRezervacija = rezervacijaService.getRezervacijeGrupneSale(
+        dioCL,
+        widget.grupnaSalaData.id.toString(),
+        RezervacijeGrupneSaleRequest(
+            vrijemeVazenjaDo: DateTime(reservationDate.year,
+                reservationDate.month, reservationDate.day, 23, 59),
+            vrijemeVazenjaOd: DateTime(reservationDate.year,
+                reservationDate.month, reservationDate.day, 00, 00),
+            svrha: '',
+            brojOsoba: 1));
   }
 
   @override
@@ -40,6 +60,8 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
     super.dispose();
     brojOsobaFocus.dispose();
     svrhaFocus.dispose();
+    brojOsobaController.dispose();
+    svrhaController.dispose();
   }
 
   @override
@@ -86,33 +108,68 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                 )
               ],
             ),
-            // SizedBox(
-            //     child: ListView.builder(
-            //       scrollDirection: Axis.horizontal,
-            //       shrinkWrap: false,
-            //       itemCount: widget.salaData.listaRezervacija.length,
-            //       itemBuilder: (context, index) => RezervacijaTile(
-            //           index,
-            //           widget.salaData.listaRezervacija.length,
-            //           widget.salaData.listaRezervacija[index].odVrijeme.hour
-            //                   .toString() +
-            //               ':' +
-            //               widget
-            //                   .salaData.listaRezervacija[index].odVrijeme.minute
-            //                   .toString(),
-            //           widget.salaData.listaRezervacija[index].doVrijeme.hour
-            //                   .toString() +
-            //               ':' +
-            //               widget
-            //                   .salaData.listaRezervacija[index].doVrijeme.minute
-            //                   .toString()),
-            //     ),
-            //     height: 80),
+            FutureBuilder<List<RezervacijaMjestaResponse>>(
+              future: listaRezervacija,
+              initialData: null,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: SizedBox(
+                        height: 120,
+                        width: 120,
+                        child: Center(child: CircularProgressIndicator())),
+                  );
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return SizedBox(
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: false,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) => RezervacijaTile(
+                              index,
+                              snapshot.data!.length,
+                              TimeOfDay(
+                                  hour: snapshot
+                                      .data![index].vrijemeVazenjaOd.hour,
+                                  minute: snapshot
+                                      .data![index].vrijemeVazenjaOd.minute),
+                              TimeOfDay(
+                                  hour: snapshot
+                                      .data![index].vrijemeVazenjaDo.hour,
+                                  minute: snapshot
+                                      .data![index].vrijemeVazenjaDo.minute)),
+                        ),
+                        height: 80);
+                  } else {
+                    return const Text('Empty data');
+                  }
+                } else {
+                  return Text('State: ${snapshot.connectionState}');
+                }
+              },
+            ),
             const Divider(
               height: 30,
               thickness: 2,
               indent: 10,
               endIndent: 10,
+            ),
+            Container(
+              width: 400,
+              child: Wrap(
+                spacing: 3.0,
+                runSpacing: 3.0,
+                direction: Axis.horizontal,
+                children: const [
+                  KarakteristikaField(),
+                  KarakteristikaField(),
+                  KarakteristikaField(),
+                  KarakteristikaField()
+                ],
+              ),
             ),
             Row(
               children: [
@@ -121,11 +178,12 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                   child: SizedBox(
                     width: 100,
                     child: TextField(
-                      style: const TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 18),
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(vertical: 7.0),
                           labelText: 'Broj osoba'),
                       focusNode: brojOsobaFocus,
+                      controller: brojOsobaController,
                     ),
                   ),
                 ),
@@ -134,11 +192,12 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                   child: SizedBox(
                     width: 150,
                     child: TextField(
-                      style: const TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 18),
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(vertical: 7.0),
                           labelText: 'Svrha'),
                       focusNode: svrhaFocus,
+                      controller: svrhaController,
                     ),
                   ),
                 ),
@@ -214,11 +273,8 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
                                           Colors.grey[200]!)),
-                              child: (reservationDate == null)
-                                  ? Text(
-                                      '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}')
-                                  : Text(
-                                      '${reservationDate!.day}/${reservationDate!.month}/${reservationDate!.year}'),
+                              child: Text(
+                                  '${reservationDate.day}/${reservationDate.month}/${reservationDate.year}'),
                               onPressed: () {
                                 brojOsobaFocus.unfocus();
                                 svrhaFocus.unfocus();
@@ -281,22 +337,108 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               borderRadius: BorderRadius.circular(12.0),
                               onTap:
                                   //testDefinedTime()? () {} :
-                                  () {
-                                svrhaFocus.unfocus();
-                                brojOsobaFocus.unfocus();
-                                SnackBar incorrectTimeMessage = SnackBar(
-                                    content: (snackMessage ==
-                                            SnackBarMessage
-                                                .incorrectDefinitionError)
-                                        ? const Text(
-                                            "Neispravno definisano vrijeme!")
-                                        : const Text(
-                                            "Rezervacija van radnog vremena!"),
-                                    duration: const Duration(seconds: 2),
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 216, 53, 53));
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(incorrectTimeMessage);
+                                  () async {
+                                if (isCorrectTime()) {
+                                  svrhaFocus.unfocus();
+                                  brojOsobaFocus.unfocus();
+                                  Response? odgovor;
+                                  try {
+                                    odgovor = await rezervacijaService
+                                        .kreirajRezervacijuGrupneSale(
+                                      dioCL,
+                                      widget.grupnaSalaData.id.toString(),
+                                      RezervacijeGrupneSaleRequest(
+                                          vrijemeVazenjaOd: DateTime(
+                                              reservationDate.year,
+                                              reservationDate.month,
+                                              reservationDate.day,
+                                              fromTime!.hour,
+                                              fromTime!.minute,
+                                              00),
+                                          vrijemeVazenjaDo: DateTime(
+                                              reservationDate.year,
+                                              reservationDate.month,
+                                              reservationDate.day,
+                                              toTime!.hour,
+                                              toTime!.minute,
+                                              00),
+                                          svrha: 'a',
+                                          brojOsoba: 1),
+                                    );
+                                  } on ConflictException catch (e) {
+                                    print('Exception:----> $e');
+                                    const snackBar = SnackBar(
+                                      duration: Duration(seconds: 3),
+                                      content: Text(
+                                          'Postoji rezervacija u datom vremenu!',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 216, 53, 53),
+                                    );
+
+                                    ScaffoldMessenger.of(citaonicaScaffoldKey
+                                            .currentContext!)
+                                        .showSnackBar(snackBar);
+
+                                    Navigator.of(context).pop();
+                                  } catch (e) {
+                                    print('Exception:----> $e');
+                                    const snackBar = SnackBar(
+                                      duration: Duration(seconds: 3),
+                                      content: Text(
+                                          'Greska pri kreiranju rezervacije!',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 216, 53, 53),
+                                    );
+
+                                    ScaffoldMessenger.of(citaonicaScaffoldKey
+                                            .currentContext!)
+                                        .showSnackBar(snackBar);
+
+                                    Navigator.of(context).pop();
+                                  }
+                                  if (odgovor != null) {
+                                    if (odgovor.statusCode == 200 ||
+                                        odgovor.statusCode == 201) {
+                                      const snackBar = SnackBar(
+                                        duration: Duration(seconds: 3),
+                                        content: Text(
+                                            'Uspješno kreirana rezervacija!',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        backgroundColor:
+                                            Color.fromARGB(255, 61, 185, 45),
+                                      );
+
+                                      ScaffoldMessenger.of(citaonicaScaffoldKey
+                                              .currentContext!)
+                                          .showSnackBar(snackBar);
+
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      print('greska x2');
+                                    }
+                                  } else {
+                                    print('greska');
+                                  }
+                                } else {
+                                  SnackBar incorrectTimeMessage = SnackBar(
+                                      content: (snackMessage ==
+                                              SnackBarMessage
+                                                  .incorrectDefinitionError)
+                                          ? const Text(
+                                              "Neispravno definisano vrijeme!")
+                                          : const Text(
+                                              "Rezervacija van radnog vremena!"),
+                                      duration: const Duration(seconds: 2),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 216, 53, 53));
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(incorrectTimeMessage);
+                                }
                               },
                               child: Ink(
                                 width: 70,
@@ -356,14 +498,26 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
     final DateTime currentDate = DateTime.now();
     final newDate = await showDatePicker(
         context: context,
-        initialDate: (reservationDate == null) ? currentDate : reservationDate!,
+        initialDate: reservationDate,
         firstDate: currentDate,
         lastDate: DateTime(
             DateTime.now().year, DateTime.now().month, DateTime.now().day + 3));
 
     if (newDate == null) return;
 
-    setState(() => {reservationDate = newDate});
+    setState(() => {
+          reservationDate = newDate,
+          listaRezervacija = rezervacijaService.getRezervacijeGrupneSale(
+              dioCL,
+              widget.grupnaSalaData.id.toString(),
+              RezervacijeGrupneSaleRequest(
+                  vrijemeVazenjaDo: DateTime(reservationDate.year,
+                      reservationDate.month, reservationDate.day, 23, 59),
+                  vrijemeVazenjaOd: DateTime(reservationDate.year,
+                      reservationDate.month, reservationDate.day, 00, 00),
+                  svrha: '',
+                  brojOsoba: 1))
+        });
   }
 
   String getTimeText(String t) {
