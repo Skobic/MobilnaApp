@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/rezervacija_service.dart';
+import 'package:testapp/exceptions/van_radnogvremena_exception.dart';
 import 'package:testapp/models/responses/rezervacija_mjesta_response.dart';
 
+import '../exceptions/conflict_exception.dart';
 import '../models/responses/mjesto_response.dart';
 import '../widgets/rezervacija_tile.dart';
 import 'pregled_individualne_sale.dart';
@@ -79,7 +81,7 @@ class _MjestoDialogState extends State<MjestoDialog> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (snapshot.hasData) {
                   if (snapshot.data!.isEmpty) {
-                    return const Text('Nema rezervacija!');
+                    return const Center(child: Text('Nema rezervacija!'));
                   } else {
                     return SizedBox(
                         child: ListView.builder(
@@ -165,9 +167,8 @@ class _MjestoDialogState extends State<MjestoDialog> {
                           borderRadius: BorderRadius.circular(12.0),
                           onTap: () async {
                             if (isFree()) {
-                              Response? odgovor;
                               try {
-                                odgovor = await rezervacijaService
+                                Response? odgovor = await rezervacijaService
                                     .kreirajRezervacijuMjesta(
                                         dioCL,
                                         widget.data.id.toString(),
@@ -183,32 +184,61 @@ class _MjestoDialogState extends State<MjestoDialog> {
                                             widget.date.day,
                                             widget.toTime!.hour,
                                             widget.toTime!.minute));
+                                if (odgovor != null) {
+                                  if ((odgovor.statusCode == 200 ||
+                                      odgovor.statusCode == 201)) {
+                                    const snackBar = SnackBar(
+                                      duration: Duration(seconds: 3),
+                                      content: Text(
+                                          'Uspješno kreirana rezervacija!',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      backgroundColor:
+                                          Color.fromARGB(255, 61, 185, 45),
+                                    );
 
-                                if ((odgovor.statusCode == 200 ||
-                                    odgovor.statusCode == 201)) {
-                                  const snackBar = SnackBar(
-                                    duration: Duration(seconds: 3),
-                                    content: Text(
-                                        'Uspješno kreirana rezervacija!',
-                                        style: TextStyle(color: Colors.white)),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 61, 185, 45),
-                                  );
+                                    ScaffoldMessenger.of(
+                                            scaffoldKey.currentContext!)
+                                        .showSnackBar(snackBar);
 
-                                  ScaffoldMessenger.of(
-                                          scaffoldKey.currentContext!)
-                                      .showSnackBar(snackBar);
-
-                                  Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  }
                                 }
-                              } catch (err) {
-                                if (odgovor == null) {
-                                  print('gressska');
-                                }
+                              } on ConflictException catch (err) {
+                                print('${err.uzrok}');
                                 const snackBar = SnackBar(
                                   duration: Duration(seconds: 3),
                                   content: Text(
-                                      'Greška pri kreiranju rezervacije!',
+                                      'Postoji rezervacija definisana u tom vremenu!',
+                                      style: TextStyle(color: Colors.white)),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 199, 78, 69),
+                                );
+
+                                ScaffoldMessenger.of(
+                                        scaffoldKey.currentContext!)
+                                    .showSnackBar(snackBar);
+                                Navigator.of(context).pop();
+                              } on VanRadnogVremenaException catch (err) {
+                                print('${err.uzrok}');
+                                const snackBar = SnackBar(
+                                  duration: Duration(seconds: 3),
+                                  content: Text(
+                                      'Definisana rezervacija van radnog vremena!',
+                                      style: TextStyle(color: Colors.white)),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 199, 78, 69),
+                                );
+
+                                ScaffoldMessenger.of(
+                                        scaffoldKey.currentContext!)
+                                    .showSnackBar(snackBar);
+                                Navigator.of(context).pop();
+                              } catch (err) {
+                                const snackBar = SnackBar(
+                                  duration: Duration(seconds: 3),
+                                  content: Text(
+                                      'Greska pri kreiranju rezervacije!',
                                       style: TextStyle(color: Colors.white)),
                                   backgroundColor:
                                       Color.fromARGB(255, 199, 78, 69),
