@@ -12,6 +12,8 @@ import 'KorisnikClass.dart';
 import 'Registracija.dart';
 import 'ZaboravljenaLozinka.dart';
 
+int idKorisnika = -1;
+
 bool isEmail(String em) {
   String p =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -28,11 +30,12 @@ class LoginDemo extends StatefulWidget {
   _LoginDemoState createState() => _LoginDemoState();
 }
 
-String lozinkaLogin = '', emailLogin = '';
-
 class _LoginDemoState extends State<LoginDemo> {
   late Future<Korisnik> test;
   DioClient dioCL = DioClient();
+
+  final korisnickoImeController = TextEditingController(text: '');
+  final lozinkaController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +81,7 @@ class _LoginDemoState extends State<LoginDemo> {
                     //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
 
                     child: TextFormField(
-                      onChanged: (text) {
-                        emailLogin = text;
-                      },
+                      controller: korisnickoImeController,
                       decoration: InputDecoration(
                           prefixIcon:
                               Icon(Icons.email, color: Colors.blue[700]),
@@ -88,11 +89,12 @@ class _LoginDemoState extends State<LoginDemo> {
                           filled: true,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20)),
-                          labelText: 'E-mail',
-                          hintText: 'Unesite email'),
+                          labelText: 'Korisničko ime',
+                          hintText: 'Unesite korisničko ime'),
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 15, right: 15, top: 0, bottom: 15),
@@ -100,9 +102,7 @@ class _LoginDemoState extends State<LoginDemo> {
                   child: SizedBox(
                     width: 320,
                     child: TextFormField(
-                      onChanged: (text) {
-                        lozinkaLogin = text;
-                      },
+                      controller: lozinkaController,
                       obscureText: true,
                       decoration: InputDecoration(
                           prefixIcon: Icon(Icons.lock, color: Colors.blue[700]),
@@ -131,7 +131,8 @@ class _LoginDemoState extends State<LoginDemo> {
                       borderRadius: BorderRadius.circular(20)),
                   child: FlatButton(
                     onPressed: () async {
-                      if (emailLogin.isEmpty || lozinkaLogin.length < 3) {
+                      if (korisnickoImeController.text.isEmpty ||
+                          lozinkaController.text.length < 3) {
                         showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
@@ -149,13 +150,12 @@ class _LoginDemoState extends State<LoginDemo> {
                       } else {
                         Response odgovor = await dioCL.dio
                             .post('http://10.0.2.2:8080/api/v1/prijava', data: {
-                          "korisnickoIme": emailLogin,
-                          "lozinka": lozinkaLogin
+                          "korisnickoIme": korisnickoImeController.text,
+                          "lozinka": lozinkaController.text
                         });
                         if (odgovor.statusCode == 201 &&
                             odgovor.data['uloga'] == 'KORISNIK') {
-                          lozinkaLogin = odgovor.data['lozinka'];
-                          emailLogin = odgovor.data['mail'];
+                          idKorisnika = odgovor.data['id'];
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           prefs.setString(
@@ -165,7 +165,7 @@ class _LoginDemoState extends State<LoginDemo> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => PocetnaStrana()));
+                                  builder: (_) => const PocetnaStrana()));
                         }
                       }
                     },

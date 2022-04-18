@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:testapp/Login.dart';
+import 'package:testapp/api/dio_client.dart';
+import 'package:testapp/api/individualne_rezervacije_korisnika_service.dart';
+import 'package:testapp/models/responses/individualne_rezervacije_korisnika_response.dart';
+import 'package:testapp/pages/grupne_rezervacije_page.dart';
+import 'package:testapp/pages/individualne_rezervacije_page.dart';
+import 'package:testapp/widgets/individualna_rezervacija_card.dart';
 
 import '../PotvrdaDolaska.dart';
 
@@ -149,7 +156,7 @@ Text _getTip(int param) {
   );
 }
 
-class RezervacijePage extends StatefulWidget {
+/*class RezervacijePage extends StatefulWidget {
   const RezervacijePage({Key? key}) : super(key: key);
 
   @override
@@ -468,6 +475,125 @@ class _RezervacijePageState extends State<RezervacijePage> {
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
+      ),
+    );
+  }
+}*/
+
+class RezervacijePage extends StatefulWidget {
+  const RezervacijePage({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _RezervacijePageState();
+  }
+}
+
+IndividualneRezervacijeKorisnikaService indRezKorService =
+    IndividualneRezervacijeKorisnikaService();
+
+class _RezervacijePageState extends State<RezervacijePage> {
+  DioClient dioCL = DioClient();
+  late Future<List<IndividualneRezervacijeKorisnikaResponse>> listaIndRezKor;
+
+  @override
+  void initState() {
+    listaIndRezKor = indRezKorService.getIndividualneRezervacijeKorisnika(
+        dioCL, idKorisnika);
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    PageController controller = PageController();
+    List<Widget> _list = <Widget>[
+      const Center(child: PrikazIndividualnihRezervacijaKorisnika()),
+      const Center(child: PrikazGrupnihRezervacijaKorisnika()),
+
+      //new Center(child:new Pages(text: "Page 3",)),
+      //new Center(child:new Pages(text: "Page 4",))
+    ];
+    int _curr = 0;
+
+    double sirina = MediaQuery.of(context).size.width;
+    DateTime sada = DateTime.now();
+
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _curr = 0;
+                    });
+                  },
+                  child: Container(
+                      width: sirina * 0.45,
+                      height: 40,
+                      margin: const EdgeInsets.only(
+                          top: 10, left: 5, right: 2, bottom: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: _curr == 0 ? Colors.blue : Colors.red),
+                      child: Center(
+                          child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _curr = 0;
+                          });
+                        },
+                        child: const Text(
+                          'Individualne',
+                          style: TextStyle(fontSize: 25, color: Colors.white),
+                        ),
+                      ))),
+                ),
+              ),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _curr = 1;
+                    });
+                  },
+                  child: Container(
+                      width: sirina * 0.45,
+                      height: 40,
+                      margin: const EdgeInsets.only(
+                          left: 2, right: 5, top: 10, bottom: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: _curr == 1 ? Colors.blue : Colors.red),
+                      child: const Center(
+                        child: Text(
+                          'Grupne',
+                          style: TextStyle(fontSize: 25, color: Colors.white),
+                        ),
+                      )),
+                ),
+              )
+            ],
+          ),
+          Expanded(
+            child: PageView(
+              children: _list,
+              scrollDirection: Axis.horizontal,
+
+              // reverse: true,
+              // physics: BouncingScrollPhysics(),
+              controller: controller,
+              onPageChanged: (num) {
+                setState(() {
+                  _curr = num;
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
