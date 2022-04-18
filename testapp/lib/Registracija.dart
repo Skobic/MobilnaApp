@@ -8,7 +8,6 @@ import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/registracija_service.dart';
 import 'Login.dart';
 import 'models/requests/registracija_request.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 class Registracija extends StatefulWidget {
   const Registracija({Key? key}) : super(key: key);
@@ -20,51 +19,6 @@ class Registracija extends StatefulWidget {
 class _RegistracijaState extends State<Registracija> {
   DioClient dioCL = DioClient();
   RegistracijaService regService = RegistracijaService();
-
-  StreamSubscription? connection;
-  bool isoffline = false;
-
-  @override
-  void initState() {
-    connection = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      // whenevery connection status is changed.
-      if (result == ConnectivityResult.none) {
-        //there is no any connection
-        setState(() {
-          isoffline = true;
-        });
-      } else if (result == ConnectivityResult.mobile) {
-        //connection is mobile data network
-        setState(() {
-          isoffline = false;
-        });
-      } else if (result == ConnectivityResult.wifi) {
-        //connection is from wifi
-        setState(() {
-          isoffline = false;
-        });
-      } else if (result == ConnectivityResult.ethernet) {
-        //connection is from wired connection
-        setState(() {
-          isoffline = false;
-        });
-      } else if (result == ConnectivityResult.bluetooth) {
-        //connection is from bluetooth threatening
-        setState(() {
-          isoffline = false;
-        });
-      }
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    connection!.cancel();
-    super.dispose();
-  }
 
   String korisnickoIme = '',
       email = '',

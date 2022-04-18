@@ -5,12 +5,16 @@ import 'package:testapp/models/responses/mjesto_response.dart';
 import 'dio_client.dart';
 
 class MjestoService {
-  Future<List<MjestoResponse>> getMjesta(
-      DioClient dioClient, String individualnaSalaId) async {
+  Future<List<MjestoResponse>> getMjesta(DioClient dioClient,
+      String individualnaSalaId, DateTime vrijemeOd, DateTime vrijemeDo) async {
     // Perform GET request to the endpoint "/users/<id>"
     try {
-      Response saleData = await dioClient.dio
-          .get('/individualne-sale/${individualnaSalaId.toString()}/mjesta');
+      Response saleData = await dioClient.dio.post(
+          '/individualne-sale/${individualnaSalaId.toString()}/mjesta-statusi',
+          data: {
+            'vrijemeOd': vrijemeOd.toString(),
+            'vrijemeDo': vrijemeDo.toString()
+          });
 
       // Prints the raw data returned by the server
       //print('User Info: ${userData.data}');

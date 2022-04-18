@@ -16,6 +16,7 @@ MjestoResponse _$MjestoResponseFromJson(Map<String, dynamic> json) =>
       statusId: json['statusId'] as int,
       uticnica: json['uticnica'] as bool,
       id: json['id'] as int,
+      zauzeto: json['zauzeto'] as bool?,
     );
 
 Map<String, dynamic> _$MjestoResponseToJson(MjestoResponse instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$MjestoResponseToJson(MjestoResponse instance) =>
       'uticnica': instance.uticnica,
       'statusId': instance.statusId,
       'pozicija': instance.pozicija,
+      'zauzeto': instance.zauzeto,
     };

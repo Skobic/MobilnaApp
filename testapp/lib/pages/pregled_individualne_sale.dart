@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:testapp/models/responses/mjesto_response.dart';
 import '../api/dio_client.dart';
 import '../api/mjesto_service.dart';
 import '../widgets/mjesto_view.dart';
+import 'mjesto_dialog.dart';
 
 class IndSalaView extends StatefulWidget {
   const IndSalaView({required this.individualnaSalaData});
@@ -41,7 +41,10 @@ class _IndSalaViewState extends State<IndSalaView> {
     super.initState();
 
     listaMjesta = mjestoService.getMjesta(
-        dioCL, widget.individualnaSalaData.id.toString());
+        dioCL,
+        widget.individualnaSalaData.id.toString(),
+        DateTime.now(),
+        DateTime.now().add(const Duration(minutes: 1)));
   }
 
   @override
@@ -51,11 +54,16 @@ class _IndSalaViewState extends State<IndSalaView> {
       appBar: AppBar(
         iconTheme: const IconThemeData(
             color: Color.fromARGB(255, 255, 255, 255), size: 30),
-        title: Text(widget.individualnaSalaData.naziv,
-            style: const TextStyle(
+        title: Text(
+          widget.individualnaSalaData.naziv,
+          style: GoogleFonts.ubuntu(
+            textStyle: const TextStyle(
               color: Color.fromARGB(255, 255, 255, 255),
               fontSize: 28,
-            )),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
         backgroundColor: scaffoldBoja,
       ),
       body: Column(
@@ -178,66 +186,68 @@ class _IndSalaViewState extends State<IndSalaView> {
           Expanded(
             child: InteractiveViewer(
               minScale: 0.1,
-              maxScale: 2.0,
+              maxScale: 2.5,
               //boundaryMargin: const EdgeInsets.all(double.infinity),
               constrained: true,
               child: Center(
-                  child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width / 0.5625,
-                key: keySlike,
-                child: FutureBuilder<List<dynamic>>(
-                    future: Future.wait([
-                      http.get(Uri.parse(
-                          'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika')),
-                      listaMjesta
-                    ]),
-                    initialData: null,
-                    builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
-                            height: 120,
-                            width: 120,
-                            child: Center(child: CircularProgressIndicator()));
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.done) {
-                        if (snapshot.hasError) {
-                          return Text('Error  : ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          return Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Image.memory(
-                                snapshot.data![0].bodyBytes,
-                                fit: BoxFit.fill,
-                              ),
-                              for (var item in snapshot.data![1])
-                                Positioned(
-                                    top: 75,
-                                    left: 99,
-                                    child: MjestoView(
-                                      item,
-                                      currentDate,
-                                      fromTimeTemp,
-                                      toTimeTemp,
-                                      sizeOfMjesto:
-                                          ((getKoeficijentVelicineMjesta(
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .width) *
-                                                  item.velicina) /
-                                              100),
-                                    ))
-                            ],
-                          );
+                  child: FutureBuilder<List<dynamic>>(
+                      future: Future.wait([
+                        http.get(Uri.parse(
+                            'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika')),
+                        listaMjesta
+                      ]),
+                      initialData: null,
+                      builder:
+                          (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox(
+                              height: 120,
+                              width: 120,
+                              child:
+                                  Center(child: CircularProgressIndicator()));
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error  : ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Image.memory(
+                                  snapshot.data![0].bodyBytes,
+                                  fit: BoxFit.fill,
+                                ),
+                                for (var item in snapshot.data![1])
+                                  Positioned(
+                                      top: (MediaQuery.of(context).size.width *
+                                              0.5625) *
+                                          item.pozicija.y,
+                                      left: MediaQuery.of(context).size.width *
+                                          item.pozicija.x,
+                                      child: MjestoView(
+                                        item,
+                                        currentDate,
+                                        fromTimeTemp,
+                                        toTimeTemp,
+                                        sizeOfMjesto:
+                                            ((getKoeficijentVelicineMjesta(
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width) *
+                                                    item.velicina) /
+                                                100),
+                                        otvoriDialog: showCustomDialog,
+                                      )),
+                              ],
+                            );
+                          } else {
+                            return const Center(child: Text('Greska'));
+                          }
                         } else {
                           return const Center(child: Text('Greska'));
                         }
-                      } else {
-                        return const Center(child: Text('Greska'));
-                      }
-                    }),
-              )),
+                      })),
             ),
           ),
         ],
@@ -348,4 +358,11 @@ class _IndSalaViewState extends State<IndSalaView> {
       return null;
     }
   }
+
+  void showCustomDialog(BuildContext context, MjestoResponse mjesto,
+          TimeOfDay? fromTime, TimeOfDay? toTime, DateTime date) =>
+      showDialog(
+          context: context,
+          builder: (context) => MjestoDialog(
+              data: mjesto, date: date, fromTime: fromTime, toTime: toTime));
 }
