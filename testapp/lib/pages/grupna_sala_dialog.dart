@@ -237,21 +237,19 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                               child: TextButton(
-                                style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(7.0),
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.grey[200]!)),
-                                child: Text(
-                                  getTimeText('f'),
+                                style: TextButton.styleFrom(
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  backgroundColor:
+                                      const Color.fromRGBO(238, 238, 238, 1),
+                                  padding: const EdgeInsets.all(2),
+                                  alignment: Alignment.center,
                                 ),
+                                child: Text(getTimeText('f'),
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        color:
+                                            Color.fromARGB(255, 66, 66, 66))),
                                 onPressed: () {
                                   brojOsobaFocus.unfocus();
                                   svrhaFocus.unfocus();
@@ -277,20 +275,20 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                               child: TextButton(
-                                style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(7.0),
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.grey[200]!)),
+                                style: TextButton.styleFrom(
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  backgroundColor:
+                                      const Color.fromRGBO(238, 238, 238, 1),
+                                  padding: const EdgeInsets.all(2),
+                                  alignment: Alignment.center,
+                                ),
                                 child: Text(
-                                    '${reservationDate.day}/${reservationDate.month}/${reservationDate.year}'),
+                                    '${reservationDate.day}/${reservationDate.month}/${reservationDate.year}',
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        color:
+                                            Color.fromARGB(255, 66, 66, 66))),
                                 onPressed: () {
                                   brojOsobaFocus.unfocus();
                                   svrhaFocus.unfocus();
@@ -316,21 +314,19 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                               child: TextButton(
-                                style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(7.0),
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.grey[200]!)),
-                                child: Text(
-                                  getTimeText('t'),
+                                style: TextButton.styleFrom(
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  backgroundColor:
+                                      const Color.fromRGBO(238, 238, 238, 1),
+                                  padding: const EdgeInsets.all(2),
+                                  alignment: Alignment.center,
                                 ),
+                                child: Text(getTimeText('t'),
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        color:
+                                            Color.fromARGB(255, 66, 66, 66))),
                                 onPressed: () {
                                   brojOsobaFocus.unfocus();
                                   svrhaFocus.unfocus();
