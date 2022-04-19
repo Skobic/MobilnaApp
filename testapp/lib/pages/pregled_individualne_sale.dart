@@ -1,9 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/constants/config.dart';
-import 'package:testapp/constants/constant.dart';
 import 'package:testapp/models/responses/individualna_sala_response.dart';
 import 'package:testapp/models/responses/mjesto_response.dart';
 
@@ -37,16 +38,17 @@ class _IndSalaViewState extends State<IndSalaView> {
   MjestoService mjestoService = MjestoService();
   late Future<List<MjestoResponse>> listaMjesta;
   DioClient dioCL = DioClient();
+  late Future<List<dynamic>> odgovorServera;
 
   @override
   void initState() {
     super.initState();
-
-    listaMjesta = mjestoService.getMjesta(
-        dioCL,
-        widget.individualnaSalaData.id.toString(),
-        DateTime.now(),
-        DateTime.now().add(const Duration(minutes: 1)));
+    //Lista taskova koji ce se izvrsiti pri kreiranju stranice i pri (iskljucivo)eksplicitnom ponovnom pozivu
+    odgovorServera = Future.wait([
+      dohvatiSliku(),
+      mjestoService.getMjesta(dioCL, widget.individualnaSalaData.id.toString(),
+          DateTime.now(), DateTime.now().add(const Duration(minutes: 1)))
+    ]);
   }
 
   @override
@@ -194,11 +196,7 @@ class _IndSalaViewState extends State<IndSalaView> {
               constrained: true,
               child: Center(
                   child: FutureBuilder<List<dynamic>>(
-                      future: Future.wait([
-                        http.get(Uri.parse(
-                            'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika')),
-                        listaMjesta
-                      ]),
+                      future: odgovorServera,
                       initialData: null,
                       builder:
                           (context, AsyncSnapshot<List<dynamic>> snapshot) {
@@ -218,7 +216,7 @@ class _IndSalaViewState extends State<IndSalaView> {
                               alignment: Alignment.center,
                               children: [
                                 Image.memory(
-                                  snapshot.data![0].bodyBytes,
+                                  snapshot.data![0],
                                   fit: BoxFit.fill,
                                 ),
                                 for (var item in snapshot.data![1])
@@ -230,9 +228,6 @@ class _IndSalaViewState extends State<IndSalaView> {
                                           item.pozicija.x,
                                       child: MjestoView(
                                         item,
-                                        currentDate,
-                                        fromTimeTemp,
-                                        toTimeTemp,
                                         sizeOfMjesto:
                                             ((getKoeficijentVelicineMjesta(
                                                         MediaQuery.of(context)
@@ -293,9 +288,9 @@ class _IndSalaViewState extends State<IndSalaView> {
 
     if (newTime == null) return;
     if (t == 'f') {
-      setState(() => {fromTime = newTime, initialTimeFrom = fromTime});
+      setState(() => {fromTimeTemp = newTime, initialTimeFrom = fromTimeTemp});
     } else {
-      setState(() => {toTime = newTime, initialTimeTo = toTime});
+      setState(() => {toTimeTemp = newTime, initialTimeTo = toTimeTemp});
     }
   }
 
@@ -305,20 +300,20 @@ class _IndSalaViewState extends State<IndSalaView> {
 
   String getTimeText(String t) {
     if (t == 'f') {
-      if (fromTime == null) {
+      if (fromTimeTemp == null) {
         return 'Od';
       } else {
-        final h = fromTime!.hour.toString().padLeft(2, '0');
-        final m = fromTime!.minute.toString().padLeft(2, '0');
+        final h = fromTimeTemp!.hour.toString().padLeft(2, '0');
+        final m = fromTimeTemp!.minute.toString().padLeft(2, '0');
 
         return '$h:$m';
       }
     } else {
-      if (toTime == null) {
+      if (toTimeTemp == null) {
         return 'Do';
       } else {
-        final h = toTime!.hour.toString().padLeft(2, '0');
-        final m = toTime!.minute.toString().padLeft(2, '0');
+        final h = toTimeTemp!.hour.toString().padLeft(2, '0');
+        final m = toTimeTemp!.minute.toString().padLeft(2, '0');
         return '$h:$m';
       }
     }
@@ -326,15 +321,18 @@ class _IndSalaViewState extends State<IndSalaView> {
 
   void confirmDate() {
     setState(() => {
-          fromTimeTemp = fromTime,
-          toTimeTemp = toTime,
-          listaMjesta = mjestoService.getMjesta(
-              dioCL,
-              widget.individualnaSalaData.id.toString(),
-              DateTime(currentDate.year, currentDate.month, currentDate.day,
-                  fromTime!.hour, fromTime!.minute),
-              DateTime(currentDate.year, currentDate.month, currentDate.day,
-                  toTime!.hour, toTime!.minute))
+          odgovorServera = Future.wait([
+            dohvatiSliku(),
+            mjestoService.getMjesta(
+                dioCL,
+                widget.individualnaSalaData.id.toString(),
+                DateTime(currentDate.year, currentDate.month, currentDate.day,
+                    fromTimeTemp!.hour, fromTimeTemp!.minute),
+                DateTime(currentDate.year, currentDate.month, currentDate.day,
+                    toTimeTemp!.hour, toTimeTemp!.minute))
+          ])
+          // fromTimeTemp = fromTime,
+          // toTimeTemp = toTime,
         });
   }
 
@@ -349,9 +347,9 @@ class _IndSalaViewState extends State<IndSalaView> {
   }
 
   bool isCorrectTime() {
-    if (fromTime != null && toTime != null) {
-      var diff = (toTime!.hour * 60 + toTime!.minute) -
-          (fromTime!.hour * 60 + fromTime!.minute);
+    if (fromTimeTemp != null && toTimeTemp != null) {
+      var diff = (toTimeTemp!.hour * 60 + toTimeTemp!.minute) -
+          (fromTimeTemp!.hour * 60 + fromTimeTemp!.minute);
       if (diff <= 3 * 60 && diff >= (0 * 60 + 15)) {
         return true;
       } else {
@@ -362,20 +360,22 @@ class _IndSalaViewState extends State<IndSalaView> {
     }
   }
 
-  Future<String?> dohvatiSliku() async {
-    Response odgovor = await dioCL.dio.get(
-        'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika');
+  Future<Uint8List> dohvatiSliku() async {
+    http.Response odgovor = await http.get(Uri.parse(
+        'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika'));
     if (odgovor.statusCode == 200) {
-      return odgovor.data;
+      return odgovor.bodyBytes;
     } else {
-      return null;
+      return Uint8List(0);
     }
   }
 
-  void showCustomDialog(BuildContext context, MjestoResponse mjesto,
-          TimeOfDay? fromTime, TimeOfDay? toTime, DateTime date) =>
+  void showCustomDialog(BuildContext context, MjestoResponse mjesto) =>
       showDialog(
           context: context,
           builder: (context) => MjestoDialog(
-              data: mjesto, date: date, fromTime: fromTime, toTime: toTime));
+              data: mjesto,
+              date: currentDate,
+              fromTime: fromTimeTemp,
+              toTime: toTimeTemp));
 }

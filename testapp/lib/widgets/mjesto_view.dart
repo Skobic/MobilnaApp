@@ -9,16 +9,13 @@ import 'package:testapp/models/responses/mjesto_response.dart';
 import '../api/dio_client.dart';
 
 class MjestoView extends StatefulWidget {
-  const MjestoView(this.mjestoData, this.date, this.fromTime, this.toTime,
+  const MjestoView(this.mjestoData,
       {required this.sizeOfMjesto, required this.otvoriDialog});
 
   final MjestoResponse mjestoData;
-  final DateTime date;
-  final TimeOfDay? fromTime;
-  final TimeOfDay? toTime;
+
   final double sizeOfMjesto;
-  final Function(BuildContext, MjestoResponse, TimeOfDay?, TimeOfDay?, DateTime)
-      otvoriDialog;
+  final Function(BuildContext, MjestoResponse) otvoriDialog;
 
   // static List<Rezervacija> lista = <Rezervacija>[
   //   Rezervacija(1, DateTime.parse("2021-07-20 15:18:04Z"),
@@ -46,8 +43,10 @@ class _MjestoViewState extends State<MjestoView> {
       child: InkWell(
         borderRadius: BorderRadius.circular(30),
         splashColor: Colors.grey[200],
-        onTap: () => widget.otvoriDialog(context, widget.mjestoData,
-            widget.fromTime, widget.toTime, widget.date),
+        onTap: () => widget.otvoriDialog(
+          context,
+          widget.mjestoData,
+        ),
         child: Stack(
           children: [
             Transform.rotate(
@@ -293,59 +292,59 @@ class _MjestoViewState extends State<MjestoView> {
   //   ];
   // }
 
-  String getVrijeme(String t) {
-    if (t == 'f') {
-      return (widget.fromTime == null)
-          ? 'hh:mm'
-          : '${widget.fromTime!.hour.toString().padLeft(2, '0')}:${widget.fromTime!.minute.toString().padLeft(2, '0')}';
-    } else {
-      return (widget.toTime == null)
-          ? 'hh:mm'
-          : '${widget.toTime!.hour.toString().padLeft(2, '0')}:${widget.toTime!.minute.toString().padLeft(2, '0')}';
-    }
-  }
+  // String getVrijeme(String t) {
+  //   if (t == 'f') {
+  //     return (widget.fromTime == null)
+  //         ? 'hh:mm'
+  //         : '${widget.fromTime!.hour.toString().padLeft(2, '0')}:${widget.fromTime!.minute.toString().padLeft(2, '0')}';
+  //   } else {
+  //     return (widget.toTime == null)
+  //         ? 'hh:mm'
+  //         : '${widget.toTime!.hour.toString().padLeft(2, '0')}:${widget.toTime!.minute.toString().padLeft(2, '0')}';
+  //   }
+  // }
 
-  bool isFree() {
-    bool result = true;
-    if (widget.fromTime == null || widget.toTime == null) {
-      // for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
-      //   if ((widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-      //               widget.mjestoData.listaRezervacija[i].odVrijeme.minute <
-      //           widget.date.hour * 60 + widget.date.minute) &&
-      //       (widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-      //               widget.mjestoData.listaRezervacija[i].doVrijeme.minute >
-      //           widget.date.hour * 60 + widget.date.minute)) {
-      //     result = false;
-      //   }
-      // }
-      return false;
-    } else {
-      // var x = widget.fromTime!.hour * 60 + widget.fromTime!.minute;
-      // var y = widget.toTime!.hour * 60 + widget.toTime!.minute;
-      // for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
-      //   if (((x <
-      //               widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-      //                   widget
-      //                       .mjestoData.listaRezervacija[i].odVrijeme.minute) &&
-      //           (y <
-      //               widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-      //                   widget
-      //                       .mjestoData.listaRezervacija[i].odVrijeme.minute) ||
-      //       (x >
-      //               widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-      //                   widget
-      //                       .mjestoData.listaRezervacija[i].doVrijeme.minute) &&
-      //           (y >
-      //               widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-      //                   widget.mjestoData.listaRezervacija[i].doVrijeme
-      //                       .minute))) {
-      //     result = true;
-      //   } else {
-      //     result = false;
-      //   }
-      // }
-      // return result;
-      return true;
-    }
-  }
+  // bool isFree() {
+  //   bool result = true;
+  //   if (widget.fromTime == null || widget.toTime == null) {
+  //     for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
+  //       if ((widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
+  //                   widget.mjestoData.listaRezervacija[i].odVrijeme.minute <
+  //               widget.date.hour * 60 + widget.date.minute) &&
+  //           (widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
+  //                   widget.mjestoData.listaRezervacija[i].doVrijeme.minute >
+  //               widget.date.hour * 60 + widget.date.minute)) {
+  //         result = false;
+  //       }
+  //     }
+  //     return false;
+  //   } else {
+  //     var x = widget.fromTime!.hour * 60 + widget.fromTime!.minute;
+  //     var y = widget.toTime!.hour * 60 + widget.toTime!.minute;
+  //     for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
+  //       if (((x <
+  //                   widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
+  //                       widget
+  //                           .mjestoData.listaRezervacija[i].odVrijeme.minute) &&
+  //               (y <
+  //                   widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
+  //                       widget
+  //                           .mjestoData.listaRezervacija[i].odVrijeme.minute) ||
+  //           (x >
+  //                   widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
+  //                       widget
+  //                           .mjestoData.listaRezervacija[i].doVrijeme.minute) &&
+  //               (y >
+  //                   widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
+  //                       widget.mjestoData.listaRezervacija[i].doVrijeme
+  //                           .minute))) {
+  //         result = true;
+  //       } else {
+  //         result = false;
+  //       }
+  //     }
+  //     return result;
+  //     return true;
+  //   }
+  // }
 }
