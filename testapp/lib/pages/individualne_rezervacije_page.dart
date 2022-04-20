@@ -55,8 +55,18 @@ class _PrikazIndividualnihRezervacijaKorisnikaState
                 //print(snapshot.data);
                 List<IndividualneRezervacijeKorisnikaResponse>? list =
                     snapshot.data?.toList();
-                list!.sort(
-                    (a, b) => b.vrijemeVazenjaOd.compareTo(a.vrijemeVazenjaOd));
+
+                for (int i = 0; i < list!.length; i++) {
+                  if (list[i].vrijemeOtkazivanja != null ||
+                      (list[i].vrijemeVazenjaDo.isBefore(DateTime.now())) ||
+                      list[i].vrijemePotvrde != null) {
+                    list[i].vrijemeVazenjaOd =
+                        list[i].vrijemeVazenjaOd.add(const Duration(days: 15));
+                  }
+                }
+                list.sort(
+                    (a, b) => a.vrijemeVazenjaOd.compareTo(b.vrijemeVazenjaOd));
+
                 //brojElemenata = list.length;
                 // print(brojElemenata);
                 return Column(
