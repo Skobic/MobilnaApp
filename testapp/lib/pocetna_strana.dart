@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:testapp/constants/config.dart';
+import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
+import 'package:testapp/models/requests/potvrda_dolaska_request.dart';
+import 'package:testapp/pages/individualna_potvrda_dolaska.dart';
 import 'package:testapp/pages/pregled_citaonice_page.dart';
 import 'package:testapp/pages/pregled_individualne_sale.dart';
 import 'package:testapp/wrappers/citaonica_page_wrapper.dart';
@@ -11,64 +14,6 @@ import 'package:testapp/wrappers/rezervacija_page_wrapper.dart';
 
 import 'models/responses/citaonica_response.dart';
 import 'models/responses/individualna_sala_response.dart';
-
-/*class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nikoletina'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 80,
-              width: 200,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const RezervacijePrikaz()));
-                },
-                child: const Text(
-                  'Rezervacije',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
-              ),
-            ),
-            Container(
-              height: 80,
-              width: 200,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const Profil()));
-                },
-                child: const Text(
-                  'Profil',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}*/
 
 class PocetnaStrana extends StatefulWidget {
   const PocetnaStrana({Key? key}) : super(key: key);
@@ -152,6 +97,12 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
               builder = (BuildContext context) => IndSalaView(
                   individualnaSalaData:
                       settings.arguments as IndividualnaSalaResponse);
+              break;
+            case 'individualna_potvrda_dolaska':
+              builder = (BuildContext context) => IndividualnaPotvrdaDolaska(
+                    argInfo: settings.arguments
+                        as ArgumentiIndividualnePotvrdeDolaska,
+                  );
               break;
             default:
               throw Exception('Invalid route:}');

@@ -1,14 +1,18 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
 import 'package:testapp/models/responses/individualne_rezervacije_korisnika_response.dart';
+import 'package:testapp/pages/individualna_potvrda_dolaska.dart';
+import 'package:testapp/pocetna_strana.dart';
 
 import '../PotvrdaDolaska.dart';
 
 DateTime defaultTime = DateTime.parse("2000-01-01 00:00:00");
 
-Container _showRemainingTime(DateTime remainingTime, bool otkazana) {
-  if (remainingTime != defaultTime && !otkazana) {
+Container _showRemainingTime(DateTime remainingTime, bool otkazana,
+    bool potvrdjena, DateTime remainingPotvrdaTime) {
+  if (remainingTime != defaultTime && !otkazana && !potvrdjena) {
     if (remainingTime.day < 25) {
       return Container(
           child: Column(
@@ -60,6 +64,37 @@ Container _showRemainingTime(DateTime remainingTime, bool otkazana) {
       ));
     }
   }
+
+  if (remainingPotvrdaTime != defaultTime && !otkazana && !potvrdjena) {
+    if (remainingTime.day < 25) {
+      return Container(
+          child: Column(
+        children: <Widget>[
+          Center(
+            child: Container(
+                margin: const EdgeInsets.only(top: 10),
+                child: const Text('ROK ZA POTVRDU DOLASKA:',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold))),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 10, right: 10),
+            child: Text(
+                '${remainingPotvrdaTime.minute == 0 ? '' : '${remainingPotvrdaTime.minute}min i '}'
+                '${remainingPotvrdaTime.second}sec',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ));
+    }
+  }
+
   if (otkazana) {
     return Container(
         margin: const EdgeInsets.only(top: 30, left: 5, right: 5),
@@ -70,9 +105,20 @@ Container _showRemainingTime(DateTime remainingTime, bool otkazana) {
                 fontSize: 25,
                 fontWeight: FontWeight.bold)));
   }
+  if (potvrdjena) {
+    return Container(
+        margin: const EdgeInsets.only(top: 30, left: 5, right: 5),
+        child: Text('ISKORIŠTENA REZERVACIJA',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.green[800],
+                fontSize: 25,
+                fontWeight: FontWeight.bold)));
+  }
+
   return Container(
       margin: const EdgeInsets.only(top: 30, left: 5, right: 5),
-      child: const Text('ISKORIŠTENA REZERVACIJA',
+      child: const Text('NEISKORIŠTENA REZERVACIJA',
           textAlign: TextAlign.center,
           style: TextStyle(
               color: Colors.black54,
@@ -96,17 +142,39 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double sirina = MediaQuery.of(context).size.width;
+
+    bool otkazana = false;
+    bool potvrdjena = false;
+    if (indRezKorData.vrijemeOtkazivanja != null ||
+        indRezKorData.vrijemeVazenjaDo.isBefore(DateTime.now()) ||
+        indRezKorData.vrijemePotvrde != null) {
+      indRezKorData.vrijemeVazenjaOd =
+          indRezKorData.vrijemeVazenjaOd.subtract(const Duration(days: 15));
+    }
+
+    if (indRezKorData.vrijemeOtkazivanja != null) {
+      otkazana = true;
+    }
+    if (indRezKorData.vrijemePotvrde != null) {
+      potvrdjena = true;
+    }
+
     DateTime sada = DateTime.now();
     DateTime rTime = DateTime.parse("2000-01-01 00:00:00");
     if (sada.isBefore(indRezKorData.vrijemeVazenjaOd)) {
       rTime = indRezKorData.vrijemeVazenjaOd.subtract(
           Duration(days: sada.day, hours: sada.hour, minutes: sada.minute));
     }
-    bool otkazana = false;
-    if (indRezKorData.vrijemeOtkazivanja != null) {
-      otkazana = true;
+    DateTime rPotvrdaTime = DateTime.parse("2000-01-01 00:00:00");
+    DateTime krajnjeVrijemePotvrde =
+        indRezKorData.vrijemeVazenjaOd.add(const Duration(minutes: 15));
+    if (sada.isBefore(krajnjeVrijemePotvrde)) {
+      rPotvrdaTime = krajnjeVrijemePotvrde.subtract(Duration(
+          days: sada.day,
+          hours: sada.hour,
+          minutes: sada.minute,
+          seconds: sada.second));
     }
-
     return SizedBox(
       height: 150,
       //width: 210,
@@ -164,15 +232,20 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
               ),
             ]),
           ),
-          Positioned(
-            left: 5,
-            top: 5,
-            bottom: 40,
-            width: 0.5 * sirina,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              //child: _getImage(index),
-              child: _showRemainingTime(rTime, otkazana),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: 0.5 * sirina,
+                  margin: const EdgeInsets.only(top: 5, bottom: 40),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    //child: _getImage(index),
+                    child: _showRemainingTime(
+                        rTime, otkazana, potvrdjena, rPotvrdaTime),
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned(
@@ -253,10 +326,11 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
                                 ],
                               ));
                     } else {
-                      /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const PotvrdaDolaska()));*/
+                      navigatorKey.currentState!.pushNamed(
+                          'individualna_potvrda_dolaska',
+                          arguments: ArgumentiIndividualnePotvrdeDolaska(
+                              idMjesta: indRezKorData.mjestoId,
+                              idRezervacije: indRezKorData.id));
                     }
                   }
                 },
