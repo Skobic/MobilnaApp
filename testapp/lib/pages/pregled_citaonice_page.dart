@@ -23,6 +23,9 @@ class PregledCitaonicePage extends StatefulWidget {
   }
 }
 
+final GlobalKey<ScaffoldState> citaonicaScaffoldKey =
+    GlobalKey<ScaffoldState>();
+
 class _PregledCitaonicePageState extends State<PregledCitaonicePage> {
   DioClient dioCL = DioClient();
   IndividualneSaleService individualneSaleService = IndividualneSaleService();
@@ -42,6 +45,7 @@ class _PregledCitaonicePageState extends State<PregledCitaonicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: citaonicaScaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(

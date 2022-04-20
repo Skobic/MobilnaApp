@@ -1,9 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/constants/config.dart';
-import 'package:testapp/constants/constant.dart';
 import 'package:testapp/models/responses/individualna_sala_response.dart';
 import 'package:testapp/models/responses/mjesto_response.dart';
 
@@ -21,6 +22,8 @@ class IndSalaView extends StatefulWidget {
   State<StatefulWidget> createState() => _IndSalaViewState();
 }
 
+final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
 class _IndSalaViewState extends State<IndSalaView> {
   DateTime currentDate = DateTime.now();
   DateTime today = DateTime.now();
@@ -35,21 +38,23 @@ class _IndSalaViewState extends State<IndSalaView> {
   MjestoService mjestoService = MjestoService();
   late Future<List<MjestoResponse>> listaMjesta;
   DioClient dioCL = DioClient();
+  late Future<List<dynamic>> odgovorServera;
 
   @override
   void initState() {
     super.initState();
-
-    listaMjesta = mjestoService.getMjesta(
-        dioCL,
-        widget.individualnaSalaData.id.toString(),
-        DateTime.now(),
-        DateTime.now().add(const Duration(minutes: 1)));
+    //Lista taskova koji ce se izvrsiti pri kreiranju stranice i pri (iskljucivo)eksplicitnom ponovnom pozivu
+    odgovorServera = Future.wait([
+      dohvatiSliku(),
+      mjestoService.getMjesta(dioCL, widget.individualnaSalaData.id.toString(),
+          DateTime.now(), DateTime.now().add(const Duration(minutes: 1)))
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: const Color.fromRGBO(205, 205, 205, 1),
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -77,108 +82,107 @@ class _IndSalaViewState extends State<IndSalaView> {
                 offset: const Offset(0, 3),
               )
             ]),
-            height: MediaQuery.of(context).size.height * 0.18,
+            height: MediaQuery.of(context).size.height * 0.19,
             width: MediaQuery.of(context).size.width,
-            child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(7.0),
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.grey[200]!)),
+                        style: TextButton.styleFrom(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            backgroundColor:
+                                const Color.fromRGBO(238, 238, 238, 1),
+                            padding: EdgeInsets.zero,
+                            alignment: Alignment.center),
                         onPressed: () => pickTime(context, 'f'),
                         child: Text(getTimeText('f'),
-                            style: const TextStyle(fontSize: 15)),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 66, 66, 66))),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(7.0),
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.grey[200]!)),
+                        style: TextButton.styleFrom(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            backgroundColor:
+                                const Color.fromRGBO(238, 238, 238, 1),
+                            padding: EdgeInsets.zero,
+                            alignment: Alignment.center),
                         onPressed: () => pickTime(context, 't'),
                         child: Text(getTimeText('t'),
-                            style: const TextStyle(fontSize: 15)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextButton(
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(7.0),
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.grey[200]!)),
-                        onPressed: () => pickDate(context),
-                        child: Text(
-                            '${currentDate.day}/${currentDate.month}/${currentDate.year}',
-                            style: const TextStyle(fontSize: 15)),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 66, 66, 66))),
                       ),
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(9.0),
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: InkWell(
-                      splashColor: Colors.green[300],
-                      borderRadius: BorderRadius.circular(12.0),
-                      onTap: isCorrectTime()
-                          ? () => confirmDate()
-                          : () {
-                              SnackBar incorrectTimeMessage = const SnackBar(
-                                  content:
-                                      Text("Neispravno definisano vrijeme!"),
-                                  duration: Duration(seconds: 2),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 216, 53, 53));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(incorrectTimeMessage);
-                            },
-                      child: Ink(
-                        width: 70,
-                        height: 35,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0),
-                            color: Colors.green[600]),
-                        child: Center(
-                          child: Text(
-                            'OK',
-                            style: TextStyle(
-                                color: Colors.grey[300],
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          backgroundColor:
+                              const Color.fromRGBO(238, 238, 238, 1),
+                          padding: const EdgeInsets.all(2),
+                          alignment: Alignment.center,
+                        ),
+                        onPressed: () => pickDate(context),
+                        child: Text(
+                            '${currentDate.day}/${currentDate.month}/${currentDate.year}',
+                            style: const TextStyle(
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 66, 66, 66))),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: InkWell(
+                          splashColor: Colors.green[300],
+                          borderRadius: BorderRadius.circular(12.0),
+                          onTap: isCorrectTime()
+                              ? () => confirmDate()
+                              : () {
+                                  SnackBar incorrectTimeMessage =
+                                      const SnackBar(
+                                          content: Text(
+                                              "Neispravno definisano vrijeme!"),
+                                          duration: Duration(seconds: 2),
+                                          backgroundColor:
+                                              Color.fromARGB(255, 216, 53, 53));
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(incorrectTimeMessage);
+                                },
+                          child: Ink(
+                            padding: const EdgeInsets.all(7),
+                            // width: 70,
+                            // height: 35,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6.0),
+                                color: Colors.green[600]),
+                            child: const Center(
+                                child: Icon(Icons.replay_rounded,
+                                    color: Colors.white, size: 24)),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 )
               ],
             ),
@@ -191,11 +195,7 @@ class _IndSalaViewState extends State<IndSalaView> {
               constrained: true,
               child: Center(
                   child: FutureBuilder<List<dynamic>>(
-                      future: Future.wait([
-                        http.get(Uri.parse(
-                            'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika')),
-                        listaMjesta
-                      ]),
+                      future: odgovorServera,
                       initialData: null,
                       builder:
                           (context, AsyncSnapshot<List<dynamic>> snapshot) {
@@ -215,7 +215,7 @@ class _IndSalaViewState extends State<IndSalaView> {
                               alignment: Alignment.center,
                               children: [
                                 Image.memory(
-                                  snapshot.data![0].bodyBytes,
+                                  snapshot.data![0],
                                   fit: BoxFit.fill,
                                 ),
                                 for (var item in snapshot.data![1])
@@ -227,9 +227,6 @@ class _IndSalaViewState extends State<IndSalaView> {
                                           item.pozicija.x,
                                       child: MjestoView(
                                         item,
-                                        currentDate,
-                                        fromTimeTemp,
-                                        toTimeTemp,
                                         sizeOfMjesto:
                                             ((getKoeficijentVelicineMjesta(
                                                         MediaQuery.of(context)
@@ -290,9 +287,9 @@ class _IndSalaViewState extends State<IndSalaView> {
 
     if (newTime == null) return;
     if (t == 'f') {
-      setState(() => {fromTime = newTime, initialTimeFrom = fromTime});
+      setState(() => {fromTimeTemp = newTime, initialTimeFrom = fromTimeTemp});
     } else {
-      setState(() => {toTime = newTime, initialTimeTo = toTime});
+      setState(() => {toTimeTemp = newTime, initialTimeTo = toTimeTemp});
     }
   }
 
@@ -302,27 +299,40 @@ class _IndSalaViewState extends State<IndSalaView> {
 
   String getTimeText(String t) {
     if (t == 'f') {
-      if (fromTime == null) {
+      if (fromTimeTemp == null) {
         return 'Od';
       } else {
-        final h = fromTime!.hour.toString().padLeft(2, '0');
-        final m = fromTime!.minute.toString().padLeft(2, '0');
+        final h = fromTimeTemp!.hour.toString().padLeft(2, '0');
+        final m = fromTimeTemp!.minute.toString().padLeft(2, '0');
 
         return '$h:$m';
       }
     } else {
-      if (toTime == null) {
+      if (toTimeTemp == null) {
         return 'Do';
       } else {
-        final h = toTime!.hour.toString().padLeft(2, '0');
-        final m = toTime!.minute.toString().padLeft(2, '0');
+        final h = toTimeTemp!.hour.toString().padLeft(2, '0');
+        final m = toTimeTemp!.minute.toString().padLeft(2, '0');
         return '$h:$m';
       }
     }
   }
 
   void confirmDate() {
-    setState(() => {fromTimeTemp = fromTime, toTimeTemp = toTime});
+    setState(() => {
+          odgovorServera = Future.wait([
+            dohvatiSliku(),
+            mjestoService.getMjesta(
+                dioCL,
+                widget.individualnaSalaData.id.toString(),
+                DateTime(currentDate.year, currentDate.month, currentDate.day,
+                    fromTimeTemp!.hour, fromTimeTemp!.minute),
+                DateTime(currentDate.year, currentDate.month, currentDate.day,
+                    toTimeTemp!.hour, toTimeTemp!.minute))
+          ])
+          // fromTimeTemp = fromTime,
+          // toTimeTemp = toTime,
+        });
   }
 
   double getSlikaSize() {
@@ -336,9 +346,9 @@ class _IndSalaViewState extends State<IndSalaView> {
   }
 
   bool isCorrectTime() {
-    if (fromTime != null && toTime != null) {
-      var diff = (toTime!.hour * 60 + toTime!.minute) -
-          (fromTime!.hour * 60 + fromTime!.minute);
+    if (fromTimeTemp != null && toTimeTemp != null) {
+      var diff = (toTimeTemp!.hour * 60 + toTimeTemp!.minute) -
+          (fromTimeTemp!.hour * 60 + fromTimeTemp!.minute);
       if (diff <= 3 * 60 && diff >= (0 * 60 + 15)) {
         return true;
       } else {
@@ -349,20 +359,22 @@ class _IndSalaViewState extends State<IndSalaView> {
     }
   }
 
-  Future<String?> dohvatiSliku() async {
-    Response odgovor = await dioCL.dio.get(
-        'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika');
+  Future<Uint8List> dohvatiSliku() async {
+    http.Response odgovor = await http.get(Uri.parse(
+        'http://10.0.2.2:8080/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika'));
     if (odgovor.statusCode == 200) {
-      return odgovor.data;
+      return odgovor.bodyBytes;
     } else {
-      return null;
+      return Uint8List(0);
     }
   }
 
-  void showCustomDialog(BuildContext context, MjestoResponse mjesto,
-          TimeOfDay? fromTime, TimeOfDay? toTime, DateTime date) =>
+  void showCustomDialog(BuildContext context, MjestoResponse mjesto) =>
       showDialog(
           context: context,
           builder: (context) => MjestoDialog(
-              data: mjesto, date: date, fromTime: fromTime, toTime: toTime));
+              data: mjesto,
+              date: currentDate,
+              fromTime: fromTimeTemp,
+              toTime: toTimeTemp));
 }

@@ -29,6 +29,7 @@ class DioClient {
         } else if (error.response?.statusCode == 409) {
           return;
         }
+
         hendler.next(error);
       },
       onRequest: (options, hendler) async {
