@@ -167,8 +167,9 @@ class _MjestoDialogState extends State<MjestoDialog> {
                           borderRadius: BorderRadius.circular(12.0),
                           onTap: () async {
                             if (isFree()) {
+                              Response? odgovor;
                               try {
-                                Response? odgovor = await rezervacijaService
+                                odgovor = await rezervacijaService
                                     .kreirajRezervacijuMjesta(
                                         dioCL,
                                         widget.data.id.toString(),
@@ -224,7 +225,7 @@ class _MjestoDialogState extends State<MjestoDialog> {
                                 const snackBar = SnackBar(
                                   duration: Duration(seconds: 3),
                                   content: Text(
-                                      'Definisana rezervacija van radnog vremena!',
+                                      'Nemoguce kreirati rezervaciju u datom vremenu!',
                                       style: TextStyle(color: Colors.white)),
                                   backgroundColor:
                                       Color.fromARGB(255, 199, 78, 69),

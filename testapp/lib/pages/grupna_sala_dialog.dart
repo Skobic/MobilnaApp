@@ -376,9 +376,10 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                                                 toTime!.hour,
                                                 toTime!.minute,
                                                 00),
-                                            svrha: 'a',
+                                            svrha: 'asdfs',
                                             brojOsoba: 1),
                                       );
+
                                       if (odgovor != null) {
                                         if (odgovor.statusCode == 200 ||
                                             odgovor.statusCode == 201) {
@@ -424,7 +425,7 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                                       const snackBar = SnackBar(
                                         duration: Duration(seconds: 3),
                                         content: Text(
-                                            'Definisana rezervacija van radnog vremena!',
+                                            'Nemoguce kreirati rezervaciju u datom vremenu!',
                                             style:
                                                 TextStyle(color: Colors.white)),
                                         backgroundColor:
