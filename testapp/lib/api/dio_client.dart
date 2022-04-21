@@ -10,6 +10,9 @@ class DioClient {
   DioClient() {
     dio.interceptors.add(QueuedInterceptorsWrapper(
       onError: (error, hendler) async {
+        if (error.response?.statusCode == 409) {
+          print('asdfsadf');
+        }
         if (error.response?.statusCode == 403 ||
             error.response?.statusCode == 401) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
