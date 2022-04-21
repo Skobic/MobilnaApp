@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/PromjenaLozinke.dart';
+import 'package:testapp/api/dio_client.dart';
+import 'package:testapp/api/odjava_service.dart';
 
 import '../BrisanjeNaloga.dart';
 import '../InfoPC.dart';
@@ -18,6 +20,9 @@ class ProfilPage extends StatefulWidget {
 
 Color pozadina = const Color(0xFF78AECB);
 Color pozadina2 = const Color(0xFF78AECB);
+
+DioClient dioCL = DioClient();
+OdjavaService odjavaService = OdjavaService();
 
 class _ProfilPageState extends State<ProfilPage> {
   @override
@@ -231,32 +236,7 @@ class _ProfilPageState extends State<ProfilPage> {
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  title: const Text('Odjava'),
-                                  content:
-                                      const Text('Uspješno ste se odjavili !'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () async {
-                                        SharedPreferences prefs =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        prefs.remove('email');
-                                        final pref = await SharedPreferences
-                                            .getInstance();
-                                        await pref.clear();
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            "/LoginPage",
-                                            (r) => false);
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                ),
-                              );
+                              odjaviSe();
                             },
                             child: const Text('Da'),
                           ),
@@ -275,5 +255,48 @@ class _ProfilPageState extends State<ProfilPage> {
         ],
       ),
     );
+  }
+
+  void odjaviSe() async {
+    var response = await odjavaService.createOdjava(dioClient: dioCL);
+
+    if (response?.statusCode == 200 || response?.statusCode == 201) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Odjava'),
+          content: const Text('Uspješno ste se odjavili !'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.remove('email');
+                final pref = await SharedPreferences.getInstance();
+                await pref.clear();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/LoginPage", (r) => false);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Greška'),
+          content: const Text('Greška na serveru !'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

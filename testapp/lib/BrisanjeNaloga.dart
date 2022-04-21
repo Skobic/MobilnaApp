@@ -2,6 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testapp/Login.dart';
+import 'package:testapp/api/brisanje_naloga_service.dart';
+import 'package:testapp/api/dio_client.dart';
+import 'package:testapp/api/odjava_service.dart';
+import 'package:testapp/models/responses/brisanje_naloga_response.dart';
+
+import 'api/dio_client.dart';
 
 class BrisanjeNaloga extends StatefulWidget {
   const BrisanjeNaloga({Key? key}) : super(key: key);
@@ -12,6 +19,11 @@ class BrisanjeNaloga extends StatefulWidget {
 
 class _BrisanjeNalogaState extends State<BrisanjeNaloga> {
   String unosLozinka = '', unosLozinkaPotvrda = '';
+
+  DioClient dioCl = DioClient();
+  BrisanjeNalogaService brisanjeService = BrisanjeNalogaService();
+  BrisanjeNalogaResponse lozinkaData = BrisanjeNalogaResponse(lozinka: '');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,10 +92,6 @@ class _BrisanjeNalogaState extends State<BrisanjeNaloga> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(primary: Colors.blue[700]),
                 onPressed: () async {
-                  SharedPreferences preferences =
-                      await SharedPreferences.getInstance();
-                  final String? trenutnaLozinka =
-                      preferences.getString('lozinka');
                   if (unosLozinka.isEmpty || unosLozinkaPotvrda.isEmpty) {
                     showDialog<String>(
                       context: context,
@@ -98,7 +106,7 @@ class _BrisanjeNalogaState extends State<BrisanjeNaloga> {
                         ],
                       ),
                     );
-                  } else if (unosLozinka != trenutnaLozinka) {
+                  } else if (unosLozinka != lozinkaKorisnika) {
                     showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
@@ -137,32 +145,8 @@ class _BrisanjeNalogaState extends State<BrisanjeNaloga> {
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
-                              showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  title: const Text('Brisanje naloga'),
-                                  content:
-                                      const Text('Uspješno ste obrisali nalog'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () async {
-                                        SharedPreferences prefs =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        prefs.remove('email');
-                                        final pref = await SharedPreferences
-                                            .getInstance();
-                                        await pref.clear();
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            "/LoginPage",
-                                            (r) => false);
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                ),
-                              );
+                              lozinkaData.lozinka = unosLozinkaPotvrda;
+                              obrisiNalog();
                             },
                             child: const Text('Da'),
                           ),
@@ -185,5 +169,50 @@ class _BrisanjeNalogaState extends State<BrisanjeNaloga> {
         ),
       ),
     );
+  }
+
+  void obrisiNalog() async {
+    var response = await brisanjeService.obrisiNalog(
+        dioClient: dioCl,
+        korisnikId: idKorisnika,
+        korisnikLozinka: lozinkaData);
+    if (response?.statusCode == 204) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Brisanje naloga'),
+          content: const Text('Uspješno ste obrisali nalog'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.remove('email');
+                final pref = await SharedPreferences.getInstance();
+                await pref.clear();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/LoginPage", (r) => false);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Greška'),
+          content: const Text('Greška na serveru !'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

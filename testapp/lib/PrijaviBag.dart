@@ -27,7 +27,7 @@ Future sendEmail(String message, String pcEmail, String trenutniEmail) async {
         'user_id': userId,
         'template_params': {
           'to_email': pcEmail,
-          'name': trenutniEmail,
+          'name': 'korisnik',
           'message': message
         }
       }));
@@ -117,8 +117,8 @@ class _PrijaviBagState extends State<PrijaviBag> {
                   SharedPreferences preferences =
                       await SharedPreferences.getInstance();
                   final String? trenutniEmail = preferences.getString('email');
-                  final response =
-                      await sendEmail(unosMessage, pcEmail, trenutniEmail!);
+                  final response = await sendEmail(
+                      unosMessage, pcEmail, 'korisnik@gmail.com');
                   ScaffoldMessenger.of(context).showSnackBar(
                     response == 200
                         ? const SnackBar(

@@ -131,8 +131,8 @@ class _IndividualnaPotvrdaDolaskaState
                           margin: const EdgeInsets.only(left: 15, right: 15),
                           child: ElevatedButton(
                             onPressed: () {
-                              if (result != null) {
-                                qrKod = result as PotvrdaDolaskaRequest;
+                              if (result?.code != null) {
+                                print(result?.code);
                                 potvrdiDolazak(widget.argInfo.idMjesta,
                                     widget.argInfo.idRezervacije);
                               } else {
@@ -224,7 +224,7 @@ class _IndividualnaPotvrdaDolaskaState
   void potvrdiDolazak(int mjestoId, rezervacijaId) async {
     var response = await potvrdaDolaskaService.potvrdiDolazakIndRez(
         dioClient: dioCL,
-        qrKodInfo: qrKod,
+        qrKodInfo: PotvrdaDolaskaRequest(kod: result!.code!),
         idMjesta: mjestoId,
         idRezervacije: rezervacijaId);
     if (response?.statusCode == 200 || response?.statusCode == 201) {

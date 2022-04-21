@@ -399,7 +399,8 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
 
                                           Navigator.of(context).pop();
                                         }
-                                      }
+                                      } else
+                                        print('test');
                                     } on ConflictException catch (err) {
                                       //Nasljedeni exception za 409 statusCode od strane servera
                                       print('Exception..:----> ${err.uzrok}');
