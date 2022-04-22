@@ -59,6 +59,7 @@ class InformacijeCitaonice extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
+
             RichText(
               text: TextSpan(
                 style:

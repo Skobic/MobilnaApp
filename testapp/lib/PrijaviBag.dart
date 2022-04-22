@@ -119,6 +119,7 @@ class _PrijaviBagState extends State<PrijaviBag> {
                   final String? trenutniEmail = preferences.getString('email');
                   final response = await sendEmail(
                       unosMessage, pcEmail, 'korisnik@gmail.com');
+                  //print(response);
                   ScaffoldMessenger.of(context).showSnackBar(
                     response == 200
                         ? const SnackBar(
