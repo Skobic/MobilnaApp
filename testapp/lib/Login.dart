@@ -148,12 +148,11 @@ class _LoginDemoState extends State<LoginDemo> {
                                   ],
                                 ));
                       } else {
-                        Response odgovor = await dioCL.dio.post(
-                            'http://192.168.0.104:8080/api/v1/prijava',
-                            data: {
-                              "korisnickoIme": korisnickoImeController.text,
-                              "lozinka": lozinkaController.text
-                            });
+                        Response odgovor = await dioCL.dio
+                            .post('http://10.0.2.2:8080/api/v1/prijava', data: {
+                          "korisnickoIme": korisnickoImeController.text,
+                          "lozinka": lozinkaController.text
+                        });
                         if (odgovor.statusCode == 201 &&
                             odgovor.data['uloga'] == 'KORISNIK') {
                           idKorisnika = odgovor.data['id'];

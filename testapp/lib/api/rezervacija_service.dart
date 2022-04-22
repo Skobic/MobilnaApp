@@ -20,6 +20,7 @@ class RezervacijaService {
       return odgovor;
     } on DioError catch (error, stacktrace) {
       if (error.response != null) {
+        print(error.response!.statusCode);
         if (error.response!.statusCode == 409) {
           throw ConflictException('Rezervacija vec definisana u tom vremenu');
         } else if (error.response!.statusCode == 400) {
@@ -68,17 +69,23 @@ class RezervacijaService {
           data: rezervacijaData.toJson());
 
       return odgovor;
-    } on DioError catch (error, stacktrace) {
-      if (error.response != null) {
-        if (error.response!.statusCode == 409) {
-          throw ConflictException('Rezervacija vec definisana u tom vremenu');
-        } else if (error.response!.statusCode == 400) {
-          throw VanRadnogVremenaException('Rezervacija je van radnog vremena');
-        }
-      } else {
-        throw Exception("Exception occured: $error stackTrace: $stacktrace");
-      }
+    } catch (error, stacktrace) {
+      throw Exception("Exception occured: $error stackTrace: $stacktrace");
     }
+    // } on DioError catch (error, stacktrace) {
+    //   print('asdlfksjadfl');
+    //   if (error.response != null) {
+    //     if (error.response!.statusCode == 409) {
+    //       throw ConflictException('Rezervacija vec definisana u tom vremenu');
+    //     } else if (error.response!.statusCode == 400) {
+    //       throw VanRadnogVremenaException('Rezervacija je van radnog vremena');
+    //     } else {
+    //       throw Exception('sdfsadfasdf');
+    //     }
+    //   } else {
+    //     throw Exception("Exception occured: $error stackTrace: $stacktrace");
+    //   }
+    // }
   }
 
   Future<List<RezervacijaMjestaResponse>> getRezervacijeGrupneSale(

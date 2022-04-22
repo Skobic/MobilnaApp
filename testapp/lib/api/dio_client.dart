@@ -3,13 +3,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DioClient {
   final Dio dio = Dio(BaseOptions(
-    baseUrl: "http://192.168.0.104:8080/api/v1",
+    baseUrl: "http://10.0.2.2:8080/api/v1",
   ));
-  Dio tokenDio = Dio(BaseOptions(baseUrl: "http://192.168.0.104:8080/api/v1"));
+  Dio tokenDio = Dio(BaseOptions(baseUrl: "http://10.0.2.2:8080/api/v1"));
 
   DioClient() {
     dio.interceptors.add(QueuedInterceptorsWrapper(
       onError: (error, hendler) async {
+        if (error.response?.statusCode == 409) {
+          print('asdfsadf');
+        }
         if (error.response?.statusCode == 403 ||
             error.response?.statusCode == 401) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -19,17 +22,16 @@ class DioClient {
             options.headers['Authorization'] =
                 'Bearer ${prefs.getString('accessToken')}';
             var odgovor1 = await _retry(options);
+
             hendler.resolve(odgovor1);
             return;
           }
+
           await refreshToken();
           final odgovor2 = await _retry(options);
           hendler.resolve(odgovor2);
           return;
-        } else if (error.response?.statusCode == 409) {
-          return;
         }
-
         hendler.next(error);
       },
       onRequest: (options, hendler) async {
