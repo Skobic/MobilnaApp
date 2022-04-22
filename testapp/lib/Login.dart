@@ -8,7 +8,6 @@ import 'package:testapp/ZaboravljenaLozinka.dart';
 import 'package:testapp/models/requests/registracija_request.dart';
 import 'api/dio_client.dart';
 import 'pocetna_strana.dart';
-import 'KorisnikClass.dart';
 import 'Registracija.dart';
 import 'ZaboravljenaLozinka.dart';
 
@@ -32,7 +31,7 @@ class LoginDemo extends StatefulWidget {
 }
 
 class _LoginDemoState extends State<LoginDemo> {
-  late Future<Korisnik> test;
+  //late Future<Korisnik> test;
   DioClient dioCL = DioClient();
 
   final korisnickoImeController = TextEditingController(text: '');

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:testapp/models/responses/grupne_rezervacije_korisnika_response.dart';
 import 'package:testapp/models/responses/individualne_rezervacije_korisnika_response.dart';
 
-import '../PotvrdaDolaska.dart';
-
 DateTime defaultTime = DateTime.parse("2000-01-01 00:00:00");
 
 Container _showRemainingTime(DateTime remainingTime, bool otkazana) {

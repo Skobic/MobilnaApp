@@ -5,8 +5,6 @@ import 'package:testapp/models/responses/individualne_rezervacije_korisnika_resp
 import 'package:testapp/Login.dart';
 import 'package:testapp/widgets/individualna_rezervacija_card.dart';
 
-import '../PotvrdaDolaska.dart';
-
 class PrikazIndividualnihRezervacijaKorisnika extends StatefulWidget {
   const PrikazIndividualnihRezervacijaKorisnika({Key? key}) : super(key: key);
 

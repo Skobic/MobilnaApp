@@ -12,7 +12,7 @@ class PotvrdaDolaskaService {
     Response? response;
 
     try {
-      response = await dioClient.dio.post(
+      response = await dioClient.dio.patch(
         '/mjesta/${idMjesta.toString()}/rezervacije/${idRezervacije.toString()}',
         data: qrKodInfo.toJson(),
       );
@@ -31,7 +31,7 @@ class PotvrdaDolaskaService {
     Response? response;
 
     try {
-      response = await dioClient.dio.post(
+      response = await dioClient.dio.patch(
         '/grupne-sale/${idSale.toString()}/rezervacije/${idRezervacije.toString()}',
         data: qrKodInfo.toJson(),
       );

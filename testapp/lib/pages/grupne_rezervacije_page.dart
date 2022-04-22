@@ -8,8 +8,6 @@ import 'package:testapp/Login.dart';
 import 'package:testapp/widgets/grupna_rezervacija_card.dart';
 import 'package:testapp/widgets/individualna_rezervacija_card.dart';
 
-import '../PotvrdaDolaska.dart';
-
 class PrikazGrupnihRezervacijaKorisnika extends StatefulWidget {
   const PrikazGrupnihRezervacijaKorisnika({Key? key}) : super(key: key);
 

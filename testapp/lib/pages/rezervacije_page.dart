@@ -7,8 +7,6 @@ import 'package:testapp/pages/grupne_rezervacije_page.dart';
 import 'package:testapp/pages/individualne_rezervacije_page.dart';
 import 'package:testapp/widgets/individualna_rezervacija_card.dart';
 
-import '../PotvrdaDolaska.dart';
-
 class RezervacijePage extends StatefulWidget {
   const RezervacijePage({Key? key}) : super(key: key);
 

@@ -11,27 +11,6 @@ import 'package:testapp/api/potvrda_dolaska_service.dart';
 import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
 import 'package:testapp/models/requests/potvrda_dolaska_request.dart';
 
-/*class MyHome extends StatelessWidget {
-  const MyHome({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Flutter Demo Home Page')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const QRViewExample(),
-            ));
-          },
-          child: const Text('qrView'),
-        ),
-      ),
-    );
-  }
-}*/
-
 class IndividualnaPotvrdaDolaska extends StatefulWidget {
   ArgumentiIndividualnePotvrdeDolaska argInfo;
 
@@ -80,24 +59,6 @@ class _IndividualnaPotvrdaDolaskaState
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    /*Text(
-                          /* 'Barcode Type: ${describeEnum(result!.format)}*/ '${result!.code}')*/
-                    /*showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                      AlertDialog(
-                        title: const Text('Uspjesno skeniranje'),
-                        content: Text('${result!.code}'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ))*/
-
                     const Text('Skeniraj QR kod mjesta',
                         style: TextStyle(fontSize: 18)),
                     Row(
@@ -185,32 +146,6 @@ class _IndividualnaPotvrdaDolaskaState
                         )
                       ],
                     ),
-                    /*Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.pauseCamera();
-                            },
-                            child: const Text('pause',
-                                style: TextStyle(fontSize: 20)),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.resumeCamera();
-                            },
-                            child: const Text('resume',
-                                style: TextStyle(fontSize: 20)),
-                          ),
-                        )
-                      ],
-                    ),*/
                   ],
                 ),
               ),
