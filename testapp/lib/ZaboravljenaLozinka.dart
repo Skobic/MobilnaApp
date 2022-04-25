@@ -1,38 +1,19 @@
 // ignore_for_file: file_names
 
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:testapp/api/dio_client.dart';
+import 'package:testapp/api/zaboravljena_lozinka_service.dart';
+import 'package:testapp/models/requests/zaboravljena_lozinka_email_request.dart';
+import 'package:testapp/pages/reset_lozinke_page.dart';
 import 'Login.dart';
 
 String name = 'Pametne citaonica',
     message = 'lozinka123',
     pcEmail = 'pametna.citaonica@gmail.com';
-
-Future sendEmail(String name, String email, String message) async {
-  final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
-  const serviceId = 'service_5pusse4';
-  const templateId = 'template_6e6rzuv';
-  const userId = 'user_CbPgIqRxGl83V7W9dwrvA';
-  final response = await http.post(url,
-      headers: {
-        'origin': 'http://localhost',
-        'Content-Type': 'application/json'
-      }, //This line makes sure it works for all platforms.
-      body: json.encode({
-        'service_id': serviceId,
-        'template_id': templateId,
-        'user_id': userId,
-        'template_params': {
-          'to_email': email,
-          'from_name': name,
-          //'from_email': pcEmail,
-          'message': message
-        }
-      }));
-  return response.statusCode;
-}
 
 //import 'package:flutter_email_sender/flutter_email_sender.dart';
 class ZaboravljenaLozinka extends StatefulWidget {
@@ -44,6 +25,11 @@ class ZaboravljenaLozinka extends StatefulWidget {
 
 class _ZaboravljenaLozinkaState extends State<ZaboravljenaLozinka> {
   String unosEmail = '';
+  DioClient dioCl = DioClient();
+  ZaboravljenaLozinkaService zaboravljenaLozinkaService =
+      ZaboravljenaLozinkaService();
+  ZaboravljenaLozinkaEmailRequest emailInfo =
+      ZaboravljenaLozinkaEmailRequest(email: '');
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +117,36 @@ class _ZaboravljenaLozinkaState extends State<ZaboravljenaLozinka> {
                       ),
                     );
                   } else {
-                    final response = await sendEmail(name, unosEmail, message);
+                    emailInfo.email = unosEmail;
+                    var odgovor = await zaboravljenaLozinkaService.slanjeEmaila(
+                        dioClient: dioCl, emailData: emailInfo);
+                    if (odgovor?.statusCode == 200 ||
+                        odgovor?.statusCode == 201) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const ResetLozinkePage()));
+                    } else {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Greška'),
+                          content: const Text('Greška na serveru !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                var nav = Navigator.of(context);
+                                //Navigator.pop(context, 'OK');
+                                nav.pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    /*final response = await sendEmail(name, unosEmail, message);
                     ScaffoldMessenger.of(context).showSnackBar(
                       response == 200
                           ? const SnackBar(
@@ -141,7 +156,7 @@ class _ZaboravljenaLozinkaState extends State<ZaboravljenaLozinka> {
                           : const SnackBar(
                               content: Text('Neuspjesno slanje !'),
                               backgroundColor: Colors.red),
-                    );
+                    );*/
                     /*showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(

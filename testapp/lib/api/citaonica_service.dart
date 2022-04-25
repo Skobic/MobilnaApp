@@ -7,7 +7,7 @@ class CitaonicaService {
   Future<List<CitaonicaResponse>> getCitaonice(DioClient dioClient) async {
     // Perform GET request to the endpoint "/users/<id>"
     try {
-      Response citaoniceData = await dioClient.dio.get('/citaonice');
+      Response citaoniceData = await dioClient.dio.get('/citaonice/');
 
       // Prints the raw data returned by the server
       //print('User Info: ${userData.data}');

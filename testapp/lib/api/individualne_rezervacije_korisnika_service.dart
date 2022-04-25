@@ -13,7 +13,7 @@ class IndividualneRezervacijeKorisnikaService {
     List<IndividualneRezervacijeKorisnikaResponse> lista;
     try {
       Response odgovor = await dioClient.dio
-          .get('/korisnici/${korisnikId.toString()}/rezervacije-mjesta');
+          .get('/korisnici/${korisnikId.toString()}/rezervacije-mjesta/');
       lista = (odgovor.data as List)
           .map(
               (data) => IndividualneRezervacijeKorisnikaResponse.fromJson(data))

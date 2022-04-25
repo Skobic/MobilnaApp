@@ -11,7 +11,7 @@ class RegistracijaService {
 
     try {
       response = await dioClient.dio.post(
-        '/registracija',
+        '/registracija/',
         data: korisnikInfo.toJson(),
       );
     } catch (e) {

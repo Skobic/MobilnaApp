@@ -10,7 +10,7 @@ class MjestoService {
     // Perform GET request to the endpoint "/users/<id>"
     try {
       Response saleData = await dioClient.dio.post(
-          '/individualne-sale/${individualnaSalaId.toString()}/mjesta-statusi',
+          '/individualne-sale/${individualnaSalaId.toString()}/mjesta-statusi/',
           data: {
             'vrijemeOd': vrijemeOd.toString(),
             'vrijemeDo': vrijemeDo.toString()

@@ -8,7 +8,7 @@ class ObavjestenjeService {
     // Perform GET request to the endpoint "/users/<id>"
     try {
       Response obavjestenjaData = await dioClient.dio
-          .get('/citaonice/${citaonicaId.toString()}/obavjestenja');
+          .get('/citaonice/${citaonicaId.toString()}/obavjestenja/');
 
       List<ObavjestenjaResponse> obavjestenja = (obavjestenjaData.data as List)
           .map((data) => ObavjestenjaResponse.fromJson(data))

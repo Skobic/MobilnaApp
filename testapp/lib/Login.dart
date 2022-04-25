@@ -149,7 +149,7 @@ class _LoginDemoState extends State<LoginDemo> {
                                 ));
                       } else {
                         Response odgovor = await dioCL.dio.post(
-                            'https://192.168.0.104:8443/api/v1/prijava',
+                            'https://10.0.2.2:8443/api/v1/prijava/',
                             data: {
                               "korisnickoIme": korisnickoImeController.text,
                               "lozinka": lozinkaController.text

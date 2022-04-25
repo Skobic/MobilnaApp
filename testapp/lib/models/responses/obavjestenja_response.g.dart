@@ -13,7 +13,7 @@ ObavjestenjaResponse _$ObavjestenjaResponseFromJson(
       naslov: json['naslov'] as String,
       sadrzaj: json['sadrzaj'] as String,
       vrijeme: DateTime.parse(json['vrijeme'] as String),
-      supervizorId: json['supervizorId'] as int,
+      citaonicaId: json['citaonicaId'] as int,
     );
 
 Map<String, dynamic> _$ObavjestenjaResponseToJson(
@@ -23,5 +23,5 @@ Map<String, dynamic> _$ObavjestenjaResponseToJson(
       'naslov': instance.naslov,
       'sadrzaj': instance.sadrzaj,
       'vrijeme': instance.vrijeme.toIso8601String(),
-      'supervizorId': instance.supervizorId,
+      'citaonicaId': instance.citaonicaId,
     };

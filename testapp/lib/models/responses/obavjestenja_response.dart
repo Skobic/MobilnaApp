@@ -8,15 +8,14 @@ class ObavjestenjaResponse {
   String naslov;
   String sadrzaj;
   DateTime vrijeme;
-
-  int supervizorId;
+  int citaonicaId;
 
   ObavjestenjaResponse(
       {required this.id,
       required this.naslov,
       required this.sadrzaj,
       required this.vrijeme,
-      required this.supervizorId});
+      required this.citaonicaId});
 
   factory ObavjestenjaResponse.fromJson(Map<String, dynamic> json) =>
       _$ObavjestenjaResponseFromJson(json);

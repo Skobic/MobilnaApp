@@ -12,7 +12,7 @@ class RezervacijaService {
     // Perform GET request to the endpoint "/users/<id>"
     try {
       Response? odgovor = await dioClient.dio
-          .post('/mjesta/${mjestoId.toString()}/rezervacije', data: {
+          .post('/mjesta/${mjestoId.toString()}/rezervacije/', data: {
         'vrijemeVazenjaOd': vrijemeOd.toString(),
         'vrijemeVazenjaDo': vrijemeDo.toString()
       });
