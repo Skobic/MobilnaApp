@@ -120,7 +120,14 @@ class _ObavjestenjaState extends State<Obavjestenja> {
               children: <Widget>[
                 Card(
                   color: Colors.green[100],
-                  child: _getWidget(index),
+                  child: ListTile(
+                    leading:
+                        Icon(Icons.alarm, color: Colors.red[700], size: 45),
+                    title: Text(' ${listaObavjestenja[1].naslovObavjestenja}'),
+                    subtitle: Text(' ${listaObavjestenja[1].textObavjestenja}'),
+                    trailing: Text(
+                        ' ${listaObavjestenja[1].vrijemeObavjestenja.toString().substring(0, 16)}'),
+                  ),
                   /*ListTile(
                     //leading: getIcon(listaObavjestenja[index].tip),
                     title:

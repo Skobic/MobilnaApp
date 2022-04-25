@@ -172,7 +172,8 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
           minutes: sada.minute,
           seconds: sada.second));
     }
-    return SizedBox(
+    return Container(
+      margin: EdgeInsets.only(left: sirina * 0.015, right: sirina * 0.015),
       height: 150,
       //width: 210,
       child: Stack(
@@ -248,7 +249,7 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
           Positioned(
             left: 0,
             bottom: 0,
-            width: 0.5 * sirina,
+            width: 0.485 * sirina,
             height: 35,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -354,7 +355,7 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
           Positioned(
             right: 0,
             bottom: 0,
-            width: 0.5 * sirina,
+            width: 0.485 * sirina,
             height: 35,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),

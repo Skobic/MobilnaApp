@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:testapp/Obavjestenja.dart';
 import 'package:testapp/models/responses/citaonica_response.dart';
+import 'package:testapp/pages/obavjestenje_page.dart';
 
 import '../constants/config.dart';
 import '../models/other/radno_vrijeme.dart';
@@ -108,7 +110,12 @@ class InformacijeCitaonice extends StatelessWidget {
             splashRadius: 27,
             iconSize: 45,
             icon: const Icon(Icons.circle_notifications_outlined),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const PrikazObavjestenja()));
+            },
           ),
         )
       ],

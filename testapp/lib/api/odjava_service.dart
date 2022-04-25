@@ -9,7 +9,7 @@ class OdjavaService {
     Response? response;
 
     try {
-      response = await dioClient.dio.post('/odjava/');
+      response = await dioClient.dio.post('/odjava');
 
       //print('User created: ${response.data}');
 

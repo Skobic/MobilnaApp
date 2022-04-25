@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/adapter.dart';
 
 class DioClient {
   final Dio dio = Dio(BaseOptions(
-    baseUrl: "http://10.0.2.2:8080/api/v1",
+    baseUrl: "https://192.168.0.104:8443/api/v1",
   ));
-  Dio tokenDio = Dio(BaseOptions(baseUrl: "http://10.0.2.2:8080/api/v1"));
+
+  Dio tokenDio = Dio(BaseOptions(baseUrl: "https://192.168.0.104:8443/api/v1"));
 
   DioClient() {
     dio.interceptors.add(QueuedInterceptorsWrapper(

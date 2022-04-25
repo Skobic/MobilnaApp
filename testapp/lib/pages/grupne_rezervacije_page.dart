@@ -42,64 +42,84 @@ class _PrikazGrupnihRezervacijaKorisnikaState
     return SingleChildScrollView(
       child: Column(
         children: [
-          FutureBuilder<List<GrupneRezervacijeKorisnikaResponse>>(
-              future: listaGrupRezKor,
-              initialData: null,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(
-                      height: 120,
-                      width: 120,
-                      child: Center(child: CircularProgressIndicator()));
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData &&
-                      snapshot.data.toString() != '[]') {
-                    //print(snapshot.data);
-                    List<GrupneRezervacijeKorisnikaResponse>? list =
-                        snapshot.data?.toList();
-                    list!.sort((a, b) =>
-                        b.vrijemeVazenjaOd.compareTo(a.vrijemeVazenjaOd));
-                    //brojElemenata = list.length;
-                    // print(brojElemenata);
-                    return Column(
-                      children: [
-                        ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return GrupnaRezervacijaKorisnikaCard(
-                                  idSale: list[index].salaId,
-                                  grupRezKorData: list[index],
-                                  // index: snapshot.data![index].id,
-                                  index: list[index].id,
-                                  funkcijaBrisanja:
-                                      obrisiGrupnuRezervacijuKorisnika);
-                            },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                                  height: 10,
-                                  width: 40,
-                                ),
-                            itemCount: snapshot.data!.length),
-                      ],
-                    );
+          Container(
+            height: 8,
+            color: Colors.white70,
+          ),
+          Container(
+            color: Colors.white70,
+            child: FutureBuilder<List<GrupneRezervacijeKorisnikaResponse>>(
+                future: listaGrupRezKor,
+                initialData: null,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SizedBox(
+                        height: 120,
+                        width: 120,
+                        child: Center(child: CircularProgressIndicator()));
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.hasData &&
+                        snapshot.data.toString() != '[]') {
+                      //print(snapshot.data);
+                      List<GrupneRezervacijeKorisnikaResponse>? list =
+                          snapshot.data?.toList();
+
+                      for (int i = 0; i < list!.length; i++) {
+                        if (list[i].vrijemeOtkazivanja != null ||
+                            (list[i]
+                                .vrijemeVazenjaDo
+                                .isBefore(DateTime.now())) ||
+                            list[i].vrijemePotvrde != null) {
+                          list[i].vrijemeVazenjaOd = list[i]
+                              .vrijemeVazenjaOd
+                              .add(const Duration(days: 15));
+                        }
+                      }
+
+                      list.sort((a, b) =>
+                          a.vrijemeVazenjaOd.compareTo(b.vrijemeVazenjaOd));
+                      //brojElemenata = list.length;
+                      // print(brojElemenata);
+                      return Column(
+                        children: [
+                          ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return GrupnaRezervacijaKorisnikaCard(
+                                    idSale: list[index].salaId,
+                                    grupRezKorData: list[index],
+                                    // index: snapshot.data![index].id,
+                                    index: list[index].id,
+                                    funkcijaBrisanja:
+                                        obrisiGrupnuRezervacijuKorisnika);
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                    height: 10,
+                                    width: 40,
+                                  ),
+                              itemCount: snapshot.data!.length),
+                        ],
+                      );
+                    } else {
+                      return Center(
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: 300,
+                            child: const Text(
+                              'Trenutno nema rezervacija za prikazati !',
+                              style: TextStyle(fontSize: 30),
+                            )),
+                      );
+                    }
                   } else {
-                    return Center(
-                      child: Container(
-                          alignment: Alignment.centerLeft,
-                          height: 300,
-                          child: const Text(
-                            'Trenutno nema rezervacija za prikazati !',
-                            style: TextStyle(fontSize: 30),
-                          )),
-                    );
+                    return Text('State: ${snapshot.connectionState}');
                   }
-                } else {
-                  return Text('State: ${snapshot.connectionState}');
-                }
-              }),
+                }),
+          ),
         ],
       ),
     );

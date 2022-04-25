@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/PromjenaLozinke.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/odjava_service.dart';
-
 import '../BrisanjeNaloga.dart';
 import '../InfoPC.dart';
-import '../Obavjestenja.dart';
 import '../Uputstvo.dart';
 
 class ProfilPage extends StatefulWidget {
@@ -269,10 +266,6 @@ class _ProfilPageState extends State<ProfilPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.remove('email');
-                final pref = await SharedPreferences.getInstance();
-                await pref.clear();
                 Navigator.pushNamedAndRemoveUntil(
                     context, "/LoginPage", (r) => false);
               },

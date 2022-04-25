@@ -3,8 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:testapp/constants/config.dart';
+import 'package:testapp/models/other/argumenti_grupne_potvrd_dolaska.dart';
 import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
 import 'package:testapp/models/requests/potvrda_dolaska_request.dart';
+import 'package:testapp/pages/grupna_potvrda_dolaska.dart';
 import 'package:testapp/pages/individualna_potvrda_dolaska.dart';
 import 'package:testapp/pages/pregled_citaonice_page.dart';
 import 'package:testapp/pages/pregled_individualne_sale.dart';
@@ -102,6 +104,12 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
               builder = (BuildContext context) => IndividualnaPotvrdaDolaska(
                     argInfo: settings.arguments
                         as ArgumentiIndividualnePotvrdeDolaska,
+                  );
+              break;
+            case 'grupna_potvrda_dolaska':
+              builder = (BuildContext context) => GrupnaPotvrdaDolaska(
+                    argInfo:
+                        settings.arguments as ArgumentiGrupnePotvrdeDolaska,
                   );
               break;
             default:

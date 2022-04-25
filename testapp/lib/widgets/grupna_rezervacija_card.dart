@@ -1,13 +1,16 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:testapp/models/other/argumenti_grupne_potvrd_dolaska.dart';
 import 'package:testapp/models/responses/grupne_rezervacije_korisnika_response.dart';
 import 'package:testapp/models/responses/individualne_rezervacije_korisnika_response.dart';
+import 'package:testapp/pocetna_strana.dart';
 
 DateTime defaultTime = DateTime.parse("2000-01-01 00:00:00");
 
-Container _showRemainingTime(DateTime remainingTime, bool otkazana) {
-  if (remainingTime != defaultTime && !otkazana) {
+Container _showRemainingTime(DateTime remainingTime, bool otkazana,
+    bool potvrdjena, DateTime remainingPotvrdaTime) {
+  if (remainingTime != defaultTime && !otkazana && !potvrdjena) {
     if (remainingTime.day < 25) {
       return Container(
           child: Column(
@@ -59,6 +62,37 @@ Container _showRemainingTime(DateTime remainingTime, bool otkazana) {
       ));
     }
   }
+
+  if (remainingPotvrdaTime != defaultTime && !otkazana && !potvrdjena) {
+    if (remainingTime.day < 25) {
+      return Container(
+          child: Column(
+        children: <Widget>[
+          Center(
+            child: Container(
+                margin: const EdgeInsets.only(top: 10),
+                child: const Text('ROK ZA POTVRDU DOLASKA:',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold))),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 10, right: 10),
+            child: Text(
+                '${remainingPotvrdaTime.minute == 0 ? '' : '${remainingPotvrdaTime.minute}min i '}'
+                '${remainingPotvrdaTime.second}sec',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ));
+    }
+  }
+
   if (otkazana) {
     return Container(
         margin: const EdgeInsets.only(top: 30, left: 5, right: 5),
@@ -66,15 +100,27 @@ Container _showRemainingTime(DateTime remainingTime, bool otkazana) {
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: Color.fromARGB(255, 211, 58, 47),
-                fontSize: 25,
+                fontSize: 23,
                 fontWeight: FontWeight.bold)));
   }
+  if (potvrdjena) {
+    return Container(
+        margin: const EdgeInsets.only(top: 30, left: 5, right: 5),
+        child: Text('ISKORIŠTENA REZERVACIJA',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.green[800],
+                fontSize: 23,
+                fontWeight: FontWeight.bold)));
+  }
+
   return Container(
       margin: const EdgeInsets.only(top: 30, left: 5, right: 5),
-      child: const Text('ISKORIŠTENA REZERVACIJA',
+      child: const Text('NEISKORIŠTENA REZERVACIJA',
+          textAlign: TextAlign.center,
           style: TextStyle(
               color: Colors.black54,
-              fontSize: 25,
+              fontSize: 23,
               fontWeight: FontWeight.bold)));
 }
 
@@ -96,18 +142,42 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double sirina = MediaQuery.of(context).size.width;
+
+    bool otkazana = false;
+    bool potvrdjena = false;
+    if (grupRezKorData.vrijemeOtkazivanja != null ||
+        grupRezKorData.vrijemeVazenjaDo.isBefore(DateTime.now()) ||
+        grupRezKorData.vrijemePotvrde != null) {
+      grupRezKorData.vrijemeVazenjaOd =
+          grupRezKorData.vrijemeVazenjaOd.subtract(const Duration(days: 15));
+    }
+
+    if (grupRezKorData.vrijemeOtkazivanja != null) {
+      otkazana = true;
+    }
+    if (grupRezKorData.vrijemePotvrde != null) {
+      potvrdjena = true;
+    }
+
     DateTime sada = DateTime.now();
     DateTime rTime = DateTime.parse("2000-01-01 00:00:00");
     if (sada.isBefore(grupRezKorData.vrijemeVazenjaOd)) {
       rTime = grupRezKorData.vrijemeVazenjaOd.subtract(
           Duration(days: sada.day, hours: sada.hour, minutes: sada.minute));
     }
-    bool otkazana = false;
-    if (grupRezKorData.vrijemeOtkazivanja != null) {
-      otkazana = true;
+    DateTime rPotvrdaTime = DateTime.parse("2000-01-01 00:00:00");
+    DateTime krajnjeVrijemePotvrde =
+        grupRezKorData.vrijemeVazenjaOd.add(const Duration(minutes: 15));
+    if (sada.isBefore(krajnjeVrijemePotvrde)) {
+      rPotvrdaTime = krajnjeVrijemePotvrde.subtract(Duration(
+          days: sada.day,
+          hours: sada.hour,
+          minutes: sada.minute,
+          seconds: sada.second));
     }
 
-    return SizedBox(
+    return Container(
+      margin: EdgeInsets.only(left: sirina * 0.015, right: sirina * 0.015),
       height: 150,
       //width: 210,
       child: Stack(
@@ -171,13 +241,14 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               //child: _getImage(index),
-              child: _showRemainingTime(rTime, otkazana),
+              child:
+                  _showRemainingTime(rTime, otkazana, potvrdjena, rPotvrdaTime),
             ),
           ),
           Positioned(
             left: 0,
             bottom: 0,
-            width: 0.5 * sirina,
+            width: 0.485 * sirina,
             height: 35,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -219,7 +290,24 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
                               ],
                             ));
                   }
-                  if (!otkazana) {
+                  if (potvrdjena) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Potvrdjena rezervacija'),
+                              content: const Text(
+                                  'Dolazak na ovu rezervaciju je već potvrdjen, ne možete ponovo potvrditi dolazak !'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ));
+                  }
+                  if (!otkazana && !potvrdjena) {
                     if (uslov1 || uslov2) {
                       showDialog(
                           context: context,
@@ -252,10 +340,11 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
                                 ],
                               ));
                     } else {
-                      /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const PotvrdaDolaska()));*/
+                      navigatorKey.currentState!.pushNamed(
+                          'individualna_potvrda_dolaska',
+                          arguments: ArgumentiGrupnePotvrdeDolaska(
+                              idSale: grupRezKorData.salaId,
+                              idRezervacije: grupRezKorData.id));
                     }
                   }
                 },
@@ -265,7 +354,7 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
           Positioned(
             right: 0,
             bottom: 0,
-            width: 0.5 * sirina,
+            width: 0.485 * sirina,
             height: 35,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -283,45 +372,149 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
                     style: TextStyle(fontSize: 20, color: Color(0xFFd50102))),
 
                 onPressed: () {
-                  showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      title: const Text('Otkazivanje rezervacije'),
-                      content: const Text(
-                          'Da li ste sigurni da želite otkazati rezervaciju?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                title: const Text('Otkazivanje rezervacije'),
-                                content: const Text(
-                                    'Uspjesno ste otkazali rezervaciju'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      funkcijaBrisanja(index, idSale);
-                                      var nav = Navigator.of(context);
-                                      //Navigator.pop(context, 'OK');
-                                      nav.pop();
-                                      nav.pop();
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          child: const Text('Da'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'Ne'),
-                          child: const Text('Ne'),
-                        ),
-                      ],
-                    ),
-                  );
+                  if (otkazana) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Otkazana rezervacija'),
+                              content: const Text(
+                                  'Ova rezervacija je već otkazana, ne možete je ponovo otkazati !'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ));
+                  }
+                  if (potvrdjena &&
+                      DateTime.now()
+                          .isBefore(grupRezKorData.vrijemeVazenjaDo)) {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Otkazivanje rezervacije'),
+                        content: const Text(
+                            'Da li ste sigurni da želite otkazati rezervaciju koju ste već potvrdili?\n'
+                            'Ako to učinite morate napustiti mjesto i pokupiti svoje stvari !'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Otkazivanje rezervacije'),
+                                  content: const Text(
+                                      'Uspjesno ste otkazali rezervaciju'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        funkcijaBrisanja(index, idSale);
+                                        var nav = Navigator.of(context);
+                                        //Navigator.pop(context, 'OK');
+                                        nav.pop();
+                                        nav.pop();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: const Text('Da'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Ne'),
+                            child: const Text('Ne'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (potvrdjena &&
+                      !DateTime.now()
+                          .isBefore(grupRezKorData.vrijemeVazenjaDo)) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Iskorištena rezervacija'),
+                              content: const Text(
+                                  'Ova rezervacija je već u potpunosti iskorištena i istekla je, ne možete je više otkazati !'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ));
+                  }
+                  if (!otkazana &&
+                      !potvrdjena &&
+                      DateTime.now()
+                          .isBefore(grupRezKorData.vrijemeVazenjaOd)) {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Otkazivanje rezervacije'),
+                        content: const Text(
+                            'Da li ste sigurni da želite otkazati rezervaciju?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Otkazivanje rezervacije'),
+                                  content: const Text(
+                                      'Uspjesno ste otkazali rezervaciju'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        funkcijaBrisanja(index, idSale);
+                                        var nav = Navigator.of(context);
+                                        //Navigator.pop(context, 'OK');
+                                        nav.pop();
+                                        nav.pop();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: const Text('Da'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Ne'),
+                            child: const Text('Ne'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  if (!otkazana &&
+                      !potvrdjena &&
+                      !DateTime.now()
+                          .isBefore(grupRezKorData.vrijemeVazenjaOd)) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Neiskorištena rezervacija'),
+                              content: const Text(
+                                  'Ova rezervacija je već istekla, ne možete je više otkazati !'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ));
+                  }
                 },
               ),
             ),
