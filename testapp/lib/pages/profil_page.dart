@@ -259,6 +259,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
     if (response?.statusCode == 200 || response?.statusCode == 201) {
       showDialog<String>(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Odjava'),

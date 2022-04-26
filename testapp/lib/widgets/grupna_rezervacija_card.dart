@@ -341,7 +341,7 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
                               ));
                     } else {
                       navigatorKey.currentState!.pushNamed(
-                          'individualna_potvrda_dolaska',
+                          'grupna_potvrda_dolaska',
                           arguments: ArgumentiGrupnePotvrdeDolaska(
                               idSale: grupRezKorData.salaId,
                               idRezervacije: grupRezKorData.id));
