@@ -14,7 +14,7 @@ class GrupnaSalaResponse {
   @JsonKey(name: 'kapacitet')
   int brojMjesta;
   String? opis;
-  int statusId;
+  bool dostupno;
   //int statusId;
   List<ClanarinaResponse?> clanarine;
   List<KarakteristikeSaleResponse?> karakteristike;
@@ -25,7 +25,7 @@ class GrupnaSalaResponse {
       required this.qrKod,
       required this.brojMjesta,
       this.opis,
-      required this.statusId,
+      required this.dostupno,
       required this.clanarine,
       required this.karakteristike});
 

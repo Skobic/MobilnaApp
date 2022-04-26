@@ -16,8 +16,14 @@ class GrupnaSalaTile extends StatelessWidget {
       elevation: 4,
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
-        tileColor: const Color.fromARGB(255, 245, 245, 245),
-        onTap: () => showCustomDialog(context),
+        tileColor: (grupnaSalaData.dostupno == true)
+            ? const Color.fromARGB(255, 245, 245, 245)
+            : const Color.fromARGB(255, 213, 213, 213),
+        onTap: () {
+          if (grupnaSalaData.dostupno == true) {
+            showCustomDialog(context);
+          }
+        },
         title: Text(grupnaSalaData.naziv,
             style: GoogleFonts.ubuntu(
                 textStyle: const TextStyle(

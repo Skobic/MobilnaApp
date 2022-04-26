@@ -43,19 +43,25 @@ class _MjestoViewState extends State<MjestoView> {
       child: InkWell(
         borderRadius: BorderRadius.circular(30),
         splashColor: Colors.grey[200],
-        onTap: () => widget.otvoriDialog(
-          context,
-          widget.mjestoData,
-        ),
+        onTap: () {
+          if (widget.mjestoData.dostupno == true) {
+            widget.otvoriDialog(
+              context,
+              widget.mjestoData,
+            );
+          }
+        },
         child: Stack(
           children: [
             Transform.rotate(
                 angle: widget.mjestoData.ugao * math.pi / 180,
                 child: Icon(Icons.event_seat,
                     size: sqrt(widget.sizeOfMjesto),
-                    color: (widget.mjestoData.zauzeto!)
-                        ? const Color.fromARGB(255, 176, 51, 51)
-                        : const Color.fromARGB(255, 64, 152, 35))),
+                    color: (widget.mjestoData.dostupno == true)
+                        ? ((widget.mjestoData.zauzeto!)
+                            ? const Color.fromARGB(255, 176, 51, 51)
+                            : const Color.fromARGB(255, 64, 152, 35))
+                        : (const Color.fromARGB(255, 79, 79, 79)))),
             Positioned(
               top: 0,
               right: 0,

@@ -13,7 +13,7 @@ GrupnaSalaResponse _$GrupnaSalaResponseFromJson(Map<String, dynamic> json) =>
       qrKod: json['kod'] as String,
       brojMjesta: json['kapacitet'] as int,
       opis: json['opis'] as String?,
-      statusId: json['statusId'] as int,
+      dostupno: json['dostupno'] as bool,
       clanarine: (json['clanarine'] as List<dynamic>)
           .map((e) => e == null
               ? null
@@ -33,7 +33,7 @@ Map<String, dynamic> _$GrupnaSalaResponseToJson(GrupnaSalaResponse instance) =>
       'kod': instance.qrKod,
       'kapacitet': instance.brojMjesta,
       'opis': instance.opis,
-      'statusId': instance.statusId,
+      'dostupno': instance.dostupno,
       'clanarine': instance.clanarine,
       'karakteristike': instance.karakteristike,
     };

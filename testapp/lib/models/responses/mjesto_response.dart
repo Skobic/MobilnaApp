@@ -16,7 +16,7 @@ class MjestoResponse {
   double velicina;
   int ugao;
   bool uticnica;
-  int statusId;
+  bool dostupno;
   @JsonKey(name: 'pozicija')
   PozicijaXY pozicija;
   bool? zauzeto;
@@ -27,7 +27,7 @@ class MjestoResponse {
       required this.ugao,
       required this.qrCode,
       required this.brojMjesta,
-      required this.statusId,
+      required this.dostupno,
       required this.uticnica,
       required this.id,
       this.zauzeto});
