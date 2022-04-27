@@ -76,7 +76,7 @@ class _PregledCitaonicePageState extends State<PregledCitaonicePage> {
               child: InformacijeCitaonice(citaonicaData: widget.citaonicaData),
             ),
             const Divider(
-              height: 25,
+              height: 15,
               thickness: 2.7,
               indent: 15,
               endIndent: 15,

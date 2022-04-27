@@ -41,7 +41,7 @@ class RezervacijaService {
     List<RezervacijaMjestaResponse> lista;
     try {
       Response odgovor = await dioClient.dio
-          .post('/mjesta/${mjestoId.toString()}/rezervacije-vrijeme', data: {
+          .post('/mjesta/${mjestoId.toString()}/rezervacije-vrijeme/', data: {
         'vrijemeVazenjaOd': vrijemeOd.toString(),
         'vrijemeVazenjaDo': vrijemeDo.toString()
       });
@@ -65,7 +65,7 @@ class RezervacijaService {
 
     try {
       Response? odgovor = await dioClient.dio.post(
-          '/grupne-sale/${grupnaSalaId.toString()}/rezervacije',
+          '/grupne-sale/${grupnaSalaId.toString()}/rezervacije/',
           data: rezervacijaData.toJson());
 
       return odgovor;
@@ -96,7 +96,7 @@ class RezervacijaService {
     List<RezervacijaMjestaResponse> lista;
     try {
       Response odgovor = await dioClient.dio.post(
-          '/grupne-sale/${grupnaSalaId.toString()}/rezervacije-vrijeme',
+          '/grupne-sale/${grupnaSalaId.toString()}/rezervacije-vrijeme/',
           data: salaRequest.toJson());
       lista = (odgovor.data as List)
           .map((data) => RezervacijaMjestaResponse.fromJson(data))
