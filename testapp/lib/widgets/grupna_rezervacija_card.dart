@@ -337,7 +337,7 @@ class GrupnaRezervacijaKorisnikaCard extends StatelessWidget {
                               ],
                             ));
                   }
-                  if (potvrdjena) {
+                  if (potvrdjena && !otkazana) {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(

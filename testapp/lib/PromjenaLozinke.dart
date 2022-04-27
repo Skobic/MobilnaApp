@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/Login.dart';
 import 'package:testapp/api/dio_client.dart';
@@ -26,7 +27,13 @@ class _PromjenaLozinkeState extends State<PromjenaLozinke> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: scaffoldBoja,
-        title: const Text('Promjena lozinke'),
+        title: Text('Promjena lozinke',
+            style: GoogleFonts.ubuntu(
+                textStyle: const TextStyle(
+              color: Color.fromARGB(255, 254, 254, 254),
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+            ))),
       ),
       body: Container(
         decoration: const BoxDecoration(color: Colors.white),

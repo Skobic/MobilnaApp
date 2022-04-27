@@ -194,7 +194,7 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
 
                   try {
                     Response? odgovor = await dioCl.post(
-                        'https://10.0.2.2:8443/api/v1/zaboravljena-lozinka-promjena/',
+                        'https://192.168.0.150:8443/api/v1/zaboravljena-lozinka-promjena/',
                         data: resetInfo.toJson());
 
                     if (odgovor.statusCode != null) {

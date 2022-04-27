@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, unnecessary_const
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:testapp/constants/config.dart';
 import 'PrijaviBag.dart';
 
@@ -17,7 +18,13 @@ class _InformacijePCState extends State<InformacijePC> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('O aplikaciji'),
+        title: Text('O aplikaciji',
+            style: GoogleFonts.ubuntu(
+                textStyle: const TextStyle(
+              color: Color.fromARGB(255, 254, 254, 254),
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+            ))),
         backgroundColor: scaffoldBoja,
       ),
       body: SingleChildScrollView(

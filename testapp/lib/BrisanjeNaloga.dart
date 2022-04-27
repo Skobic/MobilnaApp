@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/Login.dart';
 import 'package:testapp/api/brisanje_naloga_service.dart';
@@ -29,7 +30,14 @@ class _BrisanjeNalogaState extends State<BrisanjeNaloga> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Brisanje naloga'), backgroundColor: scaffoldBoja),
+          title: Text('Brisanje naloga',
+              style: GoogleFonts.ubuntu(
+                  textStyle: const TextStyle(
+                color: Color.fromARGB(255, 254, 254, 254),
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ))),
+          backgroundColor: scaffoldBoja),
       body: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
