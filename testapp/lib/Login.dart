@@ -32,7 +32,7 @@ class LoginDemo extends StatefulWidget {
 
 class _LoginDemoState extends State<LoginDemo> {
   //late Future<Korisnik> test;
-  DioClient dioCL = DioClient();
+  Dio dioCL = Dio();
 
   final korisnickoImeController = TextEditingController(text: '');
   final lozinkaController = TextEditingController(text: '');
@@ -148,27 +148,54 @@ class _LoginDemoState extends State<LoginDemo> {
                                   ],
                                 ));
                       } else {
-                        Response odgovor = await dioCL.dio.post(
-                            'https://10.0.2.2:8443/api/v1/prijava/',
-                            data: {
-                              "korisnickoIme": korisnickoImeController.text,
-                              "lozinka": lozinkaController.text
-                            });
-                        if (odgovor.statusCode == 201 &&
-                            odgovor.data['uloga'] == 'KORISNIK') {
-                          idKorisnika = odgovor.data['id'];
-                          lozinkaKorisnika = lozinkaController.text;
+                        try {
+                          Response odgovor = await dioCL.post(
+                              'https://10.0.2.2:8443/api/v1/prijava/',
+                              data: {
+                                "korisnickoIme": korisnickoImeController.text,
+                                "lozinka": lozinkaController.text
+                              });
+                          if (odgovor.statusCode == 201 &&
+                              odgovor.data['uloga'] == 'KORISNIK') {
+                            idKorisnika = odgovor.data['id'];
+                            lozinkaKorisnika = lozinkaController.text;
 
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          prefs.setString(
-                              'accessToken', odgovor.data['accessToken']);
-                          prefs.setString(
-                              'refreshToken', odgovor.data['refreshToken']);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const PocetnaStrana()));
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setString(
+                                'accessToken', odgovor.data['accessToken']);
+                            prefs.setString(
+                                'refreshToken', odgovor.data['refreshToken']);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const PocetnaStrana()));
+                          }
+                        } on DioError catch (err) {
+                          if (err.response != null) {
+                            if (err.response!.statusCode == 403) {
+                              const snackBar = SnackBar(
+                                duration: Duration(seconds: 3),
+                                content: Text(
+                                    'Pogrešno korisničko ime/lozinka. Pokušaj ponovo!',
+                                    style: TextStyle(color: Colors.white)),
+                                backgroundColor:
+                                    Color.fromARGB(255, 216, 53, 53),
+                              );
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          }
+                        } catch (err) {
+                          const snackBar = SnackBar(
+                            duration: Duration(seconds: 3),
+                            content: Text('Greška!',
+                                style: TextStyle(color: Colors.white)),
+                            backgroundColor: Color.fromARGB(255, 216, 53, 53),
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       }
                     },

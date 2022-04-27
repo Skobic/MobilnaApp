@@ -134,18 +134,37 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               shrinkWrap: false,
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) => RezervacijaTile(
-                                  index,
-                                  snapshot.data!.length,
-                                  TimeOfDay(
-                                      hour: snapshot
-                                          .data![index].vrijemeVazenjaOd.hour,
-                                      minute: snapshot.data![index]
-                                          .vrijemeVazenjaOd.minute),
-                                  TimeOfDay(
-                                      hour: snapshot
-                                          .data![index].vrijemeVazenjaDo.hour,
-                                      minute: snapshot.data![index]
-                                          .vrijemeVazenjaDo.minute)),
+                                ind: index,
+                                length: snapshot.data!.length,
+                                pocetak: TimeOfDay(
+                                    hour: snapshot
+                                        .data![index].vrijemeVazenjaOd.hour,
+                                    minute: snapshot
+                                        .data![index].vrijemeVazenjaOd.minute),
+                                kraj: TimeOfDay(
+                                    hour: snapshot
+                                        .data![index].vrijemeVazenjaDo.hour,
+                                    minute: snapshot
+                                        .data![index].vrijemeVazenjaDo.minute),
+                                potvrdjeno:
+                                    (snapshot.data![index].vrijemePotvrde !=
+                                            null)
+                                        ? TimeOfDay(
+                                            hour: snapshot.data![index]
+                                                .vrijemePotvrde!.hour,
+                                            minute: snapshot.data![index]
+                                                .vrijemePotvrde!.minute)
+                                        : null,
+                                otkazano:
+                                    (snapshot.data![index].vrijemeOtkazivanja !=
+                                            null)
+                                        ? TimeOfDay(
+                                            hour: snapshot.data![index]
+                                                .vrijemeOtkazivanja!.hour,
+                                            minute: snapshot.data![index]
+                                                .vrijemeOtkazivanja!.minute)
+                                        : null,
+                              ),
                             ),
                             height: 80);
                       }
@@ -376,8 +395,13 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                                                 toTime!.hour,
                                                 toTime!.minute,
                                                 00),
-                                            svrha: 'asdfs',
-                                            brojOsoba: 1),
+                                            svrha: svrhaController.text,
+                                            brojOsoba: (brojOsobaController
+                                                    .text.isEmpty)
+                                                ? widget
+                                                    .grupnaSalaData.brojMjesta
+                                                : int.parse(
+                                                    brojOsobaController.text)),
                                       );
 
                                       if (odgovor != null) {
@@ -579,7 +603,7 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
     if (fromTime != null && toTime != null) {
       var diff = (toTime!.hour * 60 + toTime!.minute) -
           (fromTime!.hour * 60 + fromTime!.minute);
-      if (diff <= 3 * 60 && diff >= (0 * 60 + 15)) {
+      if (diff <= 6 * 60 && diff >= (0 * 60 + 30)) {
         return true;
       } else {
         return false;
