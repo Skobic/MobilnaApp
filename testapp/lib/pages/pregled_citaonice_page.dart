@@ -10,6 +10,7 @@ import 'package:testapp/widgets/informacije_citaonice.dart';
 import '../api/dio_client.dart';
 import '../models/responses/citaonica_response.dart';
 import '../models/responses/grupna_sala_response.dart';
+import '../pocetna_strana.dart';
 import '../widgets/grupna_sala_tile.dart';
 
 class PregledCitaonicePage extends StatefulWidget {
@@ -46,7 +47,7 @@ class _PregledCitaonicePageState extends State<PregledCitaonicePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return Future.value(true);
+        return Navigator.of(navigatorKey.currentContext!).canPop();
       },
       child: Scaffold(
         key: citaonicaScaffoldKey,

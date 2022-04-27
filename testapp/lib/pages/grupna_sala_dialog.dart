@@ -134,18 +134,37 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               shrinkWrap: false,
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) => RezervacijaTile(
-                                  index,
-                                  snapshot.data!.length,
-                                  TimeOfDay(
-                                      hour: snapshot
-                                          .data![index].vrijemeVazenjaOd.hour,
-                                      minute: snapshot.data![index]
-                                          .vrijemeVazenjaOd.minute),
-                                  TimeOfDay(
-                                      hour: snapshot
-                                          .data![index].vrijemeVazenjaDo.hour,
-                                      minute: snapshot.data![index]
-                                          .vrijemeVazenjaDo.minute)),
+                                ind: index,
+                                length: snapshot.data!.length,
+                                pocetak: TimeOfDay(
+                                    hour: snapshot
+                                        .data![index].vrijemeVazenjaOd.hour,
+                                    minute: snapshot
+                                        .data![index].vrijemeVazenjaOd.minute),
+                                kraj: TimeOfDay(
+                                    hour: snapshot
+                                        .data![index].vrijemeVazenjaDo.hour,
+                                    minute: snapshot
+                                        .data![index].vrijemeVazenjaDo.minute),
+                                potvrdjeno:
+                                    (snapshot.data![index].vrijemePotvrde !=
+                                            null)
+                                        ? TimeOfDay(
+                                            hour: snapshot.data![index]
+                                                .vrijemePotvrde!.hour,
+                                            minute: snapshot.data![index]
+                                                .vrijemePotvrde!.minute)
+                                        : null,
+                                otkazano:
+                                    (snapshot.data![index].vrijemeOtkazivanja !=
+                                            null)
+                                        ? TimeOfDay(
+                                            hour: snapshot.data![index]
+                                                .vrijemeOtkazivanja!.hour,
+                                            minute: snapshot.data![index]
+                                                .vrijemeOtkazivanja!.minute)
+                                        : null,
+                              ),
                             ),
                             height: 80);
                       }

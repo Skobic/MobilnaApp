@@ -6,7 +6,15 @@ class RezervacijaTile extends StatelessWidget {
   final int length;
   final TimeOfDay pocetak;
   final TimeOfDay kraj;
-  const RezervacijaTile(this.ind, this.length, this.pocetak, this.kraj);
+  TimeOfDay? potvrdjeno;
+  TimeOfDay? otkazano;
+  RezervacijaTile(
+      {required this.ind,
+      required this.length,
+      required this.pocetak,
+      required this.kraj,
+      this.potvrdjeno,
+      this.otkazano});
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +58,14 @@ class RezervacijaTile extends StatelessWidget {
           endChild: SizedBox(
               width: 35,
               child: Center(
-                  child: Text(
-                      '${kraj.hour.toString().padLeft(2, '0')}:${kraj.minute.toString().padLeft(2, '0')}'))),
+                  child: (potvrdjeno != null)
+                      ? ((otkazano != null)
+                          ? Text(
+                              '${otkazano!.hour.toString().padLeft(2, '0')}:${otkazano!.minute.toString().padLeft(2, '0')}')
+                          : Text(
+                              '${kraj.hour.toString().padLeft(2, '0')}:${kraj.minute.toString().padLeft(2, '0')}'))
+                      : Text(
+                          '${kraj.hour.toString().padLeft(2, '0')}:${kraj.minute.toString().padLeft(2, '0')}'))),
         )
       ],
     );
