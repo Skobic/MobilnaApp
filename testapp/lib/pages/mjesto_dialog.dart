@@ -254,7 +254,7 @@ class _MjestoDialogState extends State<MjestoDialog> {
                               const snackBar = SnackBar(
                                 duration: Duration(seconds: 3),
                                 content: Text(
-                                    'Vrijeme rezervacije nije definisano!',
+                                    'Vrijeme rezervacije pogrešno definisano!',
                                     style: TextStyle(color: Colors.white)),
                                 backgroundColor:
                                     Color.fromARGB(255, 199, 78, 69),
@@ -262,6 +262,7 @@ class _MjestoDialogState extends State<MjestoDialog> {
 
                               ScaffoldMessenger.of(scaffoldKey.currentContext!)
                                   .showSnackBar(snackBar);
+                              Navigator.of(context).pop();
                             }
                           },
                           child: Ink(
@@ -347,32 +348,13 @@ class _MjestoDialogState extends State<MjestoDialog> {
       // }
       return false;
     } else {
-      // var x = widget.fromTime!.hour * 60 + widget.fromTime!.minute;
-      // var y = widget.toTime!.hour * 60 + widget.toTime!.minute;
-      // for (int i = 0; i < widget.mjestoData.listaRezervacija.length; i++) {
-      //   if (((x <
-      //               widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-      //                   widget
-      //                       .mjestoData.listaRezervacija[i].odVrijeme.minute) &&
-      //           (y <
-      //               widget.mjestoData.listaRezervacija[i].odVrijeme.hour * 60 +
-      //                   widget
-      //                       .mjestoData.listaRezervacija[i].odVrijeme.minute) ||
-      //       (x >
-      //               widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-      //                   widget
-      //                       .mjestoData.listaRezervacija[i].doVrijeme.minute) &&
-      //           (y >
-      //               widget.mjestoData.listaRezervacija[i].doVrijeme.hour * 60 +
-      //                   widget.mjestoData.listaRezervacija[i].doVrijeme
-      //                       .minute))) {
-      //     result = true;
-      //   } else {
-      //     result = false;
-      //   }
-      // }
-      // return result;
-      return true;
+      var x = widget.fromTime!.hour * 60 + widget.fromTime!.minute;
+      var y = widget.toTime!.hour * 60 + widget.toTime!.minute;
+      if (y - x < 4 * 60 && y - x > 0 * 60 + 30) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }

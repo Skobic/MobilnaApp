@@ -84,6 +84,26 @@ class InformacijeCitaonice extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
+                const Text('Opis: ',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 63, 63, 63))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: Text(
+                          (citaonicaData.opis != null)
+                              ? citaonicaData.opis!
+                              : '',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.normal)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 const Text('Radno vrijeme: ',
                     style: TextStyle(
                         fontSize: 18,

@@ -376,8 +376,13 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                                                 toTime!.hour,
                                                 toTime!.minute,
                                                 00),
-                                            svrha: 'asdfs',
-                                            brojOsoba: 1),
+                                            svrha: svrhaController.text,
+                                            brojOsoba: (brojOsobaController
+                                                    .text.isEmpty)
+                                                ? widget
+                                                    .grupnaSalaData.brojMjesta
+                                                : int.parse(
+                                                    brojOsobaController.text)),
                                       );
 
                                       if (odgovor != null) {
@@ -579,7 +584,7 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
     if (fromTime != null && toTime != null) {
       var diff = (toTime!.hour * 60 + toTime!.minute) -
           (fromTime!.hour * 60 + fromTime!.minute);
-      if (diff <= 3 * 60 && diff >= (0 * 60 + 15)) {
+      if (diff <= 6 * 60 && diff >= (0 * 60 + 30)) {
         return true;
       } else {
         return false;
