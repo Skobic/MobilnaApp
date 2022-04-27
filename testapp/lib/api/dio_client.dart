@@ -4,19 +4,17 @@ import 'package:dio/adapter.dart';
 
 class DioClient {
   final Dio dio = Dio(BaseOptions(
-    baseUrl: "https://10.0.2.2:8443/api/v1",
+    baseUrl: "https://192.168.0.150:8443/api/v1",
   ));
 
-  Dio tokenDio = Dio(BaseOptions(baseUrl: "https://10.0.2.2:8443/api/v1"));
+  Dio tokenDio = Dio(BaseOptions(baseUrl: "https://192.168.0.150:8443/api/v1"));
 
   DioClient() {
     dio.interceptors
       ..add(LogInterceptor(responseBody: false))
       ..add(QueuedInterceptorsWrapper(
         onError: (error, hendler) async {
-          if (error.response?.statusCode == 409) {
-            print('asdfsadf');
-          }
+          if (error.response?.statusCode == 409) {}
           if (error.response?.statusCode == 403 ||
               error.response?.statusCode == 401) {
             SharedPreferences prefs = await SharedPreferences.getInstance();
