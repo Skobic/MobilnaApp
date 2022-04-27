@@ -177,7 +177,7 @@ class _LoginDemoState extends State<LoginDemo> {
                               const snackBar = SnackBar(
                                 duration: Duration(seconds: 3),
                                 content: Text(
-                                    'Netačno korisničko ime/lozinka. Pokušaj ponovo!',
+                                    'Pogrešno korisničko ime/lozinka. Pokušaj ponovo!',
                                     style: TextStyle(color: Colors.white)),
                                 backgroundColor:
                                     Color.fromARGB(255, 216, 53, 53),
