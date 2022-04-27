@@ -191,12 +191,15 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
                 } else {
                   resetInfo.token = unosToken;
                   resetInfo.lozinka = unosNovaLozinkaPotvrda;
+
                   try {
-                    Response? odgovor = await zaboravljenaLozinkaService
-                        .resetujLozinku(dioClient: dioCl, resetData: resetInfo);
-                    if (odgovor?.statusCode != null) {
-                      if (odgovor?.statusCode == 201 ||
-                          odgovor?.statusCode == 200) {
+                    Response? odgovor = await dioCl.post(
+                        'https://10.0.2.2:8443/api/v1/zaboravljena-lozinka-promjena/',
+                        data: resetInfo.toJson());
+
+                    if (odgovor.statusCode != null) {
+                      if (odgovor.statusCode == 201 ||
+                          odgovor.statusCode == 200) {
                         showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
@@ -220,7 +223,6 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
                       }
                     }
                   } on DioError catch (err) {
-                    print(err.response?.statusCode);
                     if (err.response?.statusCode == 403) {
                       showDialog<String>(
                         context: context,
