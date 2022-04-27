@@ -71,7 +71,10 @@ class _PrikazGrupnihRezervacijaKorisnikaState
                             (list[i]
                                 .vrijemeVazenjaDo
                                 .isBefore(DateTime.now())) ||
-                            list[i].vrijemePotvrde != null) {
+                            (list[i].vrijemePotvrde != null &&
+                                list[i]
+                                    .vrijemePotvrde!
+                                    .isAfter(DateTime.now()))) {
                           list[i].vrijemeVazenjaOd = list[i]
                               .vrijemeVazenjaOd
                               .add(const Duration(days: 15));
@@ -89,6 +92,7 @@ class _PrikazGrupnihRezervacijaKorisnikaState
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return GrupnaRezervacijaKorisnikaCard(
+                                    funkcijaOsvjezavanja: refresh,
                                     idSale: list[index].salaId,
                                     grupRezKorData: list[index],
                                     // index: snapshot.data![index].id,
@@ -98,10 +102,11 @@ class _PrikazGrupnihRezervacijaKorisnikaState
                               },
                               separatorBuilder: (context, index) =>
                                   const SizedBox(
-                                    height: 10,
+                                    height: 15,
                                     width: 40,
                                   ),
                               itemCount: snapshot.data!.length),
+                          SizedBox(height: 15),
                         ],
                       );
                     } else {
@@ -156,5 +161,12 @@ class _PrikazGrupnihRezervacijaKorisnikaState
             grupRezKorService.getGrupneRezervacijeKorisnika(dioCL, idKorisnika);
       });
     }
+  }
+
+  void refresh() {
+    setState(() {
+      listaGrupRezKor =
+          grupRezKorService.getGrupneRezervacijeKorisnika(dioCL, idKorisnika);
+    });
   }
 }

@@ -2,6 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:testapp/BrisanjeNaloga.dart';
+import 'package:testapp/InfoPC.dart';
+import 'package:testapp/PromjenaLozinke.dart';
+import 'package:testapp/Uputstvo.dart';
 import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/other/argumenti_grupne_potvrd_dolaska.dart';
 import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
@@ -42,9 +46,8 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: ThemeData(
-            scaffoldBackgroundColor: const Color.fromARGB(255, 149, 168, 183)),
         home: Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
               title: Text(naslov,
                   style: GoogleFonts.ubuntu(
@@ -111,6 +114,18 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
                     argInfo:
                         settings.arguments as ArgumentiGrupnePotvrdeDolaska,
                   );
+              break;
+            case 'promjena_lozinke':
+              builder = (BuildContext context) => const PromjenaLozinke();
+              break;
+            case 'uputstvo_za_koristenje':
+              builder = (BuildContext context) => const UputstvoPC();
+              break;
+            case 'o_aplikaciji':
+              builder = (BuildContext context) => const InformacijePC();
+              break;
+            case 'brisanje_naloga':
+              builder = (BuildContext context) => const BrisanjeNaloga();
               break;
             default:
               throw Exception('Invalid route:}');

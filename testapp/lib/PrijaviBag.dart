@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testapp/constants/config.dart';
 
 //String name = 'Pametne citaonica';
 //email = 'milosskobic@hotmail.com',
@@ -48,8 +49,9 @@ class _PrijaviBagState extends State<PrijaviBag> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD6F4F4),
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: scaffoldBoja,
         title: const Text('Prijavi grešku'),
       ),
       body: SingleChildScrollView(
@@ -63,14 +65,7 @@ class _PrijaviBagState extends State<PrijaviBag> {
                 child: Container(
                   width: 380,
                   decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color(0xFF27AEF7),
-                          Color(0xFF27AEF7),
-                        ],
-                      ),
+                      color: scaffoldBoja,
                       borderRadius: BorderRadius.circular(10)),
                   child: const ListTile(
                     leading: Icon(Icons.announcement_outlined,
@@ -110,7 +105,7 @@ class _PrijaviBagState extends State<PrijaviBag> {
                   left: 15.0, right: 15.0, top: 15, bottom: 10),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: const Color(0xFF27AEF7),
+                  primary: scaffoldBoja,
                   fixedSize: const Size(100, 40),
                 ),
                 onPressed: () async {

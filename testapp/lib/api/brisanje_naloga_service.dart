@@ -11,7 +11,6 @@ class BrisanjeNalogaService {
     Response? response;
 
     try {
-      print('test${korisnikId}');
       response = await dioClient.dio.delete(
           '/korisnici/${korisnikId.toString()}',
           data: korisnikLozinka.toJson());

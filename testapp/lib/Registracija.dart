@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/registracija_service.dart';
+import 'package:testapp/constants/config.dart';
 import 'Login.dart';
 import 'models/requests/registracija_request.dart';
 
@@ -33,10 +34,10 @@ class _RegistracijaState extends State<Registracija> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD6F4F4),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Registracija novog korisnika'),
-        backgroundColor: Colors.blue[700],
+        backgroundColor: scaffoldBoja,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -50,11 +51,11 @@ class _RegistracijaState extends State<Registracija> {
                   korisnickoIme = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.emoji_emotions, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.emoji_emotions, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Korisničko ime',
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Unesite korisničko ime'),
@@ -69,10 +70,11 @@ class _RegistracijaState extends State<Registracija> {
                   email = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.email, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.email, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Email',
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Unesite email'),
@@ -87,11 +89,11 @@ class _RegistracijaState extends State<Registracija> {
                   ime = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.account_circle, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.account_circle, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Ime',
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Unesite vaše ime'),
@@ -106,11 +108,11 @@ class _RegistracijaState extends State<Registracija> {
                   prezime = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.account_circle, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.account_circle, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Prezime',
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Unesite vaše prezime'),
@@ -127,9 +129,10 @@ class _RegistracijaState extends State<Registracija> {
                 },
                 decoration: InputDecoration(
                     filled: true,
-                    prefixIcon: Icon(Icons.lock, color: Colors.blue[700]),
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.lock, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     labelText: 'Lozinka',
                     hintText: 'Unesite lozinku [minimum 8 karaktera]'),
@@ -145,10 +148,11 @@ class _RegistracijaState extends State<Registracija> {
                   potvrdaLozinke = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.lock, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     labelText: 'Potvrda lozinke',
                     hintText: 'Ponovo unesite lozinku'),
@@ -158,7 +162,7 @@ class _RegistracijaState extends State<Registracija> {
               padding: const EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15, bottom: 10),
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.blue[700]),
+                style: ElevatedButton.styleFrom(primary: scaffoldBoja),
                 onPressed: () async {
                   if (ime.isEmpty ||
                       email.isEmpty ||
@@ -231,21 +235,66 @@ class _RegistracijaState extends State<Registracija> {
                     korisnik.lozinka = lozinka;
                     //var result = await Connectivity().checkConnectivity();
 
-                    Response? res = await registrujKorisnika();
-                    if (res != null) {
-                      if (res.statusCode == 201) {
+                    try {
+                      Response? odgovor = await registrujKorisnika();
+
+                      if (odgovor != null) {
+                        if (odgovor.statusCode == 201 ||
+                            odgovor.statusCode == 200) {
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Uspješna registracija'),
+                              content: const Text(
+                                  'Čestitamo, uspješno ste se registrovali !\nSada se možete prijaviti u aplikaciju !'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    var nav = Navigator.of(context);
+                                    //Navigator.pop(context, 'OK');
+                                    nav.pop();
+                                    nav.pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                    } on DioError catch (err) {
+                      if (err.response?.statusCode == 409) {
                         showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Uspješna registracija'),
+                            title: const Text('Greška'),
                             content: const Text(
-                                'Čestitamo, uspješno ste se registrovali !\nSada se možete prijaviti u aplikaciju !'),
+                                'Već postoji nalog sa tim korisničkim imenom/email adresom !'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
                                   var nav = Navigator.of(context);
                                   //Navigator.pop(context, 'OK');
+
                                   nav.pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Greška'),
+                            content: const Text(
+                                'Greška prilikom kreiranja naloga !'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  var nav = Navigator.of(context);
+                                  //Navigator.pop(context, 'OK');
                                   nav.pop();
                                 },
                                 child: const Text('OK'),
@@ -254,25 +303,6 @@ class _RegistracijaState extends State<Registracija> {
                           ),
                         );
                       }
-                    } else {
-                      showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text('Greška'),
-                          content: const Text(
-                              'Molimo promjenite korisničko ime !\nProvjerite da li ste povezani na internet !'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                var nav = Navigator.of(context);
-                                //Navigator.pop(context, 'OK');
-                                nav.pop();
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
                     }
                   }
                 },

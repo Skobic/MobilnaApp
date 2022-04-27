@@ -15,7 +15,7 @@ class RegistracijaService {
         data: korisnikInfo.toJson(),
       );
     } catch (e) {
-      print('Error creating user: $e');
+      rethrow;
     }
 
     return response;

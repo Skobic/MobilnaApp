@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/potvrda_dolaska_service.dart';
+import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/other/argumenti_grupne_potvrd_dolaska.dart';
 import 'package:testapp/models/requests/potvrda_dolaska_request.dart';
 
@@ -42,7 +43,7 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFD6F4F4),
+        backgroundColor: Color.fromARGB(255, 206, 206, 206),
         body: Column(
           children: <Widget>[
             Expanded(flex: 7, child: _buildQrView(context)),
@@ -60,8 +61,13 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Container(
+                          //color: scaffoldBoja,
                           margin: const EdgeInsets.all(8),
                           child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          scaffoldBoja)),
                               onPressed: () async {
                                 await controller?.toggleFlash();
                                 setState(() {
@@ -85,6 +91,10 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
                           width: 60,
                           margin: const EdgeInsets.only(left: 15, right: 15),
                           child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        scaffoldBoja)),
                             onPressed: () {
                               if (result?.code != null) {
                                 print(result?.code);
@@ -113,16 +123,22 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
                                         ));
                               }
                             },
-                            child: const Center(
-                                child: Icon(
-                              Icons.camera_alt,
-                              size: 40,
-                            )),
+                            child: const Align(
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.camera_alt,
+                                size: 30,
+                              ),
+                            ),
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(8),
                           child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          scaffoldBoja)),
                               onPressed: () async {
                                 await controller?.flipCamera();
                                 setState(() {});

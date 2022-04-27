@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:testapp/Obavjestenja.dart';
 import 'package:testapp/models/responses/citaonica_response.dart';
 import 'package:testapp/pages/obavjestenje_page.dart';
 

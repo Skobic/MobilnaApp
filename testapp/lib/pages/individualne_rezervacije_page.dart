@@ -41,10 +41,10 @@ class _PrikazIndividualnihRezervacijaKorisnikaState
         children: [
           Container(
             height: 8,
-            color: Colors.white70,
+            color: Colors.white,
           ),
           Container(
-            color: Colors.white70,
+            color: Colors.white,
             child:
                 FutureBuilder<List<IndividualneRezervacijeKorisnikaResponse>>(
                     future: listaIndRezKor,
@@ -70,7 +70,10 @@ class _PrikazIndividualnihRezervacijaKorisnikaState
                                 (list[i]
                                     .vrijemeVazenjaDo
                                     .isBefore(DateTime.now())) ||
-                                list[i].vrijemePotvrde != null) {
+                                (list[i].vrijemePotvrde != null &&
+                                    list[i]
+                                        .vrijemePotvrde!
+                                        .isAfter(DateTime.now()))) {
                               list[i].vrijemeVazenjaOd = list[i]
                                   .vrijemeVazenjaOd
                                   .add(const Duration(days: 15));
@@ -88,6 +91,7 @@ class _PrikazIndividualnihRezervacijaKorisnikaState
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return IndividualnaRezervacijaKorisnikaCard(
+                                        funkcijaOsvjezavanja: refresh,
                                         indRezKorData: list[index],
                                         // index: snapshot.data![index].id,
                                         index: list[index].id,
@@ -96,10 +100,11 @@ class _PrikazIndividualnihRezervacijaKorisnikaState
                                   },
                                   separatorBuilder: (context, index) =>
                                       const SizedBox(
-                                        height: 8,
+                                        height: 15,
                                         width: 40,
                                       ),
                                   itemCount: snapshot.data!.length),
+                              SizedBox(height: 15)
                             ],
                           );
                         } else {
@@ -154,5 +159,12 @@ class _PrikazIndividualnihRezervacijaKorisnikaState
             dioCL, idKorisnika);
       });
     }
+  }
+
+  void refresh() {
+    setState(() {
+      listaIndRezKor = indRezKorService.getIndividualneRezervacijeKorisnika(
+          dioCL, idKorisnika);
+    });
   }
 }

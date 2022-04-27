@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:testapp/PromjenaLozinke.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/odjava_service.dart';
+import 'package:testapp/constants/config.dart';
+import 'package:testapp/pocetna_strana.dart';
 import '../BrisanjeNaloga.dart';
 import '../InfoPC.dart';
 import '../Uputstvo.dart';
@@ -26,18 +28,11 @@ class _ProfilPageState extends State<ProfilPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFD6F4F4),
-            Color(0xFFD6F4F4),
-          ],
-        ),
+        color: Colors.white,
       ),
       child: ListView(
         children: <Widget>[
-          Padding(
+          /*Padding(
             padding:
                 const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 3),
             child: Card(
@@ -56,17 +51,13 @@ class _ProfilPageState extends State<ProfilPage> {
                     color: Colors.white, size: 80),
               ),
             ),
-          ),
+          ),*/
           Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
             child: Card(
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [pozadina, pozadina2],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading: const Icon(Icons.password_sharp,
@@ -75,10 +66,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       textScaleFactor: 1.15,
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const PromjenaLozinke()));
+                    navigatorKey.currentState!.pushNamed('promjena_lozinke');
                   },
                 ),
               ),
@@ -89,14 +77,7 @@ class _ProfilPageState extends State<ProfilPage> {
             child: Card(
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        pozadina,
-                        pozadina2,
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading:
@@ -105,8 +86,8 @@ class _ProfilPageState extends State<ProfilPage> {
                       textScaleFactor: 1.15,
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => const UputstvoPC()));
+                    navigatorKey.currentState!
+                        .pushNamed('uputstvo_za_koristenje');
                   },
                 ),
               ),
@@ -147,14 +128,7 @@ class _ProfilPageState extends State<ProfilPage> {
             child: Card(
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        pozadina,
-                        pozadina2,
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading:
@@ -163,10 +137,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       textScaleFactor: 1.15,
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const InformacijePC()));
+                    navigatorKey.currentState!.pushNamed('o_aplikaciji');
                   },
                 ),
               ),
@@ -177,14 +148,7 @@ class _ProfilPageState extends State<ProfilPage> {
             child: Card(
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        pozadina,
-                        pozadina2,
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading:
@@ -193,10 +157,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       textScaleFactor: 1.15,
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const BrisanjeNaloga()));
+                    navigatorKey.currentState!.pushNamed('brisanje_naloga');
                   },
                 ),
               ),
@@ -207,14 +168,7 @@ class _ProfilPageState extends State<ProfilPage> {
             child: Card(
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        pozadina,
-                        pozadina2,
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading:

@@ -7,8 +7,13 @@ import 'package:testapp/pocetna_strana.dart';
 
 DateTime defaultTime = DateTime.parse("2000-01-01 00:00:00");
 
-Container _showRemainingTime(DateTime remainingTime, bool otkazana,
-    bool potvrdjena, DateTime remainingPotvrdaTime) {
+Container _showRemainingTime(
+    DateTime remainingTime,
+    bool otkazana,
+    bool potvrdjena,
+    DateTime remainingPotvrdaTime,
+    DateTime remainingTimeDoKrajaRezervacije,
+    DateTime vrijemeVazenjaDo) {
   if (remainingTime != defaultTime && !otkazana && !potvrdjena) {
     if (remainingTime.day < 25) {
       return Container(
@@ -18,7 +23,7 @@ Container _showRemainingTime(DateTime remainingTime, bool otkazana,
               margin: const EdgeInsets.only(top: 10),
               child: const Text('DO POČETKA:',
                   style: TextStyle(
-                      color: Colors.black54,
+                      color: Color.fromARGB(137, 21, 108, 221),
                       fontSize: 25,
                       fontWeight: FontWeight.bold))),
           Container(
@@ -43,7 +48,7 @@ Container _showRemainingTime(DateTime remainingTime, bool otkazana,
                 child: const Text('DO POČETKA:',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.black54,
+                        color: Color.fromARGB(137, 21, 108, 221),
                         fontSize: 25,
                         fontWeight: FontWeight.bold))),
           ),
@@ -98,17 +103,48 @@ Container _showRemainingTime(DateTime remainingTime, bool otkazana,
         child: const Text('OTKAZANA REZERVACIJA',
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: Color.fromARGB(255, 211, 58, 47),
+                color: Color.fromARGB(255, 207, 108, 101),
                 fontSize: 23,
                 fontWeight: FontWeight.bold)));
   }
-  if (potvrdjena) {
+  if (potvrdjena && DateTime.now().isBefore(vrijemeVazenjaDo)) {
+    return Container(
+        child: Column(
+      children: <Widget>[
+        Center(
+          child: Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Text('U TOKU JOŠ:',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.amber[800],
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold))),
+        ),
+        Center(
+          child: Container(
+            margin: const EdgeInsets.only(top: 1),
+            child: Text(
+                '${remainingTimeDoKrajaRezervacije.hour}h '
+                '${remainingTimeDoKrajaRezervacije.minute == 0 ? '' : '${remainingTimeDoKrajaRezervacije.minute}min i '}'
+                '${remainingTimeDoKrajaRezervacije.second}sec',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold)),
+          ),
+        ),
+      ],
+    ));
+  }
+  if (potvrdjena && DateTime.now().isAfter(vrijemeVazenjaDo)) {
     return Container(
         margin: const EdgeInsets.only(top: 30, left: 5, right: 5),
         child: Text('ISKORIŠTENA REZERVACIJA',
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: Colors.green[800],
+                color: Colors.green[500],
                 fontSize: 23,
                 fontWeight: FontWeight.bold)));
   }
@@ -127,12 +163,13 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
   final IndividualneRezervacijeKorisnikaResponse indRezKorData;
 
   int index;
-
+  final Function() funkcijaOsvjezavanja;
   final Function(int) funkcijaBrisanja;
   IndividualnaRezervacijaKorisnikaCard({
     Key? key,
     required this.indRezKorData,
     required this.index,
+    required this.funkcijaOsvjezavanja,
     required this.funkcijaBrisanja,
   }) : super(key: key);
 
@@ -172,6 +209,13 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
           minutes: sada.minute,
           seconds: sada.second));
     }
+
+    DateTime vrijemeDoIstekaRezervacije = indRezKorData.vrijemeVazenjaDo
+        .subtract(Duration(
+            days: sada.day,
+            hours: sada.hour,
+            minutes: sada.minute,
+            seconds: sada.second));
     return Container(
       margin: EdgeInsets.only(left: sirina * 0.015, right: sirina * 0.015),
       height: 150,
@@ -180,16 +224,15 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              gradient: const LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color(0xFF78AECB),
-                  Color(0xFF78AECB),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 7,
+                      offset: const Offset(0, 5))
                 ],
-              ),
-            ),
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(255, 194, 219, 194)),
             //color: Colors.blue[400],
             /*child: Center(
                         child: Text(
@@ -240,7 +283,12 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     //child: _getImage(index),
                     child: _showRemainingTime(
-                        rTime, otkazana, potvrdjena, rPotvrdaTime),
+                        rTime,
+                        otkazana,
+                        potvrdjena,
+                        rPotvrdaTime,
+                        vrijemeDoIstekaRezervacije,
+                        indRezKorData.vrijemeVazenjaDo),
                   ),
                 ),
               ],
@@ -255,8 +303,8 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: ElevatedButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(0xFFb3e7dc)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
@@ -341,11 +389,14 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
                                 ],
                               ));
                     } else {
-                      navigatorKey.currentState!.pushNamed(
-                          'individualna_potvrda_dolaska',
-                          arguments: ArgumentiIndividualnePotvrdeDolaska(
-                              idMjesta: indRezKorData.mjestoId,
-                              idRezervacije: indRezKorData.id));
+                      navigatorKey.currentState!
+                          .pushNamed('individualna_potvrda_dolaska',
+                              arguments: ArgumentiIndividualnePotvrdeDolaska(
+                                  idMjesta: indRezKorData.mjestoId,
+                                  idRezervacije: indRezKorData.id))
+                          .then((value) {
+                        funkcijaOsvjezavanja();
+                      });
                     }
                   }
                 },
@@ -361,8 +412,8 @@ class IndividualnaRezervacijaKorisnikaCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: ElevatedButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(0xFFb3e7dc)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),

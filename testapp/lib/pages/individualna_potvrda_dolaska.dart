@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/potvrda_dolaska_service.dart';
+import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
 import 'package:testapp/models/requests/potvrda_dolaska_request.dart';
+import 'package:testapp/pages/individualne_rezervacije_page.dart';
+import 'package:testapp/pocetna_strana.dart';
+import 'package:testapp/wrappers/rezervacija_page_wrapper.dart';
 
 class IndividualnaPotvrdaDolaska extends StatefulWidget {
   ArgumentiIndividualnePotvrdeDolaska argInfo;
@@ -44,7 +48,7 @@ class _IndividualnaPotvrdaDolaskaState
         return false;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFD6F4F4),
+        backgroundColor: Color.fromARGB(255, 206, 206, 206),
         body: Column(
           children: <Widget>[
             Expanded(flex: 7, child: _buildQrView(context)),
@@ -64,6 +68,10 @@ class _IndividualnaPotvrdaDolaskaState
                         Container(
                           margin: const EdgeInsets.all(8),
                           child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          scaffoldBoja)),
                               onPressed: () async {
                                 await controller?.toggleFlash();
                                 setState(() {
@@ -87,11 +95,20 @@ class _IndividualnaPotvrdaDolaskaState
                           width: 60,
                           margin: const EdgeInsets.only(left: 15, right: 15),
                           child: ElevatedButton(
-                            onPressed: () {
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        scaffoldBoja)),
+                            onPressed: () async {
                               if (result?.code != null) {
-                                print(result?.code);
-                                potvrdiDolazak(widget.argInfo.idMjesta,
+                                bool? odgovor = await potvrdiDolazak(
+                                    widget.argInfo.idMjesta,
                                     widget.argInfo.idRezervacije);
+                                if (odgovor != null) {
+                                  if (odgovor == true) {
+                                    Navigator.pop(context);
+                                  }
+                                }
                               } else {
                                 showDialog(
                                     context: context,
@@ -118,13 +135,17 @@ class _IndividualnaPotvrdaDolaskaState
                             child: const Center(
                                 child: Icon(
                               Icons.camera_alt,
-                              size: 40,
+                              size: 30,
                             )),
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(8),
                           child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          scaffoldBoja)),
                               onPressed: () async {
                                 await controller?.flipCamera();
                                 setState(() {});
@@ -152,14 +173,15 @@ class _IndividualnaPotvrdaDolaskaState
     );
   }
 
-  void potvrdiDolazak(int mjestoId, rezervacijaId) async {
+  Future<bool?> potvrdiDolazak(int mjestoId, rezervacijaId) async {
     var response = await potvrdaDolaskaService.potvrdiDolazakIndRez(
         dioClient: dioCL,
         qrKodInfo: PotvrdaDolaskaRequest(kod: result!.code!),
         idMjesta: mjestoId,
         idRezervacije: rezervacijaId);
     if (response?.statusCode == 200 || response?.statusCode == 201) {
-      showDialog<String>(
+      return showDialog<bool>(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Potvrda dolaska'),
@@ -168,8 +190,9 @@ class _IndividualnaPotvrdaDolaskaState
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.pop(context, true);
+                //Navigator.pop(context);
+                //Navigator.pushNamed(context, 'rezervacije');
               },
               child: const Text('Ok'),
             ),
@@ -177,7 +200,7 @@ class _IndividualnaPotvrdaDolaskaState
         ),
       );
     } else if (response?.statusCode == 400 || response?.statusCode == 409) {
-      showDialog<String>(
+      return showDialog<bool>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Greška'),
@@ -187,7 +210,7 @@ class _IndividualnaPotvrdaDolaskaState
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, false);
               },
               child: const Text('Ok'),
             ),
@@ -195,7 +218,7 @@ class _IndividualnaPotvrdaDolaskaState
         ),
       );
     } else {
-      showDialog<String>(
+      return showDialog<bool>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Greška'),
@@ -204,7 +227,7 @@ class _IndividualnaPotvrdaDolaskaState
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, false);
               },
               child: const Text('Ok'),
             ),

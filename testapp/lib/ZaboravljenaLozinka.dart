@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/zaboravljena_lozinka_service.dart';
+import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/requests/zaboravljena_lozinka_email_request.dart';
 import 'package:testapp/pages/reset_lozinke_page.dart';
 import 'Login.dart';
@@ -34,8 +35,9 @@ class _ZaboravljenaLozinkaState extends State<ZaboravljenaLozinka> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD6F4F4),
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: scaffoldBoja,
         title: const Text('Zaboravljena lozinka'),
       ),
       body: SingleChildScrollView(
@@ -49,14 +51,7 @@ class _ZaboravljenaLozinkaState extends State<ZaboravljenaLozinka> {
                 child: Container(
                   width: 380,
                   decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color(0xFF27AEF7),
-                          Color(0xFF27AEF7),
-                        ],
-                      ),
+                      color: scaffoldBoja,
                       borderRadius: BorderRadius.circular(10)),
                   child: const ListTile(
                     leading: Icon(Icons.announcement_outlined,
@@ -80,11 +75,12 @@ class _ZaboravljenaLozinkaState extends State<ZaboravljenaLozinka> {
                   onChanged: (text) {
                     unosEmail = text;
                   },
-                  decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.email, color: Color(0xFF27AEF7)),
-                      fillColor: Color(0xAAFFFFFF),
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email, color: scaffoldBoja),
+                      fillColor: Color.fromARGB(218, 226, 226, 226),
                       filled: true,
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
                       labelText: 'E-mail',
                       hintText: 'Unesite vasu email adresu'),
                 ),
@@ -98,7 +94,7 @@ class _ZaboravljenaLozinkaState extends State<ZaboravljenaLozinka> {
               //Nakon toga da li se poklapaju lozinke i ako je sve to ispunjeno onda se uspjesno registruje
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: const Color(0xFF27AEF7),
+                  primary: scaffoldBoja,
                   fixedSize: const Size(100, 40),
                 ),
                 onPressed: () async {

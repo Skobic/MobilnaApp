@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/zaboravljena_lozinka_service.dart';
+import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/requests/reset_lozinke_request.dart';
 import 'package:testapp/models/requests/zaboravljena_lozinka_email_request.dart';
 
@@ -20,7 +21,7 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
   String unosToken = '';
   String unosNovaLozinka = '';
   String unosNovaLozinkaPotvrda = '';
-  DioClient dioCl = DioClient();
+  Dio dioCl = Dio();
   ZaboravljenaLozinkaService zaboravljenaLozinkaService =
       ZaboravljenaLozinkaService();
   ResetLozinkeRequest resetInfo = ResetLozinkeRequest(token: '', lozinka: '');
@@ -28,8 +29,9 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD6F4F4),
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: scaffoldBoja,
         title: const Text('Reset lozinke'),
       ),
       body: SingleChildScrollView(
@@ -42,14 +44,7 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
               child: Container(
                 width: 380,
                 decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xFF27AEF7),
-                        Color(0xFF27AEF7),
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: const ListTile(
                   leading: Icon(Icons.announcement_outlined,
@@ -73,11 +68,12 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
                 onChanged: (text) {
                   unosToken = text;
                 },
-                decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.email, color: Color(0xFF27AEF7)),
-                    fillColor: Color(0xAAFFFFFF),
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.email, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Kod',
                     hintText: 'Unesite kod sa e-maila'),
               ),
@@ -94,11 +90,12 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
                 onChanged: (text) {
                   unosNovaLozinka = text;
                 },
-                decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.email, color: Color(0xFF27AEF7)),
-                    fillColor: Color(0xAAFFFFFF),
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.email, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Nova lozinka',
                     hintText: 'Unesite novu lozinku'),
               ),
@@ -115,11 +112,12 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
                 onChanged: (text) {
                   unosNovaLozinkaPotvrda = text;
                 },
-                decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.email, color: Color(0xFF27AEF7)),
-                    fillColor: Color(0xAAFFFFFF),
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.email, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Potvrda nove lozinke',
                     hintText: 'Ponovo unesite novu lozinku'),
               ),
@@ -133,7 +131,7 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
             //Nakon toga da li se poklapaju lozinke i ako je sve to ispunjeno onda se uspjesno registruje
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: const Color(0xFF27AEF7),
+                primary: scaffoldBoja,
                 fixedSize: const Size(100, 40),
               ),
               onPressed: () async {
@@ -193,51 +191,73 @@ class _ResetLozinkePageState extends State<ResetLozinkePage> {
                 } else {
                   resetInfo.token = unosToken;
                   resetInfo.lozinka = unosNovaLozinkaPotvrda;
-                  var odgovor = await zaboravljenaLozinkaService.resetujLozinku(
-                      dioClient: dioCl, resetData: resetInfo);
-
-                  if (odgovor?.statusCode == 201 ||
-                      odgovor?.statusCode == 200) {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Reset lozinke'),
-                        content: const Text(
-                            'Uspješno ste resetovali lozinku, sada se možete ponovo prijaviti !'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              var nav = Navigator.of(context);
-                              //Navigator.pop(context, 'OK');
-                              nav.pop();
-                              nav.pop();
-                              nav.pop();
-                            },
-                            child: const Text('OK'),
+                  try {
+                    Response? odgovor = await zaboravljenaLozinkaService
+                        .resetujLozinku(dioClient: dioCl, resetData: resetInfo);
+                    if (odgovor?.statusCode != null) {
+                      if (odgovor?.statusCode == 201 ||
+                          odgovor?.statusCode == 200) {
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Reset lozinke'),
+                            content: const Text(
+                                'Uspješno ste resetovali lozinku, sada se možete ponovo prijaviti !'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  var nav = Navigator.of(context);
+                                  //Navigator.pop(context, 'OK');
+                                  nav.pop();
+                                  nav.pop();
+                                  nav.pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Greška'),
-                        content: const Text('Greška na serveru !'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              var nav = Navigator.of(context);
-                              //Navigator.pop(context, 'OK');
-                              nav.pop();
-                              nav.pop();
-                              nav.pop();
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
+                        );
+                      }
+                    }
+                  } on DioError catch (err) {
+                    print(err.response?.statusCode);
+                    if (err.response?.statusCode == 403) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Greška'),
+                          content: const Text('Kod nije ispravan !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                var nav = Navigator.of(context);
+                                //Navigator.pop(context, 'OK');
+                                nav.pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Greška'),
+                          content: const Text('Greška na serveru !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                var nav = Navigator.of(context);
+                                //Navigator.pop(context, 'OK');
+                                nav.pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   }
                 }
               },

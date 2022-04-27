@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, unnecessary_const
 
 import 'package:flutter/material.dart';
+import 'package:testapp/constants/config.dart';
 import 'PrijaviBag.dart';
 
 class InformacijePC extends StatefulWidget {
@@ -14,8 +15,11 @@ class _InformacijePCState extends State<InformacijePC> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD6F4F4),
-      appBar: AppBar(title: const Text('O aplikaciji')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('O aplikaciji'),
+        backgroundColor: scaffoldBoja,
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -25,14 +29,7 @@ class _InformacijePCState extends State<InformacijePC> {
                   left: 10.0, right: 10.0, top: 10, bottom: 5),
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xFF0961AF),
-                        Color(0xFF27AEF7),
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: const ExpansionTile(
                   collapsedIconColor: Colors.white,
@@ -64,14 +61,7 @@ class _InformacijePCState extends State<InformacijePC> {
                   const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xFF0961AF),
-                        Color(0xFF27AEF7),
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: ExpansionTile(
                   collapsedIconColor: Colors.white,
@@ -87,25 +77,20 @@ class _InformacijePCState extends State<InformacijePC> {
                             left: 2, right: 2, top: 2, bottom: 2),
                         child: Container(
                           decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF0961AF),
-                                  Color(0xFF27AEF7),
-                                ],
-                              ),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: const ListTile(
                             leading: Icon(Icons.insert_emoticon,
-                                color: Colors.white, size: 35),
+                                color: scaffoldBoja, size: 35),
                             title: Text('Stefan Tovilović',
                                 textScaleFactor: 1.20,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(color: scaffoldBoja)),
                             subtitle: Text(
                                 'Razvoj servera i baze podataka\nstefan.tovilovic@student.etf.unibl.org',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                           ),
                         ),
                       ),
@@ -116,25 +101,22 @@ class _InformacijePCState extends State<InformacijePC> {
                             left: 2, right: 2, top: 2, bottom: 2),
                         child: Container(
                           decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF0961AF),
-                                  Color(0xFF27AEF7),
-                                ],
-                              ),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: const ListTile(
                             leading: Icon(Icons.insert_emoticon,
-                                color: Colors.white, size: 35),
+                                color: scaffoldBoja, size: 35),
                             title: Text('Luka Divljak',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                             subtitle: Text(
                                 'Razvoj servera i baze podataka\nluka.divljak@student.etf.unibl.org',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                           ),
                         ),
                       ),
@@ -145,25 +127,22 @@ class _InformacijePCState extends State<InformacijePC> {
                             left: 2, right: 2, top: 2, bottom: 2),
                         child: Container(
                           decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF0961AF),
-                                  Color(0xFF27AEF7),
-                                ],
-                              ),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: const ListTile(
                             leading: Icon(Icons.local_florist,
-                                color: Colors.white, size: 35),
+                                color: scaffoldBoja, size: 35),
                             title: Text('Dragana Mišić',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                             subtitle: Text(
                                 'Razvoj mobilne i web aplikacije\ndragana.misic@student.etf.unibl.org',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                           ),
                         ),
                       ),
@@ -174,25 +153,22 @@ class _InformacijePCState extends State<InformacijePC> {
                             left: 2, right: 2, top: 2, bottom: 2),
                         child: Container(
                           decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF0961AF),
-                                  Color(0xFF27AEF7),
-                                ],
-                              ),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: const ListTile(
                             leading: Icon(Icons.insert_emoticon,
-                                color: Colors.white, size: 35),
+                                color: scaffoldBoja, size: 35),
                             title: Text('Nikola Blagojević',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                             subtitle: Text(
                                 'Razvoj mobilne i web aplikacije\nnikola.m.blagojevic@student.etf.unibl.org',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                           ),
                         ),
                       ),
@@ -203,25 +179,22 @@ class _InformacijePCState extends State<InformacijePC> {
                             left: 2, right: 2, top: 2, bottom: 2),
                         child: Container(
                           decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF0961AF),
-                                  Color(0xFF27AEF7),
-                                ],
-                              ),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: const ListTile(
                             leading: Icon(Icons.insert_emoticon,
-                                color: Colors.white, size: 35),
+                                color: scaffoldBoja, size: 35),
                             title: Text('Miloš Škobić',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                             subtitle: Text(
                                 'Razvoj mobilne i web aplikacije\nmilos.skobic@student.etf.unibl.org',
                                 textScaleFactor: 1.15,
-                                style: TextStyle(color: Colors.white)),
+                                style: TextStyle(
+                                  color: scaffoldBoja,
+                                )),
                           ),
                         ),
                       ),
@@ -241,14 +214,7 @@ class _InformacijePCState extends State<InformacijePC> {
                   left: 10, right: 10, top: 5, bottom: 10),
               child: Container(
                 decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xFF0961AF),
-                        Color(0xFF27AEF7),
-                      ],
-                    ),
+                    color: scaffoldBoja,
                     borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading: const Icon(Icons.report_problem,

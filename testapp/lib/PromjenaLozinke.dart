@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/Login.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/promjena_lozinke_service.dart';
+import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/requests/promjena_lozinke_request.dart';
 
 class PromjenaLozinke extends StatefulWidget {
@@ -24,20 +25,11 @@ class _PromjenaLozinkeState extends State<PromjenaLozinke> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[700],
+        backgroundColor: scaffoldBoja,
         title: const Text('Promjena lozinke'),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFD6F4F4),
-              Color(0xFFD6F4F4),
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(color: Colors.white),
         child: ListView(
           // child: Column(
           children: <Widget>[
@@ -69,10 +61,11 @@ class _PromjenaLozinkeState extends State<PromjenaLozinke> {
                   unosLozinka = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.lock, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Trenutna lozinka',
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Unesite vašu trenutnu lozinku'),
@@ -88,10 +81,11 @@ class _PromjenaLozinkeState extends State<PromjenaLozinke> {
                   novaLozinka = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.password, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    prefixIcon: Icon(Icons.password, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
                     labelText: 'Nova lozinka',
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Unesite vašu novu loznku'),
@@ -107,10 +101,11 @@ class _PromjenaLozinkeState extends State<PromjenaLozinke> {
                   novaLozinkaPotvrda = text;
                 },
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.password, color: Colors.blue[700]),
-                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.password, color: scaffoldBoja),
+                    fillColor: Color.fromARGB(218, 226, 226, 226),
                     filled: true,
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     labelText: 'Potvrda nove lozinka',
                     labelStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Ponovo unesite vašu novu loznku'),
@@ -122,94 +117,100 @@ class _PromjenaLozinkeState extends State<PromjenaLozinke> {
               //Kada se prilikom registracije stisne dugme sacuvaj, prvo se provjerava da li su uneseni podaci u sva polja
               //Nakon toga se provjerava da li je duzina lozinke minimum 8 karakera
               //Nakon toga da li se poklapaju lozinke i ako je sve to ispunjeno onda se uspjesno registruje
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.blue[700]),
-                onPressed: () async {
-                  if (unosLozinka.isEmpty ||
-                      novaLozinka.isEmpty ||
-                      novaLozinkaPotvrda.isEmpty) {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Neispravan unos'),
-                        content: const Text('Morate popuniti sve podatke'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  /* else if (trenutnaLozinka != unosLozinka) {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Neispravna lozinka'),
-                        content: const Text('Unijeli ste netačnu lozinku !'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }*/
-                  else if (novaLozinka.length < 8) {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Neispravna nova lozinka'),
-                        content: const Text(
-                            'Dužina nove lozinke mora biti 8 ili vise karaktera !'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else if (novaLozinka == unosLozinka) {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Neispravna nova lozinka'),
-                        content: const Text(
-                            'Nova lozinka ne može biti ista kao ona koju ste unijeli u polje za trenutnu lozinku !'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else if (novaLozinka != novaLozinkaPotvrda) {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Neispravne lozinke'),
-                        content: const Text('Nove lozinke se ne poklapaju !'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    promjenaLozinkeInfo.staraLozinka = unosLozinka;
-                    promjenaLozinkeInfo.novaLozinka = novaLozinkaPotvrda;
-                    promjeniLozinku();
-                  }
-                },
-                child: const Text(
-                  'Sačuvaj',
-                  textScaleFactor: 1.5,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: scaffoldBoja,
+                    borderRadius: BorderRadius.circular(20)),
+                child: TextButton(
+                  // style: ElevatedButton.styleFrom(primary: scaffoldBoja),
+                  onPressed: () async {
+                    if (unosLozinka.isEmpty ||
+                        novaLozinka.isEmpty ||
+                        novaLozinkaPotvrda.isEmpty) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Neispravan unos'),
+                          content: const Text('Morate popuniti sve podatke'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    /* else if (trenutnaLozinka != unosLozinka) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Neispravna lozinka'),
+                          content: const Text('Unijeli ste netačnu lozinku !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }*/
+                    else if (novaLozinka.length < 8) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Neispravna nova lozinka'),
+                          content: const Text(
+                              'Dužina nove lozinke mora biti 8 ili vise karaktera !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (novaLozinka == unosLozinka) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Neispravna nova lozinka'),
+                          content: const Text(
+                              'Nova lozinka ne može biti ista kao ona koju ste unijeli u polje za trenutnu lozinku !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (novaLozinka != novaLozinkaPotvrda) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Neispravne lozinke'),
+                          content: const Text('Nove lozinke se ne poklapaju !'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      promjenaLozinkeInfo.staraLozinka = unosLozinka;
+                      promjenaLozinkeInfo.novaLozinka = novaLozinkaPotvrda;
+                      promjeniLozinku();
+                    }
+                  },
+                  child: const Text(
+                    'Sačuvaj',
+                    style: TextStyle(color: Colors.white),
+                    textScaleFactor: 1.8,
+                  ),
                 ),
               ),
             ),
@@ -232,9 +233,8 @@ class _PromjenaLozinkeState extends State<PromjenaLozinke> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                var nav = Navigator.of(context);
-                //Navigator.pop(context, 'OK');
-                nav.pop();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/LoginPage", (r) => false);
                 // nav.pop();
               },
               child: const Text('OK'),

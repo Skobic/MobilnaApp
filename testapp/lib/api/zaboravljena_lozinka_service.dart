@@ -22,17 +22,17 @@ class ZaboravljenaLozinkaService {
   }
 
   Future<Response?> resetujLozinku(
-      {required DioClient dioClient,
-      required ResetLozinkeRequest resetData}) async {
+      {required Dio dioClient, required ResetLozinkeRequest resetData}) async {
     Response? response;
 
     try {
-      response = await dioClient.dio.post(
+      response = await dioClient.post(
         '/zaboravljena-lozinka-promjena/',
         data: resetData.toJson(),
       );
+      print(response.statusCode);
     } catch (e) {
-      print('Error creating user: $e');
+      rethrow;
     }
 
     return response;
