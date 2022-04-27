@@ -47,7 +47,7 @@ class _PregledCitaonicePageState extends State<PregledCitaonicePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return Navigator.of(navigatorKey.currentContext!).canPop();
+        return false;
       },
       child: Scaffold(
         key: citaonicaScaffoldKey,

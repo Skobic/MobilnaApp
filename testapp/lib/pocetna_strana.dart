@@ -6,6 +6,7 @@ import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/other/argumenti_grupne_potvrd_dolaska.dart';
 import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
 import 'package:testapp/models/requests/potvrda_dolaska_request.dart';
+import 'package:testapp/pages/citaonice_page.dart';
 import 'package:testapp/pages/grupna_potvrda_dolaska.dart';
 import 'package:testapp/pages/individualna_potvrda_dolaska.dart';
 import 'package:testapp/pages/pregled_citaonice_page.dart';
@@ -44,49 +45,54 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
         title: 'Flutter Demo',
         theme: ThemeData(
             scaffoldBackgroundColor: const Color.fromARGB(255, 149, 168, 183)),
-        home: Scaffold(
-            appBar: AppBar(
-              title: Text(naslov,
-                  style: GoogleFonts.ubuntu(
-                      textStyle: const TextStyle(
-                    color: Color.fromARGB(255, 254, 254, 254),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ))),
-              backgroundColor: scaffoldBoja,
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: scaffoldBoja,
-              selectedFontSize: 20,
-              selectedIconTheme: const IconThemeData(
-                color: Color.fromARGB(255, 67, 84, 64),
-                size: 35,
+        home: WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+              appBar: AppBar(
+                title: Text(naslov,
+                    style: GoogleFonts.ubuntu(
+                        textStyle: const TextStyle(
+                      color: Color.fromARGB(255, 254, 254, 254),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    ))),
+                backgroundColor: scaffoldBoja,
               ),
-              unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-              elevation: 30,
-              selectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
+              bottomNavigationBar: BottomNavigationBar(
+                backgroundColor: scaffoldBoja,
+                selectedFontSize: 20,
+                selectedIconTheme: const IconThemeData(
+                  color: Color.fromARGB(255, 67, 84, 64),
+                  size: 35,
+                ),
+                unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+                elevation: 30,
+                selectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.book),
+                    label: 'Citaonice',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.lock_clock),
+                    label: 'Rezervacije',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person),
+                    label: 'Profill',
+                  ),
+                ],
+                currentIndex: _selectedItemIndex,
+                onTap: _onItemTapped,
               ),
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.book),
-                  label: 'Citaonice',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.lock_clock),
-                  label: 'Rezervacije',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profill',
-                ),
-              ],
-              currentIndex: _selectedItemIndex,
-              onTap: _onItemTapped,
-            ),
-            body: IndexedStack(index: _selectedItemIndex, children: screens)),
+              body: IndexedStack(index: _selectedItemIndex, children: screens)),
+        ),
         onGenerateRoute: (settings) {
           WidgetBuilder builder;
 

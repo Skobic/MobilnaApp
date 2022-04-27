@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:testapp/pocetna_strana.dart';
 
 import '../pages/citaonice_page.dart';
 import '../pages/pregled_citaonice_page.dart';
+
+final GlobalKey<NavigatorState> citaonicaNavigatorKey =
+    GlobalKey<NavigatorState>();
 
 class CitaonicePageWrapper extends StatelessWidget {
   const CitaonicePageWrapper({Key? key}) : super(key: key);
