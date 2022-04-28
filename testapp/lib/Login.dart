@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/ZaboravljenaLozinka.dart';
+import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/requests/registracija_request.dart';
 import 'api/dio_client.dart';
 import 'pocetna_strana.dart';
@@ -149,12 +150,11 @@ class _LoginDemoState extends State<LoginDemo> {
                                 ));
                       } else {
                         try {
-                          Response odgovor = await dioCL.post(
-                              'https://192.168.0.150:8443/api/v1/prijava/',
-                              data: {
-                                "korisnickoIme": korisnickoImeController.text,
-                                "lozinka": lozinkaController.text
-                              });
+                          Response odgovor = await dioCL
+                              .post('$apiPutanja/prijava/', data: {
+                            "korisnickoIme": korisnickoImeController.text,
+                            "lozinka": lozinkaController.text
+                          });
                           if (odgovor.statusCode == 201 &&
                               odgovor.data['uloga'] == 'KORISNIK') {
                             idKorisnika = odgovor.data['id'];

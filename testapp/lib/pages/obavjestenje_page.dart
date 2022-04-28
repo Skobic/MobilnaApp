@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/obavjestenja_service.dart';
 import 'package:testapp/constants/config.dart';
@@ -43,7 +44,13 @@ class _PrikazObavjestenjaState extends State<PrikazObavjestenja> {
         backgroundColor: Color.fromARGB(248, 255, 255, 255),
         appBar: AppBar(
           backgroundColor: scaffoldBoja,
-          title: const Text('Obavještenja'),
+          title: Text('Obavještenja',
+              style: GoogleFonts.ubuntu(
+                  textStyle: const TextStyle(
+                color: Color.fromARGB(255, 254, 254, 254),
+                fontWeight: FontWeight.bold,
+                fontSize: 23,
+              ))),
         ),
         body: SingleChildScrollView(
           child: FutureBuilder<List<ObavjestenjaResponse>>(

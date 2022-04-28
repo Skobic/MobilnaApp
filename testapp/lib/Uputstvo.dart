@@ -22,7 +22,7 @@ class _UputstvoPCState extends State<UputstvoPC> {
                 textStyle: const TextStyle(
               color: Color.fromARGB(255, 254, 254, 254),
               fontWeight: FontWeight.bold,
-              fontSize: 30,
+              fontSize: 23,
             ))),
         backgroundColor: scaffoldBoja,
       ),

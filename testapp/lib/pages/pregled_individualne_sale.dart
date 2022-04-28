@@ -361,7 +361,7 @@ class _IndSalaViewState extends State<IndSalaView> {
 
   Future<Uint8List> dohvatiSliku() async {
     http.Response odgovor = await http.get(Uri.parse(
-        'https://192.168.0.150:8443/api/v1/individualne-sale/${widget.individualnaSalaData.id}/slika/'));
+        '$apiPutanja/individualne-sale/${widget.individualnaSalaData.id}/slika/'));
     if (odgovor.statusCode == 200) {
       return odgovor.bodyBytes;
     } else {

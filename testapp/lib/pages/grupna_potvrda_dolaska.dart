@@ -95,11 +95,17 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
                                         scaffoldBoja)),
-                            onPressed: () {
+                            onPressed: () async {
                               if (result?.code != null) {
                                 print(result?.code);
-                                potvrdiDolazak(widget.argInfo.idSale,
+                                bool? odgovor = await potvrdiDolazak(
+                                    widget.argInfo.idSale,
                                     widget.argInfo.idRezervacije);
+                                if (odgovor != null) {
+                                  if (odgovor == true) {
+                                    Navigator.pop(context);
+                                  }
+                                }
                               } else {
                                 showDialog(
                                     context: context,
@@ -166,14 +172,14 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
     );
   }
 
-  void potvrdiDolazak(int salaId, rezervacijaId) async {
+  Future<bool?> potvrdiDolazak(int salaId, rezervacijaId) async {
     var response = await potvrdaDolaskaService.potvrdiDolazakGrupRez(
         dioClient: dioCL,
         qrKodInfo: PotvrdaDolaskaRequest(kod: result!.code!),
         idSale: salaId,
         idRezervacije: rezervacijaId);
     if (response?.statusCode == 200 || response?.statusCode == 201) {
-      showDialog<String>(
+      return showDialog<bool>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Potvrda dolaska'),
@@ -182,8 +188,7 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.pop(context, true);
               },
               child: const Text('Ok'),
             ),
@@ -191,7 +196,7 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
         ),
       );
     } else if (response?.statusCode == 400 || response?.statusCode == 409) {
-      showDialog<String>(
+      return showDialog<bool>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Greška'),
@@ -201,7 +206,7 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, false);
               },
               child: const Text('Ok'),
             ),
@@ -209,7 +214,7 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
         ),
       );
     } else {
-      showDialog<String>(
+      return showDialog<bool>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Greška'),
@@ -218,7 +223,7 @@ class _GrupnaPotvrdaDolaskaState extends State<GrupnaPotvrdaDolaska> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, false);
               },
               child: const Text('Ok'),
             ),

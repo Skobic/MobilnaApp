@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/adapter.dart';
+import 'package:testapp/constants/config.dart';
 
 class DioClient {
   final Dio dio = Dio(BaseOptions(
-    baseUrl: "https://192.168.0.150:8443/api/v1",
+    baseUrl: apiPutanja,
   ));
 
-  Dio tokenDio = Dio(BaseOptions(baseUrl: "https://192.168.0.150:8443/api/v1"));
+  Dio tokenDio = Dio(BaseOptions(baseUrl: apiPutanja));
 
   DioClient() {
     dio.interceptors
