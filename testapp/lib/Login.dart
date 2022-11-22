@@ -129,7 +129,7 @@ class _LoginDemoState extends State<LoginDemo> {
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20)),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () async {
                       if (korisnickoImeController.text.isEmpty ||
                           lozinkaController.text.length < 3) {
@@ -178,7 +178,7 @@ class _LoginDemoState extends State<LoginDemo> {
                     ),
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -203,7 +203,7 @@ class _LoginDemoState extends State<LoginDemo> {
                     //height: 25,
                     // width: 200,
 
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         Navigator.push(
                             context,

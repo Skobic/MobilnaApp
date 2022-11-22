@@ -65,14 +65,15 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
               unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
               elevation: 30,
               selectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 255, 255, 255)),
+              fixedColor: Colors.white,
+              showSelectedLabels: true,
+              showUnselectedLabels: true,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.book),
-                  label: 'Citaonice',
+                  label: "Čitaonice",
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.lock_clock),
@@ -80,7 +81,7 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
-                  label: 'Profill',
+                  label: 'Profil',
                 ),
               ],
               currentIndex: _selectedItemIndex,
