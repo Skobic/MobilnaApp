@@ -58,7 +58,7 @@ class _IndSalaViewState extends State<IndSalaView> {
       backgroundColor: const Color.fromRGBO(205, 205, 205, 1),
       appBar: AppBar(
         iconTheme: const IconThemeData(
-            color: Color.fromARGB(255, 255, 255, 255), size: 30),
+            color: Color.fromARGB(255, 255, 255, 255), size: 25),
         title: Text(
           widget.individualnaSalaData.naziv,
           style: GoogleFonts.ubuntu(
@@ -291,6 +291,9 @@ class _IndSalaViewState extends State<IndSalaView> {
     } else {
       setState(() => {toTimeTemp = newTime, initialTimeTo = toTimeTemp});
     }
+    if (isCorrectTime()) {
+      confirmDate();
+    }
   }
 
   double getKoeficijentVelicineMjesta(double x) {
@@ -369,12 +372,14 @@ class _IndSalaViewState extends State<IndSalaView> {
     }
   }
 
-  void showCustomDialog(BuildContext context, MjestoResponse mjesto) =>
-      showDialog(
-          context: context,
-          builder: (context) => MjestoDialog(
-              data: mjesto,
-              date: currentDate,
-              fromTime: fromTimeTemp,
-              toTime: toTimeTemp));
+  void showCustomDialog(BuildContext context, MjestoResponse mjesto) => {
+        showDialog(
+            context: context,
+            builder: (context) => MjestoDialog(
+                data: mjesto,
+                date: currentDate,
+                fromTime: fromTimeTemp,
+                toTime: toTimeTemp,
+                callbackRefresh: confirmDate))
+      };
 }
