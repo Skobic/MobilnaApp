@@ -22,6 +22,8 @@ class GrupnaSalaTile extends StatelessWidget {
         onTap: () {
           if (grupnaSalaData.dostupno == true) {
             showCustomDialog(context);
+          } else {
+            showAlertDialog(context);
           }
         },
         title: Text(grupnaSalaData.naziv,
@@ -53,6 +55,22 @@ class GrupnaSalaTile extends StatelessWidget {
       builder: (context) {
         return GrupnaSalaDialog(
           grupnaSalaData: grupnaSalaData,
+        );
+      });
+
+  void showAlertDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[200],
+          title: const Text("Izabrana sala je trenutno zaključana!"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                child: const Text("Zatvori"))
+          ],
         );
       });
 }

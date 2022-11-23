@@ -84,106 +84,128 @@ class _IndSalaViewState extends State<IndSalaView> {
             ]),
             height: MediaQuery.of(context).size.height * 0.19,
             width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Column(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            backgroundColor:
-                                const Color.fromRGBO(238, 238, 238, 1),
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.center),
-                        onPressed: () => pickTime(context, 'f'),
-                        child: Text(getTimeText('f'),
-                            style: const TextStyle(
-                                fontSize: 15,
-                                color: Color.fromARGB(255, 66, 66, 66))),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            backgroundColor:
-                                const Color.fromRGBO(238, 238, 238, 1),
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.center),
-                        onPressed: () => pickTime(context, 't'),
-                        child: Text(getTimeText('t'),
-                            style: const TextStyle(
-                                fontSize: 15,
-                                color: Color.fromARGB(255, 66, 66, 66))),
-                      ),
-                    ),
-                  ],
+                const SizedBox(
+                  height: 30,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor:
-                              const Color.fromRGBO(238, 238, 238, 1),
-                          padding: const EdgeInsets.all(2),
-                          alignment: Alignment.center,
-                        ),
-                        onPressed: () => pickDate(context),
-                        child: Text(
-                            '${currentDate.day}/${currentDate.month}/${currentDate.year}',
-                            style: const TextStyle(
-                                fontSize: 15,
-                                color: Color.fromARGB(255, 66, 66, 66))),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Material(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: InkWell(
-                          splashColor: Colors.green[300],
-                          borderRadius: BorderRadius.circular(12.0),
-                          onTap: isCorrectTime()
-                              ? () => confirmDate()
-                              : () {
-                                  SnackBar incorrectTimeMessage =
-                                      const SnackBar(
-                                          content: Text(
-                                              "Neispravno definisano vrijeme!"),
-                                          duration: Duration(seconds: 2),
-                                          backgroundColor:
-                                              Color.fromARGB(255, 216, 53, 53));
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(incorrectTimeMessage);
-                                },
-                          child: Ink(
-                            padding: const EdgeInsets.all(7),
-                            // width: 70,
-                            // height: 35,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6.0),
-                                color: Colors.green[600]),
-                            child: const Center(
-                                child: Icon(Icons.replay_rounded,
-                                    color: Colors.white, size: 24)),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              backgroundColor:
+                                  const Color.fromRGBO(238, 238, 238, 1),
+                              padding: const EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                            ),
+                            onPressed: () => pickDate(context),
+                            child: Text(
+                                '${currentDate.day}/${currentDate.month}/${currentDate.year}',
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Color.fromARGB(255, 66, 66, 66))),
                           ),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                backgroundColor:
+                                    const Color.fromRGBO(238, 238, 238, 1),
+                                padding: EdgeInsets.zero,
+                                alignment: Alignment.center,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                        color: isCorrectTime()
+                                            ? Colors.green
+                                            : Colors.red,
+                                        width: 1))),
+                            onPressed: () => pickTime(context, 'f'),
+                            child: Text(getTimeText('f'),
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Color.fromARGB(255, 66, 66, 66))),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                backgroundColor:
+                                    const Color.fromRGBO(238, 238, 238, 1),
+                                padding: EdgeInsets.zero,
+                                alignment: Alignment.center,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                        color: isCorrectTime()
+                                            ? Colors.green
+                                            : Colors.red,
+                                        width: 1))),
+                            onPressed: () => pickTime(context, 't'),
+                            child: Text(getTimeText('t'),
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Color.fromARGB(255, 66, 66, 66))),
+                          ),
+                        ),
+                      ],
                     ),
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   children: [
+                    //     const SizedBox(height: 10),
+
+                    //     Padding(
+                    //       padding: const EdgeInsets.all(8.0),
+                    //       child: Material(
+                    //         color: Colors.transparent,
+                    //         borderRadius: BorderRadius.circular(12.0),
+                    //         child: InkWell(
+                    //           splashColor: Colors.green[300],
+                    //           borderRadius: BorderRadius.circular(12.0),
+                    //           onTap: isCorrectTime()
+                    //               ? () => confirmDate()
+                    //               : () {
+                    //                   SnackBar incorrectTimeMessage =
+                    //                       const SnackBar(
+                    //                           content: Text(
+                    //                               "Neispravno definisano vrijeme!"),
+                    //                           duration: Duration(seconds: 2),
+                    //                           backgroundColor:
+                    //                               Color.fromARGB(255, 216, 53, 53));
+                    //                   ScaffoldMessenger.of(context)
+                    //                       .showSnackBar(incorrectTimeMessage);
+                    //                 },
+                    //           child: Ink(
+                    //             padding: const EdgeInsets.all(7),
+                    //             // width: 70,
+                    //             // height: 35,
+                    //             decoration: BoxDecoration(
+                    //                 borderRadius: BorderRadius.circular(6.0),
+                    //                 color: Colors.green[600]),
+                    //             child: const Center(
+                    //                 child: Icon(Icons.replay_rounded,
+                    //                     color: Colors.white, size: 24)),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // )
                   ],
-                )
+                ),
               ],
             ),
           ),
