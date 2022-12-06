@@ -2,10 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:testapp/BrisanjeNaloga.dart';
-import 'package:testapp/InfoPC.dart';
-import 'package:testapp/PromjenaLozinke.dart';
-import 'package:testapp/Uputstvo.dart';
 import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/other/argumenti_grupne_potvrd_dolaska.dart';
 import 'package:testapp/models/other/argumenti_individualne_potvrde_dolaska.dart';
@@ -47,50 +43,57 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        home: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              title: Text(naslov,
-                  style: GoogleFonts.ubuntu(
-                      textStyle: const TextStyle(
-                    color: Color.fromARGB(255, 254, 254, 254),
+        theme: ThemeData(
+            scaffoldBackgroundColor: const Color.fromARGB(255, 149, 168, 183)),
+        home: WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+              appBar: AppBar(
+                title: Text(naslov,
+                    style: GoogleFonts.ubuntu(
+                        textStyle: const TextStyle(
+                      color: Color.fromARGB(255, 254, 254, 254),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    ))),
+                backgroundColor: scaffoldBoja,
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                backgroundColor: scaffoldBoja,
+                selectedFontSize: 20,
+                selectedIconTheme: const IconThemeData(
+                  color: Color.fromARGB(255, 67, 84, 64),
+                  size: 35,
+                ),
+                unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+                elevation: 30,
+                selectedLabelStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ))),
-              backgroundColor: scaffoldBoja,
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: scaffoldBoja,
-              selectedFontSize: 20,
-              selectedIconTheme: const IconThemeData(
-                color: Color.fromARGB(255, 67, 84, 64),
-                size: 35,
+                    color: Color.fromARGB(255, 67, 84, 64)),
+                fixedColor: const Color.fromARGB(255, 67, 84, 64),
+                showSelectedLabels: true,
+                showUnselectedLabels: true,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.book),
+                    label: 'Čitaonice',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.lock_clock),
+                    label: 'Rezervacije',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person),
+                    label: 'Profil',
+                  ),
+                ],
+                currentIndex: _selectedItemIndex,
+                onTap: _onItemTapped,
               ),
-              unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-              elevation: 30,
-              selectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.book),
-                  label: 'Citaonice',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.lock_clock),
-                  label: 'Rezervacije',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profill',
-                ),
-              ],
-              currentIndex: _selectedItemIndex,
-              onTap: _onItemTapped,
-            ),
-            body: IndexedStack(index: _selectedItemIndex, children: screens)),
+              body: IndexedStack(index: _selectedItemIndex, children: screens)),
+        ),
         onGenerateRoute: (settings) {
           WidgetBuilder builder;
 
@@ -115,18 +118,6 @@ class _PocetnaStranaState extends State<PocetnaStrana> {
                     argInfo:
                         settings.arguments as ArgumentiGrupnePotvrdeDolaska,
                   );
-              break;
-            case 'promjena_lozinke':
-              builder = (BuildContext context) => const PromjenaLozinke();
-              break;
-            case 'uputstvo_za_koristenje':
-              builder = (BuildContext context) => const UputstvoPC();
-              break;
-            case 'o_aplikaciji':
-              builder = (BuildContext context) => const InformacijePC();
-              break;
-            case 'brisanje_naloga':
-              builder = (BuildContext context) => const BrisanjeNaloga();
               break;
             default:
               throw Exception('Invalid route:}');

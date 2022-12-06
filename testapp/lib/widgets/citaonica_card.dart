@@ -4,8 +4,6 @@ import 'package:testapp/pocetna_strana.dart';
 
 import '../models/responses/citaonica_response.dart';
 
-int? idCitaonice;
-
 class CitaonicaCard extends StatelessWidget {
   final CitaonicaResponse citaonicaData;
   const CitaonicaCard({Key? key, required this.citaonicaData})
@@ -13,7 +11,6 @@ class CitaonicaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    idCitaonice = citaonicaData.id;
     return Center(
       child: Container(
           width: MediaQuery.of(context).size.width * 0.87,

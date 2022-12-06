@@ -15,13 +15,15 @@ class MjestoDialog extends StatefulWidget {
   TimeOfDay? fromTime;
   TimeOfDay? toTime;
   final DateTime date;
+  final Function callbackRefresh;
 
   MjestoDialog(
       {Key? key,
       required this.data,
       required this.date,
       this.fromTime,
-      this.toTime})
+      this.toTime,
+      required this.callbackRefresh})
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -215,7 +217,7 @@ class _MjestoDialogState extends State<MjestoDialog> {
                                       backgroundColor:
                                           Color.fromARGB(255, 61, 185, 45),
                                     );
-
+                                    widget.callbackRefresh();
                                     ScaffoldMessenger.of(
                                             scaffoldKey.currentContext!)
                                         .showSnackBar(snackBar);
@@ -368,7 +370,7 @@ class _MjestoDialogState extends State<MjestoDialog> {
     } else {
       var x = widget.fromTime!.hour * 60 + widget.fromTime!.minute;
       var y = widget.toTime!.hour * 60 + widget.toTime!.minute;
-      if (y - x < 4 * 60 && y - x > 0 * 60 + 30) {
+      if (y - x < 4 * 60 && y - x >= 0 * 60 + 15) {
         return true;
       } else {
         return false;

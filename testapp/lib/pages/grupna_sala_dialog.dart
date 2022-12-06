@@ -257,13 +257,19 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  backgroundColor:
-                                      const Color.fromRGBO(238, 238, 238, 1),
-                                  padding: const EdgeInsets.all(2),
-                                  alignment: Alignment.center,
-                                ),
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    backgroundColor:
+                                        const Color.fromRGBO(238, 238, 238, 1),
+                                    padding: const EdgeInsets.all(2),
+                                    alignment: Alignment.center,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        side: BorderSide(
+                                            color: isCorrectTime()
+                                                ? Colors.green
+                                                : Colors.red,
+                                            width: 1))),
                                 child: Text(getTimeText('f'),
                                     style: const TextStyle(
                                         fontSize: 15,
@@ -334,13 +340,19 @@ class _GrupnaSalaDialogState extends State<GrupnaSalaDialog> {
                               padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  backgroundColor:
-                                      const Color.fromRGBO(238, 238, 238, 1),
-                                  padding: const EdgeInsets.all(2),
-                                  alignment: Alignment.center,
-                                ),
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    backgroundColor:
+                                        const Color.fromRGBO(238, 238, 238, 1),
+                                    padding: const EdgeInsets.all(2),
+                                    alignment: Alignment.center,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        side: BorderSide(
+                                            color: isCorrectTime()
+                                                ? Colors.green
+                                                : Colors.red,
+                                            width: 1))),
                                 child: Text(getTimeText('t'),
                                     style: const TextStyle(
                                         fontSize: 15,

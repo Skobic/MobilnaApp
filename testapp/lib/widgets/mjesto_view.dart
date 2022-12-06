@@ -49,6 +49,8 @@ class _MjestoViewState extends State<MjestoView> {
               context,
               widget.mjestoData,
             );
+          } else {
+            showAlertDialog(context);
           }
         },
         child: Stack(
@@ -83,6 +85,22 @@ class _MjestoViewState extends State<MjestoView> {
       ),
     );
   }
+
+  void showAlertDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[200],
+          title: const Text("Izabrano mjesto je trenutno zaključano!"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                child: const Text("Zatvori"))
+          ],
+        );
+      });
 
   // void showCustomDialog(BuildContext context) => showDialog(
   //     context: context,

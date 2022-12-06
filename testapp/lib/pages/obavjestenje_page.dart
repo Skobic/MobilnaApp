@@ -4,7 +4,8 @@ import 'package:testapp/api/dio_client.dart';
 import 'package:testapp/api/obavjestenja_service.dart';
 import 'package:testapp/constants/config.dart';
 import 'package:testapp/models/responses/obavjestenja_response.dart';
-import 'package:testapp/widgets/citaonica_card.dart';
+import 'package:testapp/pages/pregled_citaonice_page.dart';
+
 import 'package:testapp/widgets/obavjestenje_card.dart';
 
 class PrikazObavjestenja extends StatefulWidget {

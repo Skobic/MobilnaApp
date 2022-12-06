@@ -13,6 +13,8 @@ import '../models/responses/grupna_sala_response.dart';
 import '../pocetna_strana.dart';
 import '../widgets/grupna_sala_tile.dart';
 
+int? idCitaonice;
+
 class PregledCitaonicePage extends StatefulWidget {
   final CitaonicaResponse citaonicaData;
 
@@ -45,6 +47,7 @@ class _PregledCitaonicePageState extends State<PregledCitaonicePage> {
 
   @override
   Widget build(BuildContext context) {
+    idCitaonice = widget.citaonicaData.id;
     return WillPopScope(
       onWillPop: () async {
         return false;
